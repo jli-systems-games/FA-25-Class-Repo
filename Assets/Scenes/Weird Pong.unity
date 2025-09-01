@@ -146,7 +146,7 @@ Transform:
   m_GameObject: {fileID: 54241719}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.35, z: 0}
+  m_LocalPosition: {x: 0, y: 5.28, z: 0}
   m_LocalScale: {x: 18.408, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1056,7 +1056,7 @@ GameObject:
   - component: {fileID: 755159725}
   m_Layer: 0
   m_Name: Left Paddle
-  m_TagString: Untagged
+  m_TagString: Paddle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1221,6 +1221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paddleSpeed: 10
   verticalLimit: 4
+  ball: {fileID: 1307118405}
 --- !u!1 &853006473
 GameObject:
   m_ObjectHideFlags: 0
@@ -1741,8 +1742,8 @@ GameObject:
   - component: {fileID: 1307118403}
   - component: {fileID: 1307118402}
   - component: {fileID: 1307118401}
-  - component: {fileID: 1307118404}
   - component: {fileID: 1307118405}
+  - component: {fileID: 1307118406}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -1775,7 +1776,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &1307118402
 SpriteRenderer:
@@ -1847,8 +1848,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &1307118404
-CircleCollider2D:
+--- !u!114 &1307118405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307118400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29d5c583ceda2ca47b54bf103856f162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballrb: {fileID: 1307118401}
+  ballSpeed: 8
+  maxAngle: 0.3
+  speedMultiplier: 1.1
+  leftScoreText: {fileID: 853006475}
+  rightScoreText: {fileID: 676922399}
+  winningPoint: 3
+  gameOverLeftCanvas: {fileID: 1911557555}
+  gameOverRightCanvas: {fileID: 85071059}
+  hasGameOver: 0
+--- !u!61 &1307118406
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1882,27 +1905,17 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
---- !u!114 &1307118405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1307118400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29d5c583ceda2ca47b54bf103856f162, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ballrb: {fileID: 1307118401}
-  ballSpeed: 8
-  maxAngle: 0.3
-  leftScoreText: {fileID: 853006475}
-  rightScoreText: {fileID: 676922399}
-  winningPoint: 3
-  gameOverLeftCanvas: {fileID: 1911557555}
-  gameOverRightCanvas: {fileID: 85071059}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &1319840585
 GameObject:
   m_ObjectHideFlags: 0
@@ -2139,7 +2152,7 @@ GameObject:
   - component: {fileID: 1387364754}
   m_Layer: 0
   m_Name: Right Paddle
-  m_TagString: Untagged
+  m_TagString: Paddle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2304,6 +2317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paddleSpeed: 10
   verticalLimit: 4
+  ball: {fileID: 1307118405}
 --- !u!1 &1440446530
 GameObject:
   m_ObjectHideFlags: 0

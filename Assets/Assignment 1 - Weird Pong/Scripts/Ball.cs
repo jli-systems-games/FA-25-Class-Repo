@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -7,6 +8,7 @@ public class Ball : MonoBehaviour
     public Rigidbody2D ballrb;
     public float ballSpeed = 10f;
     public float maxAngle = 0.5f;
+    public float speedMultiplier = 1.1f;
 
     //Score
     public TextMeshProUGUI leftScoreText;
@@ -21,14 +23,13 @@ public class Ball : MonoBehaviour
     //Game Over
     public Canvas gameOverLeftCanvas;
     public Canvas gameOverRightCanvas;
-
-    //Paddles
-
+    public bool hasGameOver = false;
 
     void Start()
     {
         gameOverLeftCanvas.gameObject.SetActive(false);
         gameOverRightCanvas.gameObject.SetActive(false);
+
         InitialBallMovement();
     }
 
@@ -45,6 +46,7 @@ public class Ball : MonoBehaviour
 
     void ResetGame()
     {
+        hasGameOver = false;
         gameOverLeftCanvas.gameObject.SetActive(false);
         gameOverRightCanvas.gameObject.SetActive(false);
 
@@ -80,14 +82,24 @@ public class Ball : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Paddle"))
+        {
+            ballrb.linearVelocity *= speedMultiplier;
+        }
+    }
+
     void CheckScores()
     {
         if (leftScore == winningPoint)
         {
+            hasGameOver = true;
             gameOverLeftCanvas.gameObject.SetActive(true);
         }
         else if (rightScore == winningPoint)
         {
+            hasGameOver = true;
             gameOverRightCanvas.gameObject.SetActive(true);
         }
         else
@@ -127,6 +139,16 @@ public class Ball : MonoBehaviour
     void InitialBallMovement()
     {
         transform.position = new Vector2(0, 0);
-        StartLeft(); //randomize start left or right
+
+        int randomStart = Random.Range(0, 2);
+
+        if (randomStart == 0)
+        {
+            StartLeft();
+        }
+        else
+        {
+            StartRight();
+        }
     }
 }

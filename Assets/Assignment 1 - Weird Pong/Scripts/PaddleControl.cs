@@ -5,6 +5,7 @@ public class PaddleControl : MonoBehaviour
 {
     public float paddleSpeed = 10f;
     public float verticalLimit = 10f;
+    public Ball ball;
 
     private Vector2 moveInput;
     
@@ -16,8 +17,17 @@ public class PaddleControl : MonoBehaviour
     void Update()
     {
         Vector2 paddlePos = transform.position;
-        paddlePos.y += moveInput.y * paddleSpeed * Time.deltaTime;
-        paddlePos.y = Mathf.Clamp(paddlePos.y, -verticalLimit, verticalLimit); //Clamp so that the paddle doesn't go out of bounds
-        transform.position = paddlePos;
+
+        if (ball.hasGameOver)
+        {
+            paddlePos.y = 0;
+            transform.position = paddlePos;
+        }
+        else 
+        {
+            paddlePos.y += moveInput.y * paddleSpeed * Time.deltaTime;
+            paddlePos.y = Mathf.Clamp(paddlePos.y, -verticalLimit, verticalLimit); //Clamp so that the paddle doesn't go out of bounds
+            transform.position = paddlePos;
+        }
     }
 }
