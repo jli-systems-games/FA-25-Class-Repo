@@ -1,5 +1,4 @@
 using TMPro;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -33,7 +32,6 @@ public class Ball : MonoBehaviour
         InitialBallMovement();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (gameOverLeftCanvas == true || gameOverRightCanvas == true)
