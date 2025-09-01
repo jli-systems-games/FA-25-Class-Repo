@@ -181,7 +181,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_Sprite: {fileID: 7482667652216324306, guid: 0e7cd9f4646be406e95d91d3f9fbb8ba, type: 3}
-  m_Color: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 1
   m_DrawMode: 0
@@ -432,7 +432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84e1420882d041938ab342a94a8b3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceType: 0
   bounceStrength: 5
 --- !u!1 &360129377
 GameObject:
@@ -1000,7 +999,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84e1420882d041938ab342a94a8b3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceType: 0
   bounceStrength: 10
 --- !u!1 &1062254313
 GameObject:
@@ -1149,11 +1147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b29061d9df34f808d4a373330a6544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 0}, m_TargetAssemblyTypeName: GameManager, Assembly-CSharp, m_MethodName: ComputerScores, m_Mode: 1, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
 --- !u!1 &1164127184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,7 +1294,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84e1420882d041938ab342a94a8b3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceType: 0
   bounceStrength: 5
 --- !u!1 &1380040131
 GameObject:
@@ -1492,7 +1484,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84e1420882d041938ab342a94a8b3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceType: 0
   bounceStrength: 10
 --- !u!1 &1485025487
 GameObject:
@@ -1919,8 +1910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09a06accfb712443dae93e767141588c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseSpeed: 5
-  maxSpeed: Infinity
+  speed: 200
 --- !u!1 &2051572369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2204,11 +2194,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b29061d9df34f808d4a373330a6544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 0}, m_TargetAssemblyTypeName: GameManager, Assembly-CSharp, m_MethodName: PlayerScores, m_Mode: 1, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

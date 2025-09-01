@@ -12,12 +12,12 @@ public class PlayerPaddle : Paddle
         }else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
             _direction = Vector2.down;
-        }
-        else
+        }else
         {
             _direction = Vector2.zero;
         }
     }
+
     private void FixedUpdate()
     {
         if (_direction.sqrMagnitude != 0)
