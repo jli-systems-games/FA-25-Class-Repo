@@ -10,4 +10,10 @@ public class Paddle:MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody2D>();
     }
+
+    public void ResetPosition()
+    {
+        _rigidbody.position = new Vector2(_rigidbody.position.x, 0.0f);
+        _rigidbody.linearVelocity = Vector2.zero;
+    }    
 }
