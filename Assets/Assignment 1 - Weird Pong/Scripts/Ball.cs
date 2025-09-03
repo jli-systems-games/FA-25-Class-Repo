@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour
     public float maxAngle = 0.5f;
     public float minAngle = 0.2f;
     public float speedMultiplier = 1.1f;
+    public float rotationSpeed = 50f;
     [Space(10)]
 
     //Ball Sprites
@@ -56,6 +57,8 @@ public class Ball : MonoBehaviour
                 ResetGame();
             }
         }
+
+        transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime); //Rotate Ball
     }
 
     void ResetGame()
@@ -99,9 +102,11 @@ public class Ball : MonoBehaviour
         //Ball randomly changes when it reaches the middle line
         if (collision.CompareTag("Middle Line"))
         {
-            int randomBall = Random.Range(0, 9);
+            int randomBall = Random.Range(0, 20);
 
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+
+            CircleCollider2D circleCollider = GetComponent<CircleCollider2D>();
 
             string ballName;
 
@@ -114,6 +119,8 @@ public class Ball : MonoBehaviour
                     ballSpeed = 3;
                     spriteRenderer.sprite = bowlSprite;
                     transform.localScale = Vector3.one * 0.044f;
+                    circleCollider.radius = 18.4f;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
@@ -124,56 +131,68 @@ public class Ball : MonoBehaviour
                     ballSpeed = 4;
                     spriteRenderer.sprite = beachSprite;
                     transform.localScale = Vector3.one * 0.08f;
+                    circleCollider.radius = 18.4f;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
-                else if (randomBall == 2) //Rugby Ball
+                else if (randomBall == 2 || randomBall == 3) //Rugby Ball
                 {
                     ballName = "Rugby";
 
                     ballSpeed = 5;
                     spriteRenderer.sprite = rugbySprite;
-                    transform.localScale = Vector3.one * 0.06f;
+                    transform.localScale = Vector3.one * 0.038f;
+                    circleCollider.radius = 27;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
-                else if (randomBall == 3) //Pool Ball
+                else if (randomBall == 4 || randomBall == 5) //Pool Ball
                 {
                     ballName = "Pool";
 
                     ballSpeed = 6;
                     spriteRenderer.sprite = poolSprite;
                     transform.localScale = Vector3.one * 0.0114f;
+                    circleCollider.radius = 18.4f;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
-                else if (randomBall == 4) //Basketball
+                else if (randomBall >= 6 && randomBall <= 8) //Basketball
                 {
                     ballName = "Basket";
 
                     ballSpeed = 7;
                     spriteRenderer.sprite = basketSprite;
                     transform.localScale = Vector3.one * 0.048f;
+                    circleCollider.radius = 18.4f;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
-                else if (randomBall == 5) //Shuttlecock
+                else if (randomBall >= 9 && randomBall <= 11) //Shuttlecock
                 {
                     ballName = "Shuttle";
 
                     ballSpeed = 9;
                     spriteRenderer.sprite = shuttleSprite;
-                    transform.localScale = Vector3.one * 0.012f;
+                    transform.localScale = Vector3.one * 0.018f;
+                    circleCollider.radius = 18.4f;
+                    circleCollider.offset = new Vector2(-2.65f, -1.2f);
 
                     hasChangedSprite = true;
                 }
-                else if (randomBall == 6) //Tennis Ball
+                else if (randomBall >= 12 && randomBall <= 14) //Tennis Ball
                 {
                     ballName = "Tennis";
 
                     ballSpeed = 10;
                     spriteRenderer.sprite = tennisSprite;
                     transform.localScale = Vector3.one * 0.0134f;
+                    circleCollider.radius = 19.82f;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
@@ -184,6 +203,8 @@ public class Ball : MonoBehaviour
                     ballSpeed = 12;
                     spriteRenderer.sprite = pingSprite;
                     transform.localScale = Vector3.one * 0.008f;
+                    circleCollider.radius = 18.4f;
+                    circleCollider.offset = new Vector2(0, 0);
 
                     hasChangedSprite = true;
                 }
