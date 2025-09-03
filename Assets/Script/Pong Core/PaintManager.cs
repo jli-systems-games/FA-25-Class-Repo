@@ -2,10 +2,12 @@ using UnityEngine;
 
 /// 把场地映射到 W×H 网格；沿球的轨迹盖“圆印”，并增量统计日/月占格数。
 [RequireComponent(typeof(Renderer))]
+
 public class PaintManager3D : MonoBehaviour
 {
+
     [Header("网格尺寸（建议 128×72 起步）")]
-    public int width = 128, height = 72;
+    public int width = 200, height = 200;
 
     [Header("世界范围（XZ）")]
     public Vector2 xRange = new(-9f, 9f);
