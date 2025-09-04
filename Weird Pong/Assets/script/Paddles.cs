@@ -26,7 +26,7 @@ public class Paddles : MonoBehaviour
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         
         Vector3 movement = new Vector3(0, moveInput.y, 0) * speed * Time.deltaTime;
@@ -45,7 +45,7 @@ public class Paddles : MonoBehaviour
         isSlowed = true;
 
         
-        speed = speed - 10f;
+        speed = speed - 4.5f;
 
       
         GameObject effect = null;
@@ -55,10 +55,10 @@ public class Paddles : MonoBehaviour
         }
 
         
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(6f);
 
         
-        speed = speed + 10f;
+        speed = speed + 4.5f;
 
         
         if (effect != null) Destroy(effect);

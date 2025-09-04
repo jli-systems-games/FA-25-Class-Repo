@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [Header("Ball")]
@@ -36,10 +37,23 @@ public class GameManager : MonoBehaviour
     }
     private void ResetPosition()
     {
+        if(ball.gameObject.activeInHierarchy)
         ball.GetComponent<ball>().Reset();
+        else if (ball2.gameObject.activeInHierarchy)
         ball2.GetComponent<ball>().Reset();
-        ball3.GetComponent<ball>().Reset();
-        ball4.GetComponent<ball>().Reset();
+        else if (ball3.gameObject.activeInHierarchy)
+            ball3.GetComponent<ball>().Reset();
+        else if (ball4.gameObject.activeInHierarchy)
+            ball4.GetComponent<ball>().Reset();
     }
-
+    public class RestartScene : MonoBehaviour
+    {
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+    }
 }
