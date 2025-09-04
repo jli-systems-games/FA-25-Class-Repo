@@ -1,0 +1,99 @@
+{
+    "version": 1,
+    "name": "PongActions",
+    "maps": [
+        {
+            "name": "GamePlay",
+            "id": "2a94d953-0938-447b-aa06-a17cf3005dda",
+            "actions": [
+                {
+                    "name": "LeftPaddleMove",
+                    "type": "Value",
+                    "id": "cff9b5bc-8b52-4b88-b653-0eda9a78d0c7",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightPaddleMove",
+                    "type": "Value",
+                    "id": "4fef0f0e-2560-4ec1-b0f4-0c2f056d6ce7",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "96c85e38-5604-4c5e-9cf8-ecb0099f255b",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightPaddleMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "4b259d96-32c8-475f-8efd-a87b037f5d2f",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightPaddleMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "7b1897a9-43d6-432c-b443-2a2ba93ed286",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightPaddleMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "0dac3b73-e163-4dad-b0b2-bf435552d9a7",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftPaddleMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "68284ede-fcc7-48b5-b6cf-90c943e5cfda",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftPaddleMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "a2136f30-d837-4f7b-a16f-7be01c735565",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftPaddleMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
