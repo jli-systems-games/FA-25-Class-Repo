@@ -1,0 +1,191 @@
+{
+    "version": 1,
+    "name": "PongInputAction",
+    "maps": [
+        {
+            "name": "P1",
+            "id": "37c61e9a-6658-4de6-b2f5-27250dee41ff",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "ab3b1503-171d-44eb-9b02-5c12b04ec26f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Charge",
+                    "type": "Button",
+                    "id": "f9e5df9c-dbc6-4936-9cd8-78c89528902b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9da22874-c21a-4da3-a8b9-ebc39bb3a133",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Charge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "dd5329a1-9c7c-4083-9364-f634d4e95ac5",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "940373f5-2049-42db-8967-6c0d8966512e",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "aa26cb70-0307-45a1-a26f-2ddd97d14620",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "8f914916-9d1a-45b6-8d75-2a4cc316ebbc",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "3ab2e475-1f91-4a2b-93a6-628d89383463",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "P2",
+            "id": "e6e133c4-965b-48b2-8cd5-137b82cc80f0",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "36bffe9c-48f4-438f-95b1-2060c6eb4609",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Charge",
+                    "type": "Button",
+                    "id": "23acfd71-6512-49be-8e18-37375255e82e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "92314b55-71c4-4fba-b43e-fbb64d63a371",
+                    "path": "<Keyboard>/rightShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Charge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "4c2cfec3-95b0-4bc6-8d30-a48307d8c986",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "64d5f87d-1cc2-4e09-af0e-2f852bf9a593",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "466bbb27-52ee-4747-9ac1-6ce301ea76d5",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "11e1f699-c46d-4d20-a20c-8ed15de60a8a",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "5f3c665b-9495-48a8-aa63-4ee13f8143d6",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
