@@ -25,7 +25,7 @@ public class PaddleControl : MonoBehaviour
             paddlePos.y = 0;
             transform.position = paddlePos;
         }
-        else 
+        else if (!ball.startCanvas.gameObject.activeSelf)
         {
             //Move according to input action controls
             paddlePos.y += moveInput.y * paddleSpeed * Time.deltaTime;

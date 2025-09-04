@@ -1,5 +1,7 @@
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Ball : MonoBehaviour
 {
@@ -8,7 +10,6 @@ public class Ball : MonoBehaviour
     public float ballSpeed = 10f;
     public float maxAngle = 0.5f;
     public float minAngle = 0.2f;
-    public float speedMultiplier = 1.1f;
     public float rotationSpeed = 50f;
     [Space(10)]
 
@@ -25,6 +26,18 @@ public class Ball : MonoBehaviour
     private bool hasChangedSprite = false;
     [Space(10)]
 
+    //Audio
+    public AudioClip pingAudio;
+    public AudioClip tennisAudio;
+    public AudioClip basketAudio;
+    public AudioClip bowlAudio;
+    public AudioClip rugbyAudio;
+    public AudioClip shuttleAudio;
+    public AudioClip beachAudio;
+    public AudioClip poolAudio;
+    private AudioClip ballAudio;
+    [Space(10)]
+
     //Score
     public TextMeshProUGUI leftScoreText;
     public TextMeshProUGUI rightScoreText;
@@ -34,19 +47,23 @@ public class Ball : MonoBehaviour
     private int rightScore = 0;
     private bool rightWon = false;
     private bool leftWon = false;
+    private bool isInPlay = false;
     [Space(10)]
 
     //Game Over
     public Canvas gameOverLeftCanvas;
     public Canvas gameOverRightCanvas;
     public bool hasGameOver = false;
+    [Space(10)]
+
+    public Canvas scoreCanvas;
+    public Canvas startCanvas;
 
     void Start()
     {
         gameOverLeftCanvas.gameObject.SetActive(false);
         gameOverRightCanvas.gameObject.SetActive(false);
-
-        InitialBallMovement();
+        scoreCanvas.gameObject.SetActive(false);
     }
 
     void Update()
@@ -55,6 +72,16 @@ public class Ball : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space)) {
                 ResetGame();
+            }
+        }
+
+        if(startCanvas)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                startCanvas.gameObject.SetActive(false);
+                scoreCanvas.gameObject.SetActive(true);
+                InitialBallMovement();
             }
         }
 
@@ -107,20 +134,23 @@ public class Ball : MonoBehaviour
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
 
             CircleCollider2D circleCollider = GetComponent<CircleCollider2D>();
+            CapsuleCollider2D capsuleCollider = GetComponent<CapsuleCollider2D>();
 
             string ballName;
 
-            if (!hasChangedSprite) //Make sure ball doesn't change numerous times when it's on the middle line for serveal frames
+            if (!hasChangedSprite && isInPlay) //Make sure ball doesn't change numerous times when it's on the middle line for serveal frames
             {
                 if (randomBall == 0) //Bowling Ball
                 {
                     ballName = "Bowling";
 
-                    ballSpeed = 3;
+                    ballSpeed = 4;
                     spriteRenderer.sprite = bowlSprite;
                     transform.localScale = Vector3.one * 0.044f;
+                    circleCollider.enabled = true;
+                    capsuleCollider.enabled = false;
                     circleCollider.radius = 18.4f;
-                    circleCollider.offset = new Vector2(0, 0);
+                    ballAudio = bowlAudio;
 
                     hasChangedSprite = true;
                 }
@@ -128,11 +158,13 @@ public class Ball : MonoBehaviour
                 {
                     ballName = "Beach";
 
-                    ballSpeed = 4;
+                    ballSpeed = 5;
                     spriteRenderer.sprite = beachSprite;
                     transform.localScale = Vector3.one * 0.08f;
+                    circleCollider.enabled = true;
+                    capsuleCollider.enabled = false;
                     circleCollider.radius = 18.4f;
-                    circleCollider.offset = new Vector2(0, 0);
+                    ballAudio = beachAudio;
 
                     hasChangedSprite = true;
                 }
@@ -140,11 +172,13 @@ public class Ball : MonoBehaviour
                 {
                     ballName = "Rugby";
 
-                    ballSpeed = 5;
+                    ballSpeed = 6;
                     spriteRenderer.sprite = rugbySprite;
                     transform.localScale = Vector3.one * 0.038f;
-                    circleCollider.radius = 27;
-                    circleCollider.offset = new Vector2(0, 0);
+                    circleCollider.enabled = false;
+                    capsuleCollider.enabled = true;
+                    capsuleCollider.size = new Vector2(66.7f, 35.4f);
+                    ballAudio = rugbyAudio;
 
                     hasChangedSprite = true;
                 }
@@ -152,11 +186,13 @@ public class Ball : MonoBehaviour
                 {
                     ballName = "Pool";
 
-                    ballSpeed = 6;
+                    ballSpeed = 7;
                     spriteRenderer.sprite = poolSprite;
                     transform.localScale = Vector3.one * 0.0114f;
+                    circleCollider.enabled = true;
+                    capsuleCollider.enabled = false;
                     circleCollider.radius = 18.4f;
-                    circleCollider.offset = new Vector2(0, 0);
+                    ballAudio = poolAudio;
 
                     hasChangedSprite = true;
                 }
@@ -164,11 +200,13 @@ public class Ball : MonoBehaviour
                 {
                     ballName = "Basket";
 
-                    ballSpeed = 7;
+                    ballSpeed = 8;
                     spriteRenderer.sprite = basketSprite;
                     transform.localScale = Vector3.one * 0.048f;
+                    circleCollider.enabled = true;
+                    capsuleCollider.enabled = false;
                     circleCollider.radius = 18.4f;
-                    circleCollider.offset = new Vector2(0, 0);
+                    ballAudio = basketAudio;
 
                     hasChangedSprite = true;
                 }
@@ -176,11 +214,13 @@ public class Ball : MonoBehaviour
                 {
                     ballName = "Shuttle";
 
-                    ballSpeed = 9;
+                    ballSpeed = 10;
                     spriteRenderer.sprite = shuttleSprite;
                     transform.localScale = Vector3.one * 0.018f;
-                    circleCollider.radius = 18.4f;
-                    circleCollider.offset = new Vector2(-2.65f, -1.2f);
+                    circleCollider.enabled = false;
+                    capsuleCollider.enabled = true;
+                    capsuleCollider.size = new Vector2(43.7f, 35.4f);
+                    ballAudio = shuttleAudio;
 
                     hasChangedSprite = true;
                 }
@@ -188,11 +228,13 @@ public class Ball : MonoBehaviour
                 {
                     ballName = "Tennis";
 
-                    ballSpeed = 10;
+                    ballSpeed = 11;
                     spriteRenderer.sprite = tennisSprite;
                     transform.localScale = Vector3.one * 0.0134f;
+                    circleCollider.enabled = true;
+                    capsuleCollider.enabled = false;
                     circleCollider.radius = 19.82f;
-                    circleCollider.offset = new Vector2(0, 0);
+                    ballAudio = tennisAudio;
 
                     hasChangedSprite = true;
                 }
@@ -203,8 +245,10 @@ public class Ball : MonoBehaviour
                     ballSpeed = 12;
                     spriteRenderer.sprite = pingSprite;
                     transform.localScale = Vector3.one * 0.008f;
+                    circleCollider.enabled = true;
+                    capsuleCollider.enabled = false;
                     circleCollider.radius = 18.4f;
-                    circleCollider.offset = new Vector2(0, 0);
+                    ballAudio = pingAudio;
 
                     hasChangedSprite = true;
                 }
@@ -219,20 +263,21 @@ public class Ball : MonoBehaviour
         if (collision.CompareTag("Exit Boundary"))
         {
             hasChangedSprite = false;
+            isInPlay = true;
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Ball speed increases everytime it hits the paddle
-        if (collision.gameObject.CompareTag("Paddle"))
-        {
-            ballrb.linearVelocity *= speedMultiplier;
-        }
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.clip = ballAudio;
+        audioSource.Play();
     }
 
     void CheckScores()
     {
+        isInPlay = false;
+
         if (leftScore == winningPoint)
         {
             hasGameOver = true;
@@ -265,6 +310,8 @@ public class Ball : MonoBehaviour
 
     void StartLeft()
     {
+        isInPlay = true;
+
         Vector2 ballDirection = Vector2.left;
 
         int randomHeight = Random.Range(0, 2);
@@ -302,6 +349,8 @@ public class Ball : MonoBehaviour
 
     void InitialBallMovement()
     {
+        ballAudio = pingAudio;
+
         transform.position = new Vector2(0, 0);
 
         int randomStart = Random.Range(0, 2);
