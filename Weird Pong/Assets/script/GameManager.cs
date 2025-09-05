@@ -46,14 +46,13 @@ public class GameManager : MonoBehaviour
         else if (ball4.gameObject.activeInHierarchy)
             ball4.GetComponent<ball>().Reset();
     }
-    public class RestartScene : MonoBehaviour
+  
+    void Update()
     {
-        void Update()
-        {
             if (Input.GetKeyDown(KeyCode.R))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
-        }
     }
+    
 }
