@@ -494,7 +494,7 @@ Transform:
   m_GameObject: {fileID: 3069898108802630996}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: -6.46, y: 0.128, z: -1.484}
+  m_LocalPosition: {x: -6.723, y: 0.128, z: -1.715}
   m_LocalScale: {x: 17.664, y: 17.664, z: 17.664}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -559,7 +559,7 @@ GameObject:
   - component: {fileID: 8847696633021008872}
   m_Layer: 0
   m_Name: Long_Nail
-  m_TagString: Untagged
+  m_TagString: Long Nail
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -578,7 +578,7 @@ GameObject:
   - component: {fileID: 8251270276835962626}
   m_Layer: 0
   m_Name: Short_Nail
-  m_TagString: Untagged
+  m_TagString: Short Nail
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -720,7 +720,7 @@ Transform:
   m_GameObject: {fileID: 4495085589079627175}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: -6.641, y: 0.093, z: -1.606}
+  m_LocalPosition: {x: -6.904, y: 0.093, z: -1.837}
   m_LocalScale: {x: 17.664, y: 17.664, z: 17.664}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -741,12 +741,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.004, y: 0.004, z: 0.0061000017}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.004, y: 0.004, z: 0.016260972}
+  m_Center: {x: 0, y: -2.9424753e-17, z: -0.005080482}
 --- !u!33 &8847696633021008871
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -770,7 +770,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -784,13 +784,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6283961480555782032}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70120895, y: -0.70120883, z: 0.09113792, w: -0.09113785}
+  m_LocalRotation: {x: -0.70682085, y: -0.6781962, z: -0.020107513, w: -0.200125}
   m_LocalPosition: {x: -6.439, y: 0.3064, z: -1.676}
   m_LocalScale: {x: 17.664, y: 17.664, z: 17.664}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 14.811, y: -180, z: 90}
+  m_LocalEulerAnglesHint: {x: 14.811, y: -198.07, z: 90}
 --- !u!114 &8893138768871059627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,6 +803,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb69ce1bb9853ad4b8695713a477d106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseClicked: 0
+  nailDownAmount: 0.05
 --- !u!65 &8893138768871059628
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -847,10 +849,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!95 &8893138768871059630
 Animator:
   serializedVersion: 7
