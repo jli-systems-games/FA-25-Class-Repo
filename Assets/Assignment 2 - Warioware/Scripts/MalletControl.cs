@@ -9,6 +9,7 @@ public class MalletControl : MonoBehaviour
     public float nailDownAmount = 0.05f;
     private float nailFinalPosition = -0.031f;
 
+
     void Start()
     {
         malletAnimator = GetComponent<Animator>();
@@ -25,6 +26,7 @@ public class MalletControl : MonoBehaviour
             malletAnimator.SetTrigger("HitTrigger");
             mouseClicked = true;
         }
+
     }
 
     private void OnTriggerStay(Collider other)
@@ -34,7 +36,7 @@ public class MalletControl : MonoBehaviour
             //Make nails go down when mallet hits it
             Vector3 newPos = other.transform.position;
             newPos.y -= nailDownAmount;
-            newPos.y = Mathf.Max(newPos.y, nailFinalPosition);
+            newPos.y = Mathf.Max(newPos.y, nailFinalPosition); //Clamp so that the nail ends up at the final position and not go more down
 
             other.transform.position = newPos;
 
