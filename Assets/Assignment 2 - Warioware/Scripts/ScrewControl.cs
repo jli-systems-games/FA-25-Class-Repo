@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ScrewMouse : MonoBehaviour
+public class ScrewControl : MonoBehaviour
 {
     public float screwPositionAmount = 0.03f;
     public float screwRotationAmount = 360f;
