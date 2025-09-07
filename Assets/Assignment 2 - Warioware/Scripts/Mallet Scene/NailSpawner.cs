@@ -6,6 +6,7 @@ public class NailSpawner : MonoBehaviour
     public int nailCount = 10;
     public float minRadius = 0.1f;
     public LayerMask nailLayer;
+    private GameObject[] spawnedNails;
     [Space(10)]
 
     //Spawn Area Bounds
@@ -15,9 +16,13 @@ public class NailSpawner : MonoBehaviour
     public float spawnAreaYMin = 0.056f;
     public float spawnAreaZMax = -1.57f;
     public float spawnAreaZMin = -1.97f;
+    [Space(10)]
+
+    public GameManager gameManager;
 
     void Start()
     {
+        spawnedNails = new GameObject[nailCount];
         SpawnNails();
     }
 
@@ -38,9 +43,33 @@ public class NailSpawner : MonoBehaviour
                 GameObject newNail = Instantiate(nailPrefab, randomPos, Quaternion.Euler(90f, 0f, 0f), transform);
                 newNail.transform.localScale = Vector3.one * 17.664f;
                 newNail.layer = LayerMask.NameToLayer("Nail");
+
+                spawnedNails[spawned] = newNail;
                 spawned++;
             }
         }
         //Got code to check overlapping objects from https://www.youtube.com/watch?v=ENEtzLePZbQ&ab_channel=Rabidgremlin
+    }
+
+    private void Update()
+    {
+        if (AreAllNailsDown())
+        {
+            Debug.Log("All nails are down.");
+            gameManager.LoadRandomGame();
+        }
+    }
+
+    public bool AreAllNailsDown()
+    {
+        foreach (GameObject nail in spawnedNails)
+        {
+            if (nail.transform.position.y > -0.03f)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

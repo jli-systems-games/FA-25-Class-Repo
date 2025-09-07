@@ -13,6 +13,8 @@ public class ScrewControl : MonoBehaviour
     private bool fourthStepComplete = false;
     private bool hasCompletedCircle = false;
 
+    public GameManager gameManager;
+
     void Update()
     {
         Vector3 mousePos = Input.mousePosition;
@@ -80,6 +82,7 @@ public class ScrewControl : MonoBehaviour
             {
                 screwComplete = true;
                 Debug.Log("Screw complete");
+                gameManager.LoadRandomGame();
             }
             else
             {

@@ -9,14 +9,27 @@ public class GridPlacementSystem : MonoBehaviour
     private GridInputManager gridInputManager;
     [SerializeField]
     private Grid grid;
+    public float paintMode;
 
     [SerializeField]
     private GameObject paintCellPrefab;
     private Dictionary<Vector3Int, GameObject> paintedCells = new Dictionary<Vector3Int, GameObject>();
 
+    private bool isFullMode = false;
+    private bool isVerticalMode = false;
+    private bool isHorizontalMode = false;
+    private bool isCheckerMode = false;
+
+    public GameManager gameManager;
+
     private void Update()
     {
-        Vector3 mousePosition = gridInputManager.GetSelectedMapPosition();
+        if (paintMode == 0) isFullMode = true;
+        else if (paintMode == 1) isVerticalMode = true;
+        else if (paintMode == 2) isHorizontalMode = true;
+        else if (paintMode == 3) isCheckerMode = true;
+
+            Vector3 mousePosition = gridInputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
         mouseIndicator.transform.position = mousePosition;
         cellIndicator.transform.position = grid.CellToWorld(gridPosition);
@@ -32,24 +45,46 @@ public class GridPlacementSystem : MonoBehaviour
 
                 paintedCells.Add(gridPosition, newPaintedCell);
 
-                if (paintedCells.Count == 100)
+
+                if (isFullMode)
                 {
-                    Debug.Log("Painting Complete!");
+                    if (paintedCells.Count == 100)
+                    {
+                        Debug.Log("Painting Complete!");
+                        CompletePattern();
+                    }
                 }
-                else if (paintedCells.Count == 50 && IsCheckerPattern())
+                else if (isVerticalMode)
                 {
-                    Debug.Log("Checkerboard Complete!");
+                    if (paintedCells.Count == 50 && IsVerticalStripes())
+                    {
+                        Debug.Log("Vertical Stripes Complete!");
+                        CompletePattern();
+                    }
                 }
-                else if (paintedCells.Count == 50 && IsVerticalStripes())
+                else if (isHorizontalMode)
                 {
-                    Debug.Log("Vertical Stripes Complete!");
+                    if (paintedCells.Count == 50 && IsHorizontalStripes())
+                    {
+                        Debug.Log("Horizontal Stripes Complete!");
+                        CompletePattern();
+                    }
                 }
-                else if (paintedCells.Count == 50 && IsHorizontalStripes())
+                else if (isCheckerMode)
                 {
-                    Debug.Log("Horizontal Stripes Complete!");
+                    if (paintedCells.Count == 50 && IsCheckerPattern())
+                    {
+                        Debug.Log("Checkerboard Complete!");
+                        CompletePattern();
+                    }
                 }
             }
         }
+    }
+
+    private void CompletePattern()
+    {
+        gameManager.LoadRandomGame();
     }
 
     private bool IsCheckerPattern()

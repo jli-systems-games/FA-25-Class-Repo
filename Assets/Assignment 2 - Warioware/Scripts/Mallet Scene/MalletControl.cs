@@ -9,7 +9,6 @@ public class MalletControl : MonoBehaviour
     public float nailDownAmount = 0.05f;
     private float nailFinalPosition = -0.031f;
 
-
     void Start()
     {
         malletAnimator = GetComponent<Animator>();
