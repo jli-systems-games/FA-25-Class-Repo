@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NailSpawner : MonoBehaviour
 {
@@ -56,7 +59,8 @@ public class NailSpawner : MonoBehaviour
         if (AreAllNailsDown())
         {
             Debug.Log("All nails are down.");
-            gameManager.LoadRandomGame();
+
+            StartCoroutine(CompletionDelay(2f));
         }
     }
 
@@ -71,5 +75,12 @@ public class NailSpawner : MonoBehaviour
         }
 
         return true;
+    }
+
+    private IEnumerator CompletionDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        gameManager.LoadRandomGame();
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GridPlacementSystem : MonoBehaviour
 {
@@ -40,13 +42,10 @@ public class GridPlacementSystem : MonoBehaviour
         grid10.SetActive(false);
         grid4.SetActive(false);
 
-        //paintMode = Random.Range(0, 4);
-        //paintLevel = Random.Range(0, 2);
+        paintMode = Data.globalPaintMode;
+        paintLevel = Data.globalPaintLevel;
 
-        paintMode = gameManager.paintMode;
-        paintLevel = gameManager.paintLevel;
-
-        Debug.Log(paintMode);
+        Debug.Log("Paint mode in grid script" + paintMode);
 
         if (paintMode == 0) isFullMode = true;
         else if (paintMode == 1) isVerticalMode = true;
@@ -171,19 +170,6 @@ public class GridPlacementSystem : MonoBehaviour
         }
     }
 
-    private void CompletePattern()
-    {
-        isFullMode = false;
-        isVerticalMode = false;
-        isHorizontalMode = false;
-        isCheckerMode = false;
-        isEasyLevel = false;
-        isHardLevel = false;
-
-        gameManager.LoadRandomGame();
-        Debug.Log("Pattern complete!");
-    }
-
     private bool IsCheckerPattern()
     {
         //Get the parity of the first cell painted
@@ -237,5 +223,26 @@ public class GridPlacementSystem : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void CompletePattern()
+    {
+        isFullMode = false;
+        isVerticalMode = false;
+        isHorizontalMode = false;
+        isCheckerMode = false;
+        isEasyLevel = false;
+        isHardLevel = false;
+
+        Debug.Log("Pattern complete!");
+
+        StartCoroutine(CompletionDelay(2f));
+    }
+
+    private IEnumerator CompletionDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        gameManager.LoadRandomGame();
     }
 }

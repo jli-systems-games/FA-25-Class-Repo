@@ -13,12 +13,17 @@ public class GameManager : MonoBehaviour
 
     public Canvas TimeOverCanvas;
     public Canvas InstructionCanvas;
+    public Canvas GameOverCanvas;
     [Space(10)]
 
     public TextMeshProUGUI instructionsText;
     [Space(10)]
 
     public GameObject healthParent;
+    public int currentHealth;
+    [Space(10)]
+
+    public bool hasGameOver = false;
 
     private int randomIndex;
     private bool hasLoadedScene;
@@ -33,6 +38,40 @@ public class GameManager : MonoBehaviour
 
         TimeOverCanvas.gameObject.SetActive(false);
         InstructionCanvas.gameObject.SetActive(false);
+        GameOverCanvas.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (hasGameOver)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                //Restart game
+            }
+        }
+
+        Debug.Log("Child 0: " + healthParent.transform.GetChild(0).name);
+        Debug.Log("Child 1: " + healthParent.transform.GetChild(1).name);
+        Debug.Log("Child 2: " + healthParent.transform.GetChild(2).name);
+
+        //Remove health sprites when health decreases
+        if (currentHealth == 2)
+        {
+            healthParent.transform.GetChild(0).GetComponent<Image>().enabled = false;
+        }
+        else if (currentHealth == 1)
+        {
+            healthParent.transform.GetChild(0).GetComponent<Image>().enabled = false;
+        }
+        else if (Data.globalHealthAmount == 0)
+        {
+            healthParent.transform.GetChild(0).GetComponent<Image>().enabled = false;
+            GameOverCanvas.gameObject.SetActive(true);
+            hasGameOver = true;
+        }
+
+        Debug.Log("Current health = " + Data.globalHealthAmount);
     }
 
     public void LoadRandomGame()
@@ -45,6 +84,9 @@ public class GameManager : MonoBehaviour
         paintMode = Random.Range(0, 4);
         paintLevel = Random.Range(0, 1);
 
+        Data.globalPaintMode = paintMode;
+        Data.globalPaintLevel = paintLevel;
+
         Debug.Log("Paint Mode set to: " + paintMode);
         
 
@@ -52,6 +94,8 @@ public class GameManager : MonoBehaviour
         {
             hasLoadedScene = true;
             TimeOverCanvas.gameObject.SetActive(true);
+
+            LoseHealth();
 
             StartCoroutine(DelayAfterTimeOver(2f));
         }
@@ -71,6 +115,12 @@ public class GameManager : MonoBehaviour
         TimeOverCanvas.gameObject.SetActive(false);
 
         ShowInstructions();
+    }
+
+    private void LoseHealth()
+    {
+        currentHealth = Data.globalHealthAmount - 1;
+        Data.globalHealthAmount = currentHealth;
     }
 
     private void ShowInstructions()

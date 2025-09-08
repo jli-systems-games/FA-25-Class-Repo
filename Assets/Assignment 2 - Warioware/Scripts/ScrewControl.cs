@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScrewControl : MonoBehaviour
 {
@@ -80,7 +83,8 @@ public class ScrewControl : MonoBehaviour
             if (newPos.z == screwFinalPosition)
             {
                 Debug.Log("Screw complete");
-                gameManager.LoadRandomGame();
+
+                StartCoroutine(CompletionDelay(2f));
             }
             else
             {
@@ -89,5 +93,12 @@ public class ScrewControl : MonoBehaviour
 
             hasCompletedCircle = false;
         }
+    }
+
+    private IEnumerator CompletionDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        gameManager.LoadRandomGame();
     }
 }
