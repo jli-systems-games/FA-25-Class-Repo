@@ -53,8 +53,8 @@ public class GridPlacementSystem : MonoBehaviour
         else if (paintMode == 2) isHorizontalMode = true;
         else if (paintMode == 3) isCheckerMode = true;
 
-        if (paintLevel == 1) isEasyLevel = true;
-        else if (paintLevel == 0) isHardLevel = true;
+        if (paintLevel == 0) isEasyLevel = true;
+        else if (paintLevel == 1) isHardLevel = true;
 
         if (isEasyLevel)
         {
