@@ -8,6 +8,7 @@ public class Timer : MonoBehaviour
     private float timeRemaining;
 
     public bool isTimeOver;
+    public bool isTimerRunning = true;
 
     public GameManager gameManager;
 
@@ -21,6 +22,8 @@ public class Timer : MonoBehaviour
 
     void Update()
     {
+        if (!isTimerRunning) return; //Stop time when player completed game
+
         if (timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;

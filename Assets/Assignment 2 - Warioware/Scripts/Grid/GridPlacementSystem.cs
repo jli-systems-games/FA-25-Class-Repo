@@ -13,8 +13,8 @@ public class GridPlacementSystem : MonoBehaviour
     public GameObject grid10;
     public GameObject grid4;
 
-    public float paintMode;
-    public float paintLevel;
+    public int paintMode;
+    public int paintLevel;
 
     [SerializeField]
     private GameObject paintCellPrefab;
@@ -43,13 +43,18 @@ public class GridPlacementSystem : MonoBehaviour
         //paintMode = Random.Range(0, 4);
         //paintLevel = Random.Range(0, 2);
 
+        paintMode = gameManager.paintMode;
+        paintLevel = gameManager.paintLevel;
+
+        Debug.Log(paintMode);
+
         if (paintMode == 0) isFullMode = true;
         else if (paintMode == 1) isVerticalMode = true;
         else if (paintMode == 2) isHorizontalMode = true;
         else if (paintMode == 3) isCheckerMode = true;
 
-        if (paintLevel == 0) isEasyLevel = true;
-        else if (paintLevel == 1) isHardLevel = true;
+        if (paintLevel == 1) isEasyLevel = true;
+        else if (paintLevel == 0) isHardLevel = true;
 
         if (isEasyLevel)
         {
@@ -82,6 +87,8 @@ public class GridPlacementSystem : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
+            Debug.Log("Painted cells count: " + paintedCells.Count);
+
             if (!paintedCells.ContainsKey(gridPosition))
             {
                 Vector3 worldPosition = grid.CellToWorld(gridPosition);
@@ -94,7 +101,7 @@ public class GridPlacementSystem : MonoBehaviour
                 {
                     if (isFullMode)
                     {
-                        if (paintedCells.Count == 24)
+                        if (paintedCells.Count == 16)
                         {
                             Debug.Log("Painting Complete!");
                             CompletePattern();
@@ -174,6 +181,7 @@ public class GridPlacementSystem : MonoBehaviour
         isHardLevel = false;
 
         gameManager.LoadRandomGame();
+        Debug.Log("Pattern complete!");
     }
 
     private bool IsCheckerPattern()

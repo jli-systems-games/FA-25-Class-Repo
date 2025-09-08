@@ -6,7 +6,6 @@ public class ScrewControl : MonoBehaviour
     public float screwRotationAmount = 360f;
     public float screwFinalPosition = -1.351f;
     
-    private bool screwComplete = false;
     private bool firstStepComplete = false;
     private bool secondStepComplete = false;
     private bool thirdStepComplete = false;
@@ -80,7 +79,6 @@ public class ScrewControl : MonoBehaviour
 
             if (newPos.z == screwFinalPosition)
             {
-                screwComplete = true;
                 Debug.Log("Screw complete");
                 gameManager.LoadRandomGame();
             }
