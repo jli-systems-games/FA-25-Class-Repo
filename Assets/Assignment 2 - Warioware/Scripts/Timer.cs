@@ -28,7 +28,7 @@ public class Timer : MonoBehaviour
 
         if (timeRemaining > maxTime * 2 / 3)
         {
-            timerImage.color = new Color(186, 255, 95);
+            timerImage.color = Color.green;
         }
         else if (timeRemaining > maxTime * 1 / 3)
         {

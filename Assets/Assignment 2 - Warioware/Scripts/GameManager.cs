@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
         if (gridPlacementSystem != null)
         {
             gridPlacementSystem.paintMode = Random.Range(0, 4);
+            gridPlacementSystem.paintLevel = Random.Range(0, 2);
         }
 
         SceneManager.LoadScene(gameSceneNames[randomIndex]);
