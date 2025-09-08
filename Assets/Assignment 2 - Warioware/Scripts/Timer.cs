@@ -7,8 +7,14 @@ public class Timer : MonoBehaviour
     private Image timerImage;
     private float timeRemaining;
 
+    public bool isTimeOver;
+
+    public GameManager gameManager;
+
     void Start()
     {
+        isTimeOver = false; 
+
         timeRemaining = maxTime;
         timerImage = GetComponent<Image>();
     }
@@ -24,6 +30,9 @@ public class Timer : MonoBehaviour
         else
         {
             Debug.Log("Time ended");
+            isTimeOver = true;
+
+            gameManager.LoadRandomGame();
         }
 
         if (timeRemaining > maxTime * 2 / 3)

@@ -105,9 +105,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5306051273577231506}
-  - {fileID: 2060637771693924152}
   - {fileID: 1093313861325058722}
   - {fileID: 6371698412394265456}
+  - {fileID: 2060637771693924152}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2117795532849768482
@@ -158,6 +158,9 @@ MonoBehaviour:
   - Mallet Scene
   - Screwdrive Scene
   gridPlacementSystem: {fileID: 0}
+  timer: {fileID: 8853380989615796835}
+  TimeOverCanvas: {fileID: 7392255190858571145}
+  InstructionCanvas: {fileID: 1491690752030214434}
 --- !u!1 &4331008809332880457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,6 +1158,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxTime: 3
+  isTimeOver: 0
+  gameManager: {fileID: 4228553052427490199}
 --- !u!1 &8646141711321277809
 GameObject:
   m_ObjectHideFlags: 0
