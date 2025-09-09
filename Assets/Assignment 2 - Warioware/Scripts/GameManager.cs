@@ -51,27 +51,26 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Child 0: " + healthParent.transform.GetChild(0).name);
-        Debug.Log("Child 1: " + healthParent.transform.GetChild(1).name);
-        Debug.Log("Child 2: " + healthParent.transform.GetChild(2).name);
+        currentHealth = Data.globalHealthAmount;
 
         //Remove health sprites when health decreases
-        if (currentHealth == 2)
+        for (int i = 0; i < healthParent.transform.childCount; i++)
         {
-            healthParent.transform.GetChild(0).GetComponent<Image>().enabled = false;
+            if (i >= currentHealth)
+            {
+                healthParent.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else
+            {
+                healthParent.transform.GetChild(i).gameObject.SetActive(true);
+            }
         }
-        else if (currentHealth == 1)
+        
+        if (currentHealth <= 0 && !hasGameOver)
         {
-            healthParent.transform.GetChild(0).GetComponent<Image>().enabled = false;
-        }
-        else if (Data.globalHealthAmount == 0)
-        {
-            healthParent.transform.GetChild(0).GetComponent<Image>().enabled = false;
             GameOverCanvas.gameObject.SetActive(true);
             hasGameOver = true;
         }
-
-        Debug.Log("Current health = " + Data.globalHealthAmount);
     }
 
     public void LoadRandomGame()
