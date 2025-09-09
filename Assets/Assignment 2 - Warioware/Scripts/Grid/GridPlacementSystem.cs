@@ -15,8 +15,8 @@ public class GridPlacementSystem : MonoBehaviour
     public GameObject grid10;
     public GameObject grid4;
 
-    public int paintMode;
-    public int paintLevel;
+    private int paintMode;
+    private int paintLevel;
 
     [SerializeField]
     private GameObject paintCellPrefab;
@@ -34,6 +34,8 @@ public class GridPlacementSystem : MonoBehaviour
     private Vector3 hardModeScale = new Vector3(1, 1, 1);
     private Vector3 easyModePosition = new Vector3(1f, 1f, -0.05f);
     private Vector3 hardModePosition = new Vector3(0.5f, 0.5f, -0.05f);
+
+    public Timer timer;
 
     public GameManager gameManager;
 
@@ -235,7 +237,7 @@ public class GridPlacementSystem : MonoBehaviour
         isHardLevel = false;
 
         Debug.Log("Pattern complete!");
-
+        timer.isTimerRunning = false;
         StartCoroutine(CompletionDelay(2f));
     }
 

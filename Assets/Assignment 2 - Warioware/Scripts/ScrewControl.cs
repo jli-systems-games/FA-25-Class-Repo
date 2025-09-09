@@ -16,6 +16,7 @@ public class ScrewControl : MonoBehaviour
     private bool hasCompletedCircle = false;
 
     public GameManager gameManager;
+    public Timer timer;
 
     void Update()
     {
@@ -83,7 +84,7 @@ public class ScrewControl : MonoBehaviour
             if (newPos.z == screwFinalPosition)
             {
                 Debug.Log("Screw complete");
-
+                timer.isTimerRunning = false;
                 StartCoroutine(CompletionDelay(2f));
             }
             else

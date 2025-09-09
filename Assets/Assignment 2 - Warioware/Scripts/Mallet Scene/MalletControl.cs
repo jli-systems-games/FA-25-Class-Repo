@@ -13,6 +13,7 @@ public class MalletControl : MonoBehaviour
     {
         malletAnimator = GetComponent<Animator>();
     }
+
     void Update()
     {
         //Make the mallet move according to mouse position

@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     public int paintMode;
     public int paintLevel;
 
+    public int malletMode;
+
     private void Start()
     {
         hasLoadedScene = false;
@@ -80,14 +82,19 @@ public class GameManager : MonoBehaviour
         randomIndex = Random.Range(0, gameSceneNames.Length);
         nextScene = gameSceneNames[randomIndex];
 
+        //Set paint mode and level
         paintMode = Random.Range(0, 4);
         paintLevel = Random.Range(0, 1);
 
         Data.globalPaintMode = paintMode;
         Data.globalPaintLevel = paintLevel;
 
-        Debug.Log("Paint Mode set to: " + paintMode);
-        
+        //Set mallet mode and level
+        malletMode = Random.Range(0, 2);
+
+        Debug.Log("Mallet mode set in GameManager to: " + malletMode);
+
+        Data.globalMalletMode = malletMode;
 
         if (timer.isTimeOver)
         {
@@ -101,7 +108,6 @@ public class GameManager : MonoBehaviour
         else
         {
             hasLoadedScene = true;
-            timer.isTimerRunning = false;
 
             ShowInstructions();
         }
@@ -127,7 +133,14 @@ public class GameManager : MonoBehaviour
         if (nextScene == "Mallet Scene")
         {
             Debug.Log(nextScene);
-            instructionsText.text = ("Hit all the nails down!");
+            if (malletMode == 0)
+            {
+                instructionsText.text = ("Hit all the nails down!");
+            }
+            else if (malletMode == 1)
+            {
+                instructionsText.text = ("Hit all the red nails down!");
+            }
         }
         else if (nextScene == "Screw Scene")
         {
