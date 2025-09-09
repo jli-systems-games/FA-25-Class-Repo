@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class ScrewControl : MonoBehaviour
 {
+    public GameObject circleScrew;
+    public GameObject squareScrew;
+
     public float screwPositionAmount = 0.03f;
     public float screwRotationAmount = 360f;
     public float screwFinalPosition = -1.351f;
@@ -17,69 +20,218 @@ public class ScrewControl : MonoBehaviour
 
     public GameManager gameManager;
     public Timer timer;
+    [Space(10)]
+
+    private int screwMode;
+
+    private bool isClockwiseMode = false;
+    private bool isAntiClockwiseMode = false;
+    private bool isSquareClockwiseMode = false;
+
+    private GameObject selectedScrew;
+
+    private void Start()
+    {
+        //screwMode = Data.globalScrewMode;
+
+        screwMode = 2;
+
+        if (screwMode == 0)
+        {
+            isClockwiseMode = true;
+            circleScrew.SetActive(true);
+            squareScrew.SetActive(false);
+            selectedScrew = circleScrew;
+        }
+        else if (screwMode == 1)
+        {
+            isAntiClockwiseMode = true;
+            circleScrew.SetActive(true);
+            squareScrew.SetActive(false);
+            selectedScrew = circleScrew;
+        }
+        else if (screwMode == 2)
+        {
+            isSquareClockwiseMode = true;
+            circleScrew.SetActive(false);
+            squareScrew.SetActive(true);
+            selectedScrew = squareScrew;
+        }
+    }
 
     void Update()
     {
         Vector3 mousePos = Input.mousePosition;
 
-        if (mousePos.y > Screen.height * 3 / 4f && mousePos.x > Screen.width / 3f && mousePos.x < Screen.width * 2f / 3f)
+        if (isClockwiseMode)
         {
-            firstStepComplete = true;
-            secondStepComplete = false;
-            thirdStepComplete = false;
-            Debug.Log("First step complete");
-
-            if (fourthStepComplete)
+            if (mousePos.y > Screen.height * 3 / 4f && mousePos.x > Screen.width / 3f && mousePos.x < Screen.width * 2f / 3f) //Top
             {
-                hasCompletedCircle = true;
-                fourthStepComplete = false;
-                Debug.Log("Circle complete");
-            }
-        }
-        else if (mousePos.x > Screen.width * 2 / 3f && mousePos.y > Screen.height / 4f && mousePos.y < Screen.height * 3f / 4f)
-        {
-            thirdStepComplete = false;
-            fourthStepComplete = false;
-
-            if (firstStepComplete)
-            {
-                secondStepComplete = true;
-                firstStepComplete = false;
-
-                Debug.Log("Second step complete");
-            }
-        }
-        else if (mousePos.y < Screen.height / 4f && mousePos.x > Screen.width / 3f && mousePos.x < Screen.width * 2f / 3f)
-        {
-            firstStepComplete = false;
-            fourthStepComplete = false;
-
-            if (secondStepComplete)
-            {
-                thirdStepComplete = true;
+                firstStepComplete = true;
                 secondStepComplete = false;
-                Debug.Log("Third step complete");
+                thirdStepComplete = false;
+                Debug.Log("First step complete");
+
+                if (fourthStepComplete)
+                {
+                    hasCompletedCircle = true;
+                    fourthStepComplete = false;
+                    Debug.Log("Circle complete");
+                }
+            }
+            else if (mousePos.x > Screen.width * 2 / 3f && mousePos.y > Screen.height / 4f && mousePos.y < Screen.height * 3f / 4f) //Right
+            {
+                thirdStepComplete = false;
+                fourthStepComplete = false;
+
+                if (firstStepComplete)
+                {
+                    secondStepComplete = true;
+                    firstStepComplete = false;
+
+                    Debug.Log("Second step complete");
+                }
+            }
+            else if (mousePos.y < Screen.height / 4f && mousePos.x > Screen.width / 3f && mousePos.x < Screen.width * 2f / 3f) //Bottom
+            {
+                firstStepComplete = false;
+                fourthStepComplete = false;
+
+                if (secondStepComplete)
+                {
+                    thirdStepComplete = true;
+                    secondStepComplete = false;
+                    Debug.Log("Third step complete");
+                }
+            }
+            else if (mousePos.x < Screen.width / 3f && mousePos.y > Screen.height / 4f && mousePos.y < Screen.height * 3f / 4f) //Left
+            {
+                firstStepComplete = false;
+                secondStepComplete = false;
+
+                if (thirdStepComplete)
+                {
+                    fourthStepComplete = true;
+                    thirdStepComplete = false;
+                    Debug.Log("Fourth step complete");
+                }
             }
         }
-        else if (mousePos.x < Screen.width / 3f && mousePos.y > Screen.height / 4f && mousePos.y < Screen.height * 3f / 4f)
+        else if (isAntiClockwiseMode)
         {
-            firstStepComplete = false;
-            secondStepComplete = false;
-
-            if (thirdStepComplete)
+            if (mousePos.y > Screen.height * 3 / 4f && mousePos.x > Screen.width / 3f && mousePos.x < Screen.width * 2f / 3f) //Top
             {
-                fourthStepComplete = true;
+                firstStepComplete = true;
+                secondStepComplete = false;
                 thirdStepComplete = false;
-                Debug.Log("Fourth step complete");
+                Debug.Log("First step complete");
+
+                if (fourthStepComplete)
+                {
+                    hasCompletedCircle = true;
+                    fourthStepComplete = false;
+                    Debug.Log("Circle complete");
+                }
+            }
+            else if (mousePos.x < Screen.width / 3f && mousePos.y > Screen.height / 4f && mousePos.y < Screen.height * 3f / 4f) //Left
+            {
+                thirdStepComplete = false;
+                fourthStepComplete = false;
+
+                if (firstStepComplete)
+                {
+                    secondStepComplete = true;
+                    firstStepComplete = false;
+
+                    Debug.Log("Second step complete");
+                }
+            }
+            else if (mousePos.y < Screen.height / 4f && mousePos.x > Screen.width / 3f && mousePos.x < Screen.width * 2f / 3f) //Bottom
+            {
+                firstStepComplete = false;
+                fourthStepComplete = false;
+
+                if (secondStepComplete)
+                {
+                    thirdStepComplete = true;
+                    secondStepComplete = false;
+                    Debug.Log("Third step complete");
+                }
+            }
+            else if (mousePos.x > Screen.width * 2 / 3f && mousePos.y > Screen.height / 4f && mousePos.y < Screen.height * 3f / 4f) //Right
+            {
+                firstStepComplete = false;
+                secondStepComplete = false;
+
+                if (thirdStepComplete)
+                {
+                    fourthStepComplete = true;
+                    thirdStepComplete = false;
+                    Debug.Log("Fourth step complete");
+                }
+            }
+        }
+        else if (isSquareClockwiseMode)
+        {
+            if (mousePos.y > Screen.height * 4 / 5f && mousePos.x < Screen.width / 6f) //Top Left
+            {
+                firstStepComplete = true;
+                secondStepComplete = false;
+                thirdStepComplete = false;
+                Debug.Log("First step complete");
+
+                if (fourthStepComplete)
+                {
+                    hasCompletedCircle = true;
+                    fourthStepComplete = false;
+                    Debug.Log("Circle complete");
+                }
+            }
+            else if (mousePos.y > Screen.height * 4 / 5f && mousePos.x > Screen.width * 5/ 6f) // Top Right
+            {
+                thirdStepComplete = false;
+                fourthStepComplete = false;
+
+                if (firstStepComplete)
+                {
+                    secondStepComplete = true;
+                    firstStepComplete = false;
+
+                    Debug.Log("Second step complete");
+                }
+            }
+            else if (mousePos.y < Screen.height / 5f && mousePos.x > Screen.width * 5 / 6f) //Bottom Right
+            {
+                firstStepComplete = false;
+                fourthStepComplete = false;
+
+                if (secondStepComplete)
+                {
+                    thirdStepComplete = true;
+                    secondStepComplete = false;
+                    Debug.Log("Third step complete");
+                }
+            }
+            else if (mousePos.y < Screen.height / 5f && mousePos.x < Screen.width / 6f) //Bottom Left
+            {
+                firstStepComplete = false;
+                secondStepComplete = false;
+
+                if (thirdStepComplete)
+                {
+                    fourthStepComplete = true;
+                    thirdStepComplete = false;
+                    Debug.Log("Fourth step complete");
+                }
             }
         }
 
         if (hasCompletedCircle)
         {
-            Vector3 newPos = transform.position;
+            Vector3 newPos = selectedScrew.transform.position;
             newPos.z += screwPositionAmount;
             newPos.z = Mathf.Min(newPos.z, screwFinalPosition);
-            transform.position = newPos;
+            selectedScrew.transform.position = newPos;
 
             if (newPos.z == screwFinalPosition)
             {
@@ -89,7 +241,18 @@ public class ScrewControl : MonoBehaviour
             }
             else
             {
-                transform.Rotate(0f, 0f, screwRotationAmount);
+                if (isClockwiseMode)
+                {
+                    transform.Rotate(0f, 0f, screwRotationAmount);
+                }
+                else if (isAntiClockwiseMode)
+                {
+                    transform.Rotate(0f, 0f, -screwRotationAmount);
+                }
+                else if (isSquareClockwiseMode)
+                {
+                    transform.Rotate(screwRotationAmount, 0f, 0f); //Fix rotation not working
+                }
             }
 
             hasCompletedCircle = false;

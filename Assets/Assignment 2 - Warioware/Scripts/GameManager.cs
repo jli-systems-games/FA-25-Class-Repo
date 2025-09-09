@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
 
     public int malletMode;
 
+    public int screwMode;
+
     private void Start()
     {
         hasLoadedScene = false;
@@ -92,9 +94,12 @@ public class GameManager : MonoBehaviour
         //Set mallet mode and level
         malletMode = Random.Range(0, 2);
 
-        Debug.Log("Mallet mode set in GameManager to: " + malletMode);
-
         Data.globalMalletMode = malletMode;
+
+        //Set screw mode and level
+        screwMode = Random.Range(0, 3);
+
+        Data.globalScrewMode = screwMode;
 
         if (timer.isTimeOver)
         {
@@ -145,7 +150,16 @@ public class GameManager : MonoBehaviour
         else if (nextScene == "Screw Scene")
         {
             Debug.Log(nextScene);
-            instructionsText.text = ("Screw the screw by turning it clockwise!");
+
+            if (screwMode == 0)
+            {
+                instructionsText.text = ("Screw the screw by turning it clockwise!");
+            }
+            else if (screwMode == 1)
+            {
+                instructionsText.text = ("Screw the screw by turning it anti-clockwise!");
+            }
+            
         }
         else if (nextScene == "Paint Scene")
         {

@@ -41,7 +41,7 @@ public class NailSpawner : MonoBehaviour
     {
         malletMode = Data.globalMalletMode;
 
-        if (malletMode == 0) isColorMode = true;
+        if (malletMode == 0) isNormalMode = true;
         else if (malletMode == 1) isColorMode = true;
 
         spawnedNails = new GameObject[nailCount];
