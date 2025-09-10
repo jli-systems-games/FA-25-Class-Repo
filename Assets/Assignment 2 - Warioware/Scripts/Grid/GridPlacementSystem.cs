@@ -36,11 +36,13 @@ public class GridPlacementSystem : MonoBehaviour
     private Vector3 hardModePosition = new Vector3(0.5f, 0.5f, -0.05f);
 
     public Timer timer;
-
     public GameManager gameManager;
+    public ParticleSystem confettiParticle;
 
     private void Start()
     {
+        confettiParticle.gameObject.SetActive(false);
+
         grid10.SetActive(false);
         grid4.SetActive(false);
 
@@ -239,6 +241,7 @@ public class GridPlacementSystem : MonoBehaviour
         Debug.Log("Pattern complete!");
         timer.isTimerRunning = false;
         Data.globalConsecutiveRound += 1;
+        confettiParticle.gameObject.SetActive(true);
         StartCoroutine(CompletionDelay(2f));
     }
 

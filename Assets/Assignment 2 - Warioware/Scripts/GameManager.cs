@@ -64,19 +64,35 @@ public class GameManager : MonoBehaviour
         {
             Data.globalHasGameOver = true;
 
-            SceneManager.LoadScene("End Scene"); 
+            StartCoroutine(DelayBeforeGameOver(1.5f));
         }
+    }
+
+    private IEnumerator DelayBeforeGameOver(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        SceneManager.LoadScene("End Scene");
     }
 
     public void LoadRandomGame()
     {
+        Debug.Log("Current game level: " + Data.globalLevel);
+
         if (hasLoadedScene) return; //Stop duplicating calls
 
         randomIndex = Random.Range(0, gameSceneNames.Length);
         nextScene = gameSceneNames[randomIndex];
 
         //Set paint mode
-        paintMode = Random.Range(0, 4);
+        if (Data.globalLevel == 1 || Data.globalLevel == 2)
+        {
+            paintMode = Random.Range(0, 4);
+        }
+        else if (Data.globalLevel == 3 || Data.globalLevel == 4) 
+        {
+            paintMode = Random.Range(1, 3);
+        }
 
         Data.globalPaintMode = paintMode;
 
@@ -86,28 +102,11 @@ public class GameManager : MonoBehaviour
         Data.globalMalletMode = malletMode;
 
         //Set screw mode
-        screwMode = Random.Range(0, 2);
+        screwMode = Random.Range(0, 4);
 
         Data.globalScrewMode = screwMode;
 
-        if (timer.isTimeOver)
-        {
-            hasLoadedScene = true;
-            TimeOverCanvas.gameObject.SetActive(true);
-
-            Data.globalConsecutiveRound = 0;
-            LoseHealth();
-
-            StartCoroutine(DelayAfterTimeOver(2f));
-        }
-        else
-        {
-            hasLoadedScene = true;
-
-            ShowInstructions();
-        }
-
-        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 3)
+        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 4)
         {
             Data.globalLevel = 2;
 
@@ -135,6 +134,26 @@ public class GameManager : MonoBehaviour
         {
             Data.globalConsecutiveRound = 0;
             CompleteGame();
+        }
+
+        if (timer.isTimeOver)
+        {
+            hasLoadedScene = true;
+            TimeOverCanvas.gameObject.SetActive(true);
+
+            Data.globalConsecutiveRound = 0;
+            LoseHealth();
+
+            StartCoroutine(DelayAfterTimeOver(2f));
+        }
+        else
+        {
+            if (Data.globalLevel != 4 && Data.globalConsecutiveRound <= 3)
+            {
+                hasLoadedScene = true;
+
+                ShowInstructions();
+            }
         }
     }
 
@@ -180,27 +199,20 @@ public class GameManager : MonoBehaviour
 
             if (screwMode == 0)
             {
-                if (Data.globalLevel == 1 || Data.globalLevel == 2)
-                {
-                    instructionsText.text = ("Screw the screw by turning it clockwise!");
-                }
-                else
-                {
-                    instructionsText.text = ("Screw the screw by turning it clockwise in a square shape!");
-                }
+                instructionsText.text = ("Screw the screw by turning it clockwise!");
             }
             else if (screwMode == 1)
             {
-                if (Data.globalLevel == 1 ||  Data.globalLevel == 2)
-                {
-                    instructionsText.text = ("Screw the screw by turning it anticlockwise!");
-                }
-                else
-                {
-                    instructionsText.text = ("Screw the screw by turning it anticlockwise in a square shape!");
-                }
+                instructionsText.text = ("Screw the screw by turning it anticlockwise!");
             }
-            
+            else if (screwMode == 2)
+            {
+                instructionsText.text = ("Screw the screw by turning it clockwise in a square shape!");
+            }
+            else if (screwMode == 3)
+            {
+                instructionsText.text = ("Screw the screw by turning it anticlockwise in a square shape!");
+            }
         }
         else if (nextScene == "Paint Scene")
         {

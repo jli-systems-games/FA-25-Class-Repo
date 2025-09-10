@@ -7,11 +7,11 @@ using UnityEngine.SceneManagement;
 public class NailSpawner : MonoBehaviour
 {
     public GameObject nailPrefab;
-    public int nailCount = 10;
-    public float minRadius = 0.1f;
+    private int nailCount;
+    public float minRadius = 0.2f;
     public LayerMask nailLayer;
     private GameObject[] spawnedNails;
-    public int targetNailCount;
+    private int targetNailCount = 3;
     [Space(10)]
 
     //Material
@@ -30,6 +30,7 @@ public class NailSpawner : MonoBehaviour
 
     public GameManager gameManager;
     public Timer timer;
+    public ParticleSystem confettiParticle;
 
     private int malletMode;
 
@@ -38,10 +39,20 @@ public class NailSpawner : MonoBehaviour
 
     void Start()
     {
+        confettiParticle.gameObject.SetActive(false);
+
         malletMode = Data.globalMalletMode;
 
-        if (malletMode == 0) isNormalMode = true;
-        else if (malletMode == 1) isColorMode = true;
+        if (malletMode == 0)
+        {
+            isNormalMode = true;
+            nailCount = 3;
+        }
+        else if (malletMode == 1)
+        {
+            isColorMode = true;
+            nailCount = 6;
+        }
 
         spawnedNails = new GameObject[nailCount];
         SpawnNails();
@@ -56,7 +67,7 @@ public class NailSpawner : MonoBehaviour
         int targetNailsToSpawn = Mathf.Clamp(targetNailCount, 0, nailCount);
         int otherNailsToSpawn = nailCount - targetNailsToSpawn;
 
-        while (spawned < nailCount && attempts < 100) //keep looping the spawn until 100 attempts so that it will instantiate until it finds a right position for the nails
+        while (spawned < nailCount && attempts < 500) //keep looping the spawn until 100 attempts so that it will instantiate until it finds a right position for the nails
         {
             Vector3 randomPos = new Vector3(
                 Random.Range(spawnAreaXMin, spawnAreaXMax),
@@ -127,6 +138,7 @@ public class NailSpawner : MonoBehaviour
         isColorMode = false;
         timer.isTimerRunning = false;
         Data.globalConsecutiveRound += 1;
+        confettiParticle.gameObject.SetActive(true);
         StartCoroutine(CompletionDelay(2f));
     }
     public bool AreOnlyCertainNailsDown()

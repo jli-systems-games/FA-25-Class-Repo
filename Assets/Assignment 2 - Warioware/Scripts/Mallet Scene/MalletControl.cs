@@ -14,11 +14,11 @@ public class MalletControl : MonoBehaviour
 
         if (Data.globalLevel == 1 || Data.globalLevel == 2)
         {
-            nailDownAmount = 1f;
+            nailDownAmount = 0.5f;
         }
         else
         {
-            nailDownAmount = 0.03f;
+            nailDownAmount = 0.007f;
         }
     }
 

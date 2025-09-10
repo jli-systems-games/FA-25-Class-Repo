@@ -14,10 +14,10 @@ public class Data
 
     public static int globalConsecutiveRound = 0;
 
-    public static int globalEasySlowTime = 10;
-    public static int globalEasyFastTime = 7;
-    public static int globalHardSlowTime = 20;
-    public static int globalHardFastTime = 15;
+    public static int globalEasySlowTime = 6;
+    public static int globalEasyFastTime = 3;
+    public static int globalHardSlowTime = 13;
+    public static int globalHardFastTime = 10;
 
     public static bool globalHasGameOver = false;
 }

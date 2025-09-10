@@ -14,19 +14,19 @@ public class Timer : MonoBehaviour
 
     void Start()
     {
-        if (Data.globalLevel == 0)
+        if (Data.globalLevel == 1)
         {
             maxTime = Data.globalEasySlowTime;
         }
-        else if (Data.globalLevel == 1)
+        else if (Data.globalLevel == 2)
         {
             maxTime = Data.globalEasyFastTime;
         }
-        else if (Data.globalLevel == 2)
+        else if (Data.globalLevel == 3)
         {
             maxTime = Data.globalHardSlowTime;
         }
-        else if (Data.globalLevel == 3)
+        else if (Data.globalLevel == 4)
         {
             maxTime = Data.globalHardFastTime;
         }
