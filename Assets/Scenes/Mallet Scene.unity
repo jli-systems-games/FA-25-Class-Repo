@@ -257,21 +257,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nailPrefab: {fileID: 1529757837055095747, guid: 9e7cbdb28d3806b429190cd1271fe643, type: 3}
-  nailCount: 5
-  minRadius: 0.3
+  nailCount: 10
+  minRadius: 0.1
   nailLayer:
     serializedVersion: 2
     m_Bits: 64
-  targetNailCount: 3
+  targetNailCount: 5
   normalMaterial: {fileID: 2100000, guid: 61b985355fc78674691f5a4929f96cae, type: 2}
   blueMaterial: {fileID: 2100000, guid: 33597df30e2139d40a3d098919b61213, type: 2}
   redMaterial: {fileID: 2100000, guid: a1bc656bb8fa813429a4a76ca0cef1c2, type: 2}
-  spawnAreaXMax: -6.313
-  spawnAreaXMin: -7.277
-  spawnAreaYMax: 0.128
-  spawnAreaYMin: 0.056
-  spawnAreaZMax: -1.498
-  spawnAreaZMin: -1.957
   gameManager: {fileID: 1615845113}
   timer: {fileID: 2051165724}
 --- !u!4 &357285737
@@ -576,7 +570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4228553052427490199, guid: 4982cc691f0be9645ba16649c132f99f, type: 3}
       propertyPath: 'gameSceneNames.Array.data[1]'
-      value: Screw Scene
+      value: Paint Scene
       objectReference: {fileID: 0}
     - target: {fileID: 6687882332752252428, guid: 4982cc691f0be9645ba16649c132f99f, type: 3}
       propertyPath: m_IsActive
@@ -672,7 +666,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8095591812149086114, guid: 9e7cbdb28d3806b429190cd1271fe643, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.45
+      value: -7.164
       objectReference: {fileID: 0}
     - target: {fileID: 8095591812149086114, guid: 9e7cbdb28d3806b429190cd1271fe643, type: 3}
       propertyPath: m_LocalPosition.y
@@ -680,7 +674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8095591812149086114, guid: 9e7cbdb28d3806b429190cd1271fe643, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.9
+      value: -1.583
       objectReference: {fileID: 0}
     - target: {fileID: 8095591812149086114, guid: 9e7cbdb28d3806b429190cd1271fe643, type: 3}
       propertyPath: m_LocalRotation.w
@@ -818,7 +812,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseClicked: 0
-  nailDownAmount: 0.05
 --- !u!65 &8893138768871059628
 BoxCollider:
   m_ObjectHideFlags: 0

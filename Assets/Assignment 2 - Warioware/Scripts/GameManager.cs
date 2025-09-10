@@ -14,8 +14,10 @@ public class GameManager : MonoBehaviour
     public Canvas TimeOverCanvas;
     public Canvas InstructionCanvas;
     public Canvas GameOverCanvas;
+    public Canvas CompleteCanvas;
     [Space(10)]
 
+    public TextMeshProUGUI changeText;
     public TextMeshProUGUI instructionsText;
     [Space(10)]
 
@@ -23,18 +25,14 @@ public class GameManager : MonoBehaviour
     public int currentHealth;
     [Space(10)]
 
-    public bool hasGameOver = false;
-
     private int randomIndex;
     private bool hasLoadedScene;
     private string nextScene;
 
     public int paintMode;
-    public int paintLevel;
-
     public int malletMode;
-
     public int screwMode;
+    public int level;
 
     private void Start()
     {
@@ -47,14 +45,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (hasGameOver)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                //Restart game
-            }
-        }
-
         currentHealth = Data.globalHealthAmount;
 
         //Remove health sprites when health decreases
@@ -70,10 +60,11 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        if (currentHealth <= 0 && !hasGameOver)
+        if (currentHealth <= 0 && !Data.globalHasGameOver)
         {
-            GameOverCanvas.gameObject.SetActive(true);
-            hasGameOver = true;
+            Data.globalHasGameOver = true;
+
+            SceneManager.LoadScene("End Scene"); 
         }
     }
 
@@ -84,20 +75,18 @@ public class GameManager : MonoBehaviour
         randomIndex = Random.Range(0, gameSceneNames.Length);
         nextScene = gameSceneNames[randomIndex];
 
-        //Set paint mode and level
+        //Set paint mode
         paintMode = Random.Range(0, 4);
-        paintLevel = Random.Range(0, 1);
 
         Data.globalPaintMode = paintMode;
-        Data.globalPaintLevel = paintLevel;
 
-        //Set mallet mode and level
+        //Set mallet mode
         malletMode = Random.Range(0, 2);
 
         Data.globalMalletMode = malletMode;
 
-        //Set screw mode and level
-        screwMode = Random.Range(0, 3);
+        //Set screw mode
+        screwMode = Random.Range(0, 2);
 
         Data.globalScrewMode = screwMode;
 
@@ -106,6 +95,7 @@ public class GameManager : MonoBehaviour
             hasLoadedScene = true;
             TimeOverCanvas.gameObject.SetActive(true);
 
+            Data.globalConsecutiveRound = 0;
             LoseHealth();
 
             StartCoroutine(DelayAfterTimeOver(2f));
@@ -116,6 +106,43 @@ public class GameManager : MonoBehaviour
 
             ShowInstructions();
         }
+
+        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 3)
+        {
+            Data.globalLevel = 2;
+
+            changeText.text = ("SPEED UP!");
+
+            Data.globalConsecutiveRound = 0;
+        }
+        else if (Data.globalLevel == 2 && Data.globalConsecutiveRound > 3)
+        {
+            Data.globalLevel = 3;
+
+            changeText.text = ("LEVEL UP!");
+
+            Data.globalConsecutiveRound = 0;
+        }
+        else if (Data.globalLevel == 3 && Data.globalConsecutiveRound > 3)
+        {
+            Data.globalLevel = 4;
+
+            changeText.text = ("SPEED UP!");
+
+            Data.globalConsecutiveRound = 0;
+        }
+        else if (Data.globalLevel == 4 && Data.globalConsecutiveRound > 3)
+        {
+            Data.globalConsecutiveRound = 0;
+            CompleteGame();
+        }
+    }
+
+    void CompleteGame()
+    {
+        Debug.Log("Complete building!");
+
+        SceneManager.LoadScene("End Scene");
     }
 
     private IEnumerator DelayAfterTimeOver(float delay)
@@ -153,11 +180,25 @@ public class GameManager : MonoBehaviour
 
             if (screwMode == 0)
             {
-                instructionsText.text = ("Screw the screw by turning it clockwise!");
+                if (Data.globalLevel == 1 || Data.globalLevel == 2)
+                {
+                    instructionsText.text = ("Screw the screw by turning it clockwise!");
+                }
+                else
+                {
+                    instructionsText.text = ("Screw the screw by turning it clockwise in a square shape!");
+                }
             }
             else if (screwMode == 1)
             {
-                instructionsText.text = ("Screw the screw by turning it anti-clockwise!");
+                if (Data.globalLevel == 1 ||  Data.globalLevel == 2)
+                {
+                    instructionsText.text = ("Screw the screw by turning it anticlockwise!");
+                }
+                else
+                {
+                    instructionsText.text = ("Screw the screw by turning it anticlockwise in a square shape!");
+                }
             }
             
         }

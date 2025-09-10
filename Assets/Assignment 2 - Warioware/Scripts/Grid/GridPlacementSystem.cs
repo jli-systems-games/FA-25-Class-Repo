@@ -45,7 +45,7 @@ public class GridPlacementSystem : MonoBehaviour
         grid4.SetActive(false);
 
         paintMode = Data.globalPaintMode;
-        paintLevel = Data.globalPaintLevel;
+        paintLevel = Data.globalLevel;
 
         Debug.Log("Paint mode in grid script" + paintMode);
 
@@ -54,8 +54,8 @@ public class GridPlacementSystem : MonoBehaviour
         else if (paintMode == 2) isHorizontalMode = true;
         else if (paintMode == 3) isCheckerMode = true;
 
-        if (paintLevel == 0) isEasyLevel = true;
-        else if (paintLevel == 1) isHardLevel = true;
+        if (paintLevel == 1 || paintLevel == 2) isEasyLevel = true;
+        else if (paintLevel == 3 || paintLevel == 4) isHardLevel = true;
 
         if (isEasyLevel)
         {
@@ -238,6 +238,7 @@ public class GridPlacementSystem : MonoBehaviour
 
         Debug.Log("Pattern complete!");
         timer.isTimerRunning = false;
+        Data.globalConsecutiveRound += 1;
         StartCoroutine(CompletionDelay(2f));
     }
 
@@ -245,6 +246,8 @@ public class GridPlacementSystem : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
+        grid10.SetActive(false);
+        grid4.SetActive(false);
         gameManager.LoadRandomGame();
     }
 }

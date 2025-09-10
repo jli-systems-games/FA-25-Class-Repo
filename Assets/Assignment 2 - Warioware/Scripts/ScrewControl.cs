@@ -27,35 +27,47 @@ public class ScrewControl : MonoBehaviour
     private bool isClockwiseMode = false;
     private bool isAntiClockwiseMode = false;
     private bool isSquareClockwiseMode = false;
+    private bool isSquareAntiClockwiseMode = false;
 
     private GameObject selectedScrew;
 
     private void Start()
     {
-        //screwMode = Data.globalScrewMode;
+        screwMode = Data.globalScrewMode;
 
-        screwMode = 2;
-
-        if (screwMode == 0)
+        if (Data.globalLevel == 1 || Data.globalLevel == 2)
         {
-            isClockwiseMode = true;
-            circleScrew.SetActive(true);
-            squareScrew.SetActive(false);
-            selectedScrew = circleScrew;
+            if (screwMode == 0)
+            {
+                isClockwiseMode = true;
+                circleScrew.SetActive(true);
+                squareScrew.SetActive(false);
+                selectedScrew = circleScrew;
+            }
+            else if (screwMode == 1)
+            {
+                isAntiClockwiseMode = true;
+                circleScrew.SetActive(true);
+                squareScrew.SetActive(false);
+                selectedScrew = circleScrew;
+            }
         }
-        else if (screwMode == 1)
+        else if (Data.globalLevel == 3 || Data.globalLevel == 4)
         {
-            isAntiClockwiseMode = true;
-            circleScrew.SetActive(true);
-            squareScrew.SetActive(false);
-            selectedScrew = circleScrew;
-        }
-        else if (screwMode == 2)
-        {
-            isSquareClockwiseMode = true;
-            circleScrew.SetActive(false);
-            squareScrew.SetActive(true);
-            selectedScrew = squareScrew;
+            if (screwMode == 0)
+            {
+                isSquareClockwiseMode = true;
+                circleScrew.SetActive(false);
+                squareScrew.SetActive(true);
+                selectedScrew = squareScrew;
+            }
+            else if (screwMode == 1)
+            {
+                isSquareAntiClockwiseMode = true;
+                circleScrew.SetActive(false);
+                squareScrew.SetActive(true);
+                selectedScrew = squareScrew;
+            }
         }
     }
 
@@ -225,6 +237,60 @@ public class ScrewControl : MonoBehaviour
                 }
             }
         }
+        else if (isSquareAntiClockwiseMode)
+        {
+            if (mousePos.y > Screen.height * 4 / 5f && mousePos.x < Screen.width / 6f) //Top Left
+            {
+                firstStepComplete = true;
+                secondStepComplete = false;
+                thirdStepComplete = false;
+                Debug.Log("First step complete");
+
+                if (fourthStepComplete)
+                {
+                    hasCompletedCircle = true;
+                    fourthStepComplete = false;
+                    Debug.Log("Circle complete");
+                }
+            }
+            else if (mousePos.y < Screen.height / 5f && mousePos.x < Screen.width / 6f)  //Bottom Left
+            {
+                thirdStepComplete = false;
+                fourthStepComplete = false;
+
+                if (firstStepComplete)
+                {
+                    secondStepComplete = true;
+                    firstStepComplete = false;
+
+                    Debug.Log("Second step complete");
+                }
+            }
+            else if (mousePos.y < Screen.height / 5f && mousePos.x > Screen.width * 5 / 6f) //Bottom Right
+            {
+                firstStepComplete = false;
+                fourthStepComplete = false;
+
+                if (secondStepComplete)
+                {
+                    thirdStepComplete = true;
+                    secondStepComplete = false;
+                    Debug.Log("Third step complete");
+                }
+            }
+            else if (mousePos.y > Screen.height * 4 / 5f && mousePos.x > Screen.width * 5 / 6f) //Top Right
+            {
+                firstStepComplete = false;
+                secondStepComplete = false;
+
+                if (thirdStepComplete)
+                {
+                    fourthStepComplete = true;
+                    thirdStepComplete = false;
+                    Debug.Log("Fourth step complete");
+                }
+            }
+        }
 
         if (hasCompletedCircle)
         {
@@ -237,6 +303,7 @@ public class ScrewControl : MonoBehaviour
             {
                 Debug.Log("Screw complete");
                 timer.isTimerRunning = false;
+                Data.globalConsecutiveRound += 1;
                 StartCoroutine(CompletionDelay(2f));
             }
             else
@@ -245,7 +312,7 @@ public class ScrewControl : MonoBehaviour
                 {
                     selectedScrew.transform.Rotate(0f, 0f, screwRotationAmount);
                 }
-                else if (isAntiClockwiseMode)
+                else if (isAntiClockwiseMode || isSquareAntiClockwiseMode)
                 {
                     selectedScrew.transform.Rotate(0f, 0f, -screwRotationAmount);
                 }

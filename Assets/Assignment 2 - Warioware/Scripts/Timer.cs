@@ -14,7 +14,24 @@ public class Timer : MonoBehaviour
 
     void Start()
     {
-        isTimeOver = false; 
+        if (Data.globalLevel == 0)
+        {
+            maxTime = Data.globalEasySlowTime;
+        }
+        else if (Data.globalLevel == 1)
+        {
+            maxTime = Data.globalEasyFastTime;
+        }
+        else if (Data.globalLevel == 2)
+        {
+            maxTime = Data.globalHardSlowTime;
+        }
+        else if (Data.globalLevel == 3)
+        {
+            maxTime = Data.globalHardFastTime;
+        }
+
+            isTimeOver = false; 
 
         timeRemaining = maxTime;
         timerImage = GetComponent<Image>();

@@ -4,14 +4,22 @@ public class MalletControl : MonoBehaviour
 {
     private Animator malletAnimator;
     public bool mouseClicked;
-    [Space(10)]
 
-    public float nailDownAmount = 0.05f;
+    private float nailDownAmount;
     private float nailFinalPosition = -0.031f;
 
     void Start()
     {
         malletAnimator = GetComponent<Animator>();
+
+        if (Data.globalLevel == 1 || Data.globalLevel == 2)
+        {
+            nailDownAmount = 1f;
+        }
+        else
+        {
+            nailDownAmount = 0.03f;
+        }
     }
 
     void Update()

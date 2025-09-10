@@ -21,13 +21,12 @@ public class NailSpawner : MonoBehaviour
     [Space(10)]
 
     //Spawn Area Bounds
-    public float spawnAreaXMax = -6.45f;
-    public float spawnAreaXMin = -7.15f;
-    public float spawnAreaYMax = 0.128f;
-    public float spawnAreaYMin = 0.056f;
-    public float spawnAreaZMax = -1.59f;
-    public float spawnAreaZMin = -1.9f;
-    [Space(10)]
+    private float spawnAreaXMax = -6.436f;
+    private float spawnAreaXMin = -7.164f;
+    private float spawnAreaYMax = 0.128f;
+    private float spawnAreaYMin = 0.056f;
+    private float spawnAreaZMax = -1.59f;
+    private float spawnAreaZMin = -1.96f;
 
     public GameManager gameManager;
     public Timer timer;
@@ -51,12 +50,13 @@ public class NailSpawner : MonoBehaviour
     void SpawnNails()
     {
         int spawned = 0;
+        int attempts = 0;
 
         //Create variables to make sure in color mode the targetnailcount gets spawned
         int targetNailsToSpawn = Mathf.Clamp(targetNailCount, 0, nailCount);
         int otherNailsToSpawn = nailCount - targetNailsToSpawn;
 
-        while (spawned < nailCount) //keep looping the spawn so that it will  instantiate until it finds a right position for the nails
+        while (spawned < nailCount && attempts < 100) //keep looping the spawn until 100 attempts so that it will instantiate until it finds a right position for the nails
         {
             Vector3 randomPos = new Vector3(
                 Random.Range(spawnAreaXMin, spawnAreaXMax),
@@ -93,8 +93,14 @@ public class NailSpawner : MonoBehaviour
                 spawnedNails[spawned] = newNail;
                 spawned++;
             }
+            attempts++;
         }
         //Got code to check overlapping objects from https://www.youtube.com/watch?v=ENEtzLePZbQ&ab_channel=Rabidgremlin
+
+        if (spawned < nailCount)
+        {
+            Debug.LogWarning("Nail spawning failed");
+        }
     }
 
     private void Update()
@@ -120,6 +126,7 @@ public class NailSpawner : MonoBehaviour
         isNormalMode = false;
         isColorMode = false;
         timer.isTimerRunning = false;
+        Data.globalConsecutiveRound += 1;
         StartCoroutine(CompletionDelay(2f));
     }
     public bool AreOnlyCertainNailsDown()
