@@ -15,7 +15,7 @@ public class LinearInkController : MonoBehaviour
     public Button continueButton;  // 🟢 点击继续按钮
 
     public CharacterManager characterManager; // 🟢 控制立绘切图的系统
-    public SimpleSceneManager SceneManager;
+    public InkSceneManager SceneManager;
 
     private Story story;
     private bool isWaitingForInput = true; // 新增字段，防止多次触发

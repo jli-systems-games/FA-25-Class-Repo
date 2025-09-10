@@ -1,4 +1,4 @@
-3:02 P.M. Ecology Division, Greenhouse.
+3 P.M. Ecology Division, Greenhouse.
 A group of busy people finally found time to sit down for tea and chat.
 
 Cypsel: Hey! Long time no see, it's great that we're all still alive!
