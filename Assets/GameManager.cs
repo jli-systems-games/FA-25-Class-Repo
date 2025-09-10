@@ -1,7 +1,9 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,9 +13,16 @@ public class GameManager : MonoBehaviour
     public static event Action OnGameChange;
     public static event Action<Game> OnStartGame;
 
+    public GameObject phil;
+
+    public GameObject angryPhil;
     public GameObject cupGroup;
     public GameObject spottingGroup;
     public GameObject countingGroup;
+
+    public CupGame cupGameScript;
+    public SpottingGame spottingScript;
+    public CountingGame countingScript;
 
     private int maxLives = 3;
     private int currentLives;
@@ -35,7 +44,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        OnGameChange?.Invoke();
+        StartCoroutine(GameFlow());
+    }
+
+    private void Update()
+    {
+        if (currentLives <= 0)
+        {
+            StartCoroutine(GameOverRoutine());
+        }
     }
 
     public enum Game
@@ -51,15 +68,25 @@ public class GameManager : MonoBehaviour
         spottingGroup.SetActive(false);
         countingGroup.SetActive(false);
     }
-
     public void StartSpecificGame(Game game)
     {
         ResetGroups();
         switch (game)
         {
-            case Game.CupGame: cupGroup.SetActive(true); break;
-            case Game.Spotting: spottingGroup.SetActive(true); break;
-            case Game.Counting: countingGroup.SetActive(true); break;
+            case Game.CupGame:
+                cupGroup.SetActive(true);
+                cupGameScript.StartCupGame(speed);
+                break;
+
+            case Game.Spotting:
+                spottingGroup.SetActive(true);
+                spottingScript.StartSpottingGame(speed);
+                break;
+
+            case Game.Counting:
+                countingGroup.SetActive(true);
+                countingScript.StartCountingGame(speed);
+                break;
         }
         OnStartGame?.Invoke(game);
     }
@@ -91,7 +118,7 @@ public class GameManager : MonoBehaviour
 
     public void IncreaseSpeed()
     {
-        speed *= 1.1f;
+        speed += 0.1f;
     }
 
     public float GetSpeed()
@@ -99,9 +126,34 @@ public class GameManager : MonoBehaviour
         return speed;
     }
 
-    public void GameOver()
+    IEnumerator GameFlow()
     {
-        if (currentLives == 0)
-            Debug.Log("game over!!!!!");
+        while (currentLives > 0)
+        {
+            Game game = (Game)UnityEngine.Random.Range(0, 3);
+            StartSpecificGame(game);
+
+            bool finished = false;
+            bool success = false;
+            Action<bool> onEnd = (result) => { finished = true; success = result; };
+            GameBridge.OnGameEnd += onEnd;
+
+            yield return new WaitUntil(() => finished);
+            GameBridge.OnGameEnd -= onEnd;
+
+            if (success) IncreaseSpeed();
+            else LoseLife();
+
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    IEnumerator GameOverRoutine()
+    {
+        angryPhil.SetActive(true);
+
+        yield return new WaitForSeconds(1.2f);
+
+        SceneManager.LoadScene("Opening");
     }
 }

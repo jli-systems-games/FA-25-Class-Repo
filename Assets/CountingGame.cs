@@ -14,10 +14,9 @@ public class CountingGame : MonoBehaviour
     private int counter=0;
 
     //public void StartCountingGame(float gameSpeed)
-    private void Start()
+    public void StartCountingGame(float gameSpeed)
     {
-        //speed = gameSpeed;
-        speed = GameManager.speedManager.GetSpeed();
+        speed = gameSpeed;
         currentClicks = 0;
         //mousePrefab.SetActive(false);
 
@@ -51,15 +50,14 @@ public class CountingGame : MonoBehaviour
 
         if (currentClicks == targetClicks)
         {
-            Debug.Log("you win!");
             GameManager.speedManager.IncreaseSpeed();
+            GameBridge.EndGame(true);
         }
         else
         {
-            Debug.Log("you lose!");
-
             GameManager.liveManager.LoseLife();
             GameManager.speedManager.IncreaseSpeed();
+            GameBridge.EndGame(true);
         }
     }
 }

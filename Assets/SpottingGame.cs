@@ -11,16 +11,11 @@ public class SpottingGame : MonoBehaviour
     public float baseTimer = 5f;
     private bool gameActive = false;
 
-    void Start()
-    {
-        StartGame();
-    }
-
-    public void StartGame()
+    public void StartSpottingGame(float gameSpeed)
     {
         SpawnMouse();
         gameActive = true;
-        StartCoroutine(GameTimer());
+        StartCoroutine(GameTimer(gameSpeed));
     }
 
     void SpawnMouse()
@@ -53,12 +48,11 @@ public class SpottingGame : MonoBehaviour
         }
     }
 
-    IEnumerator GameTimer()
+    IEnumerator GameTimer(float gameSpeed)
     {
-        float t = baseTimer*GameManager.speedManager.GetSpeed();
-        while (t > 0f)
+        while (gameSpeed > 0f)
         {
-            t -= Time.deltaTime;
+            gameSpeed -= Time.deltaTime;
             yield return null;
         }
 

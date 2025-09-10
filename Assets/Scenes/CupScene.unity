@@ -338,6 +338,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 352826449}
+  - component: {fileID: 352826450}
   m_Layer: 0
   m_Name: CupGame
   m_TagString: Untagged
@@ -362,6 +363,23 @@ Transform:
   - {fileID: 1837430103}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &352826450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352826448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8483a9342ac5d134a941af7fafc690ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cups:
+  - {fileID: 583526825}
+  - {fileID: 1755551669}
+  - {fileID: 507705980}
+  ball: {fileID: 1837430101}
 --- !u!1 &462320417
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,7 +396,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &462320418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,7 +776,7 @@ GameObject:
   - component: {fileID: 969944250}
   - component: {fileID: 969944251}
   m_Layer: 0
-  m_Name: mornal phil
+  m_Name: normal phil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1274,9 +1292,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad971a71d10670459dbab72e5c67a7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  phil: {fileID: 969944249}
+  angryPhil: {fileID: 2013196628}
   cupGroup: {fileID: 352826448}
-  spottingGroup: {fileID: 0}
-  countingGroup: {fileID: 0}
+  spottingGroup: {fileID: 1930976879}
+  countingGroup: {fileID: 462320417}
+  cupGameScript: {fileID: 0}
+  spottingScript: {fileID: 0}
+  countingScript: {fileID: 0}
   lifeIcons:
   - {fileID: 1398214737}
   - {fileID: 658320305}
@@ -1336,12 +1359,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278198469}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ae16d98719460148a14e621fca71ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mousePrefab: {fileID: 0}
+  mousePrefab: {fileID: 6640240674375344395, guid: 7cfc3bb5a8e0f984bb0d7cb17ca6d5e3, type: 3}
   spawnRangeX: 8.57
   spawnRangeY: 5.23
 --- !u!1 &1395840825
@@ -1999,6 +2022,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1930976880}
+  - component: {fileID: 1930976881}
   m_Layer: 0
   m_Name: SpottingGame
   m_TagString: Untagged
@@ -2023,6 +2047,22 @@ Transform:
   - {fileID: 328082461}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1930976881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930976879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7681458246241c4290a125d45363b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouse: {fileID: 328082459}
+  spawnRangeX: 8.57
+  spawnRangeY: 5.23
+  baseTimer: 5
 --- !u!1 &2013196628
 GameObject:
   m_ObjectHideFlags: 0
