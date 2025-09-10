@@ -4,7 +4,6 @@ using System.Collections;
 public class SpottingGame : MonoBehaviour
 {
     public GameObject mouse;
-    private GameObject currentMouse;
 
     public float spawnRangeX = 8.57f;
     public float spawnRangeY = 5.23f;
@@ -48,6 +47,7 @@ public class SpottingGame : MonoBehaviour
                 {
                     gameActive = false;
                     mouse.SetActive(false);
+                    GameManager.speedManager.IncreaseSpeed();
                 }
             }
         }
@@ -64,7 +64,9 @@ public class SpottingGame : MonoBehaviour
 
         if (gameActive)
         {
-            Debug.Log("Time's up! You lose.");
+            GameManager.speedManager.IncreaseSpeed();
+            GameManager.liveManager.LoseLife();
+
             gameActive = false;
             mouse.SetActive(false);
         }
