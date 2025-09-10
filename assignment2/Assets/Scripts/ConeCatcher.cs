@@ -8,7 +8,7 @@ public class ConeCatcher : MonoBehaviour
     {
         if (other.CompareTag("IceCream"))
         {
-            parent.NotifyCaught();
+            parent.NotifyCaught(other.attachedRigidbody);
         }
     }
 }
