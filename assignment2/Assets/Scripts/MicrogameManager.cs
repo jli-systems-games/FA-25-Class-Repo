@@ -24,6 +24,8 @@ public class MicrogameManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Game started, mainMenu active=" + mainMenu.activeSelf);
+
         ShowMenu(true);
         feedbackText.gameObject.SetActive(false);
         timerText.text = "";
