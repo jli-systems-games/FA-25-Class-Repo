@@ -241,17 +241,13 @@ public class ScrewControl : MonoBehaviour
             }
             else
             {
-                if (isClockwiseMode)
+                if (isClockwiseMode || isSquareClockwiseMode)
                 {
-                    transform.Rotate(0f, 0f, screwRotationAmount);
+                    selectedScrew.transform.Rotate(0f, 0f, screwRotationAmount);
                 }
                 else if (isAntiClockwiseMode)
                 {
-                    transform.Rotate(0f, 0f, -screwRotationAmount);
-                }
-                else if (isSquareClockwiseMode)
-                {
-                    transform.Rotate(screwRotationAmount, 0f, 0f); //Fix rotation not working
+                    selectedScrew.transform.Rotate(0f, 0f, -screwRotationAmount);
                 }
             }
 
