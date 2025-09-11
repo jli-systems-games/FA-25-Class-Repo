@@ -1,14 +1,31 @@
 using UnityEngine;
 
-public class CursurSwap : MonoBehaviour
-
+public class CursorSwap : MonoBehaviour
 {
-    public Texture2D handCursor;     
-    public Vector2 hotspot = new Vector2(8, 8); 
+    public Texture2D handCursor;
+    public Vector2 hotspot = new Vector2(8, 8);
 
-    void Start()
+    void OnEnable()
     {
-        Cursor.visible = true; 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Cursor.SetCursor(handCursor, hotspot, CursorMode.Auto);
+    }
+
+    void OnDisable()
+    {
+        ResetCursor();
+    }
+
+    void OnDestroy()
+    {
+        ResetCursor();
+    }
+
+    void ResetCursor()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 }

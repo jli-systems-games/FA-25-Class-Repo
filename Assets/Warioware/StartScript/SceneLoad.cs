@@ -6,6 +6,6 @@ public class SceneLoad : MonoBehaviour
     public void StartGame()
     {
        
-        SceneManager.LoadScene("Mini1");
+        SceneManager.LoadScene("Phone");
     }
 }
