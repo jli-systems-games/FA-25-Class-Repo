@@ -32,6 +32,9 @@ public class GameSequenceManager : MonoBehaviour
     [Header("Timer (Optional)")]
     public CountdownTimer timer;    // 仍然是你之前的纯计时器；可为空
 
+    [Header("On Sequence End")]
+    public GameObject objectToEnableOnEnd;          // ✅ 全部小游戏完成后启用的物体
+
     private int _currentIndex = -1;
     private MiniGameBase _current;
     private Coroutine _delayRoutine;
@@ -75,6 +78,11 @@ public class GameSequenceManager : MonoBehaviour
         {
             Debug.Log("[GameSequenceManager] 全部小游戏完成。");
             _current = null;
+
+            // ✅ 启用指定物体
+            if (objectToEnableOnEnd != null)
+                objectToEnableOnEnd.SetActive(true);
+
             return;
         }
 
