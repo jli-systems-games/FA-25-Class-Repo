@@ -119,107 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &197873871
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 197873875}
-  - component: {fileID: 197873874}
-  - component: {fileID: 197873873}
-  - component: {fileID: 197873872}
-  m_Layer: 5
-  m_Name: Canvas
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &197873872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197873871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &197873873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197873871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
---- !u!223 &197873874
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197873871}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
---- !u!224 &197873875
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197873871}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 564, y: 352}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &328082459
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,6 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8483a9342ac5d134a941af7fafc690ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 1278198470}
   cups:
   - {fileID: 583526825}
   - {fileID: 1755551669}
@@ -409,6 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae16d98719460148a14e621fca71ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 1278198470}
   mousePrefab: {fileID: 6640240674375344395, guid: 7cfc3bb5a8e0f984bb0d7cb17ca6d5e3, type: 3}
   spawnRangeX: 8.57
   spawnRangeY: 5.23
@@ -536,7 +437,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 7
   m_Sprite: {fileID: 21300000, guid: d358f275b4998814d8e644c9fea0c762, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1297,9 +1198,9 @@ MonoBehaviour:
   cupGroup: {fileID: 352826448}
   spottingGroup: {fileID: 1930976879}
   countingGroup: {fileID: 462320417}
-  cupGameScript: {fileID: 0}
-  spottingScript: {fileID: 0}
-  countingScript: {fileID: 0}
+  cupGameScript: {fileID: 352826450}
+  spottingScript: {fileID: 1930976881}
+  countingScript: {fileID: 462320418}
   lifeIcons:
   - {fileID: 1398214737}
   - {fileID: 658320305}
@@ -1331,6 +1232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7681458246241c4290a125d45363b68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   mouse: {fileID: 328082459}
   spawnRangeX: 8.57
   spawnRangeY: 5.23
@@ -1347,6 +1249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8483a9342ac5d134a941af7fafc690ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   cups:
   - {fileID: 583526825}
   - {fileID: 1755551669}
@@ -1364,6 +1267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae16d98719460148a14e621fca71ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   mousePrefab: {fileID: 6640240674375344395, guid: 7cfc3bb5a8e0f984bb0d7cb17ca6d5e3, type: 3}
   spawnRangeX: 8.57
   spawnRangeY: 5.23
@@ -1657,6 +1561,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8483a9342ac5d134a941af7fafc690ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   cups:
   - {fileID: 583526825}
   - {fileID: 1755551669}
@@ -1756,7 +1661,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: d358f275b4998814d8e644c9fea0c762, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2059,6 +1964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7681458246241c4290a125d45363b68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 1278198470}
   mouse: {fileID: 328082459}
   spawnRangeX: 8.57
   spawnRangeY: 5.23
@@ -2139,7 +2045,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 12b5df4b1a4ad1a419c7a706fd238b86, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2187,5 +2093,4 @@ SceneRoots:
   - {fileID: 352826449}
   - {fileID: 1930976880}
   - {fileID: 462320419}
-  - {fileID: 197873875}
   - {fileID: 1137126573}

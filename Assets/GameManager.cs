@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
     private int maxLives = 3;
     private int currentLives;
     private float speed=1;
+    public static bool lastGameSuccess = false;
+    public static bool finishedSignal = false;
     public GameObject[] lifeIcons;
 
     private void Awake()
@@ -62,10 +64,38 @@ public class GameManager : MonoBehaviour
         Counting
     }
 
+    IEnumerator GameFlow()
+    {
+        UpdateLifeIcons();
+        while (currentLives > 0)
+        {
+            Game game = (Game)UnityEngine.Random.Range(0, 3);
+            StartSpecificGame(game);
+
+            finishedSignal = false;
+
+            yield return new WaitUntil(() => finishedSignal);
+
+            //if (lastGameSuccess)
+            //{
+            //    if (lastGameSuccess) IncreaseSpeed();
+            //    else LoseLife();
+
+            //    lastGameSuccess = false;
+            //}
+
+            yield return new WaitForSeconds(1f);
+        
+    }
+    }
     public void ResetGroups()
     {
+        Debug.Log("ResetGroups");
+
         cupGroup.SetActive(false);
         spottingGroup.SetActive(false);
+
+        countingScript.ClearSpawnedObjects();
         countingGroup.SetActive(false);
     }
     public void StartSpecificGame(Game game)
@@ -92,24 +122,31 @@ public class GameManager : MonoBehaviour
     }
     public void LoseLife()
     {
-        if (currentLives <= 0) return;
-        currentLives--;
+        Debug.Log("loosing life");
+        IncreaseSpeed();
+        currentLives = Mathf.Max(currentLives - 1, 0);
         UpdateLifeIcons();
+
+        if (currentLives <= 0)
+        {
+            StartCoroutine(GameOverRoutine());
+        }
     }
 
-    public void SetLives(int value)
-    {
-        currentLives = value;
-        UpdateLifeIcons();
-    }
+    //public void SetLives(int value)
+    //{
+    //    currentLives = value;
+    //    UpdateLifeIcons();
+    //}
 
-    public int GetLives()
-    {
-        return currentLives;
-    }
+    //public int GetLives()
+    //{
+    //    return currentLives;
+    //}
 
     private void UpdateLifeIcons()
     {
+        Debug.Log("current live: " + currentLives);
         for (int i = 0; i < lifeIcons.Length; i++)
         {
             lifeIcons[i].SetActive(i == currentLives - 1);
@@ -118,7 +155,7 @@ public class GameManager : MonoBehaviour
 
     public void IncreaseSpeed()
     {
-        speed += 0.1f;
+        speed += 0.5f;
     }
 
     public float GetSpeed()
@@ -126,31 +163,12 @@ public class GameManager : MonoBehaviour
         return speed;
     }
 
-    IEnumerator GameFlow()
-    {
-        while (currentLives > 0)
-        {
-            Game game = (Game)UnityEngine.Random.Range(0, 3);
-            StartSpecificGame(game);
-
-            bool finished = false;
-            bool success = false;
-            Action<bool> onEnd = (result) => { finished = true; success = result; };
-            GameBridge.OnGameEnd += onEnd;
-
-            yield return new WaitUntil(() => finished);
-            GameBridge.OnGameEnd -= onEnd;
-
-            if (success) IncreaseSpeed();
-            else LoseLife();
-
-            yield return new WaitForSeconds(1f);
-        }
-    }
-
     IEnumerator GameOverRoutine()
     {
+
+        phil.SetActive(false);
         angryPhil.SetActive(true);
+        Debug.Log("SPAWNING WARNING");
 
         yield return new WaitForSeconds(1.2f);
 

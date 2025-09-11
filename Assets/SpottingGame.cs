@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using DG.Tweening.Core.Easing;
 
 public class SpottingGame : MonoBehaviour
 {
+    public GameManager gameManager;
     public GameObject mouse;
 
     public float spawnRangeX = 8.57f;
@@ -42,7 +44,11 @@ public class SpottingGame : MonoBehaviour
                 {
                     gameActive = false;
                     mouse.SetActive(false);
-                    GameManager.speedManager.IncreaseSpeed();
+                    Debug.Log("spotting game succeeded");
+
+                    StopAllCoroutines();
+                    GameManager.lastGameSuccess = true;
+                    GameManager.finishedSignal = true;
                 }
             }
         }
@@ -50,19 +56,26 @@ public class SpottingGame : MonoBehaviour
 
     IEnumerator GameTimer(float gameSpeed)
     {
-        while (gameSpeed > 0f)
+        float timer = baseTimer / gameSpeed;
+        while (timer > 0f&& gameActive)
         {
-            gameSpeed -= Time.deltaTime;
+            Debug.Log("current time: " + timer);
+
+            timer -= Time.deltaTime;
             yield return null;
         }
 
         if (gameActive)
         {
-            GameManager.speedManager.IncreaseSpeed();
-            GameManager.liveManager.LoseLife();
-
+            Debug.Log("spotting game failed");
             gameActive = false;
             mouse.SetActive(false);
+
+            StopAllCoroutines();
+            //GameManager.lastGameSuccess = false;
+            gameManager.LoseLife();
+            GameManager.finishedSignal = true;
         }
+        else yield break;
     }
 }

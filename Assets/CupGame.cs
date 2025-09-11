@@ -3,9 +3,11 @@ using UnityEngine.UI;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine.PlayerLoop;
+using DG.Tweening.Core.Easing;
 
 public class CupGame : MonoBehaviour
 {
+    public GameManager gameManager;
     public GameObject[] cups;
     public GameObject ball;
     private bool canClick = false;
@@ -44,7 +46,7 @@ public class CupGame : MonoBehaviour
             float timeSwapping = 0;
             while (timeSwapping < 1f)
             {
-                timeSwapping += Time.deltaTime / speed;
+                timeSwapping += Time.deltaTime*speed;
                 cups[a].transform.position = Vector3.Lerp(posA, posB, timeSwapping);
                 cups[b].transform.position = Vector3.Lerp(posB, posA, timeSwapping);
                 yield return null;
@@ -65,20 +67,35 @@ public class CupGame : MonoBehaviour
                     if (clicked.name == "1")
                     {
                         ball.SetActive(true);
-                        GameManager.speedManager.IncreaseSpeed();
 
                         StartCoroutine(MoveTo(clicked, new Vector3(clicked.transform.position.x, 0f, 0f), 0.5f));
                         StartCoroutine(MoveTo(ball, new Vector3(clicked.transform.position.x, -3.5f, 0), 0f));
+
+
+                        yield return new WaitForSeconds(0.5f);
+                        Debug.Log("cup game succeeded");
+                        canClick = false;
+
+                        StopAllCoroutines();
+                        GameManager.lastGameSuccess = true;
+                        GameManager.finishedSignal = true;
                     }
                     else
                     {
-                        GameManager.speedManager.IncreaseSpeed();
-                        GameManager.liveManager.LoseLife();
-
                         StartCoroutine(MoveTo(clicked, new Vector3(clicked.transform.position.x, 0f, 0f), 0.5f));
+                        yield return new WaitForSeconds(0.5f);
+
+
+                        Debug.Log("cup game failed");
+                        canClick = false;
+
+                        StopAllCoroutines();
+                        //GameManager.lastGameSuccess = false;
+                        gameManager.LoseLife();
+                        GameManager.finishedSignal = true;
+
                     }
 
-                    canClick = false;
                 }
             }
             yield return null;

@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CountingGame : MonoBehaviour
 {
+    public GameManager gameManager;
     public GameObject mousePrefab;
+    private List<GameObject> spawnedMice = new List<GameObject>();
+
     public float spawnRangeX = 8.57f;
     public float spawnRangeY = 5.23f;
 
@@ -16,6 +20,7 @@ public class CountingGame : MonoBehaviour
     //public void StartCountingGame(float gameSpeed)
     public void StartCountingGame(float gameSpeed)
     {
+        ClearSpawnedObjects();
         speed = gameSpeed;
         currentClicks = 0;
         //mousePrefab.SetActive(false);
@@ -28,10 +33,10 @@ public class CountingGame : MonoBehaviour
             float y = Random.Range(-spawnRangeY, spawnRangeY);
             GameObject mouse = Instantiate(mousePrefab, new Vector3(x, y, 0), Quaternion.identity);
             //mouse.SetActive(true);
-            Debug.Log(counter++);
+            spawnedMice.Add(mouse);
         }
 
-        timer = 5f/speed;
+        timer = 5f/speed/1.2f;
         StartCoroutine(GameLoop());
     }
 
@@ -39,6 +44,7 @@ public class CountingGame : MonoBehaviour
     {
         while (timer > 0)
         {
+            Debug.Log("current time: " + timer);
             timer -= Time.deltaTime;
             if (Input.GetMouseButtonDown(0))
             {
@@ -50,14 +56,28 @@ public class CountingGame : MonoBehaviour
 
         if (currentClicks == targetClicks)
         {
-            GameManager.speedManager.IncreaseSpeed();
-            GameBridge.EndGame(true);
+            Debug.Log("counting game succeeded");
+
+            StopAllCoroutines();
+            GameManager.lastGameSuccess = true;
+            GameManager.finishedSignal = true;
         }
         else
         {
-            GameManager.liveManager.LoseLife();
-            GameManager.speedManager.IncreaseSpeed();
-            GameBridge.EndGame(true);
+            Debug.Log("counting game failed");
+
+            StopAllCoroutines();
+            //GameManager.lastGameSuccess = false;
+            gameManager.LoseLife();
+            GameManager.finishedSignal = true;
         }
+    }
+    public void ClearSpawnedObjects()
+    {
+        foreach (var obj in spawnedMice)
+        {
+            if (obj != null) Destroy(obj);
+        }
+        spawnedMice.Clear();
     }
 }
