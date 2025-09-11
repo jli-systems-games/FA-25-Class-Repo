@@ -313,6 +313,7 @@ public class ScrewControl : MonoBehaviour
                 Data.globalConsecutiveRound += 1;
                 confettiParticle.gameObject.SetActive(true);
                 StartCoroutine(CompletionDelay(2f));
+                hasCompletedCircle = false;
             }
             else
             {
@@ -325,8 +326,6 @@ public class ScrewControl : MonoBehaviour
                     selectedScrew.transform.Rotate(0f, 0f, -screwRotationAmount);
                 }
             }
-
-            hasCompletedCircle = false;
         }
     }
 

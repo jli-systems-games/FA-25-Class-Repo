@@ -37,6 +37,8 @@ public class NailSpawner : MonoBehaviour
     private bool isNormalMode = false;
     private bool isColorMode = false;
 
+    private bool hasCompleted = false;
+
     void Start()
     {
         confettiParticle.gameObject.SetActive(false);
@@ -116,6 +118,8 @@ public class NailSpawner : MonoBehaviour
 
     private void Update()
     {
+        if (hasCompleted) return;
+
         if (isNormalMode)
         {
             if (AreAllNailsDown())
@@ -134,6 +138,8 @@ public class NailSpawner : MonoBehaviour
 
     void Completed()
     {
+        hasCompleted = true;
+
         isNormalMode = false;
         isColorMode = false;
         timer.isTimerRunning = false;
@@ -183,6 +189,8 @@ public class NailSpawner : MonoBehaviour
     private IEnumerator CompletionDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        hasCompleted = false;
 
         gameManager.LoadRandomGame();
     }

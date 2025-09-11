@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
 
         Data.globalScrewMode = screwMode;
 
-        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 4)
+        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 3)
         {
             Data.globalLevel = 2;
 
@@ -134,6 +134,7 @@ public class GameManager : MonoBehaviour
         {
             Data.globalConsecutiveRound = 0;
             CompleteGame();
+            return;
         }
 
         if (timer.isTimeOver)
@@ -148,11 +149,15 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (Data.globalLevel != 4 && Data.globalConsecutiveRound <= 3)
+            if (Data.globalConsecutiveRound <= 3 || Data.globalLevel != 4)
             {
                 hasLoadedScene = true;
 
                 ShowInstructions();
+            }
+            else
+            {
+                CompleteGame();
             }
         }
     }

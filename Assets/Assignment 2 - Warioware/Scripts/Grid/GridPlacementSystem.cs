@@ -30,6 +30,8 @@ public class GridPlacementSystem : MonoBehaviour
     private bool isEasyLevel = false;
     private bool isHardLevel = false;
 
+    private bool hasCompletedPattern = false;
+
     private Vector3 easyModeScale = new Vector3(2, 2, 1);
     private Vector3 hardModeScale = new Vector3(1, 1, 1);
     private Vector3 easyModePosition = new Vector3(1f, 1f, -0.05f);
@@ -82,6 +84,11 @@ public class GridPlacementSystem : MonoBehaviour
 
     private void Update()
     {
+        if (hasCompletedPattern)
+        {
+            return;
+        }
+
         Vector3 mousePosition = gridInputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
         mouseIndicator.transform.position = mousePosition;
@@ -231,6 +238,8 @@ public class GridPlacementSystem : MonoBehaviour
 
     private void CompletePattern()
     {
+        hasCompletedPattern = true;
+
         isFullMode = false;
         isVerticalMode = false;
         isHorizontalMode = false;
@@ -251,6 +260,9 @@ public class GridPlacementSystem : MonoBehaviour
 
         grid10.SetActive(false);
         grid4.SetActive(false);
+
+        hasCompletedPattern = false;
+
         gameManager.LoadRandomGame();
     }
 }
