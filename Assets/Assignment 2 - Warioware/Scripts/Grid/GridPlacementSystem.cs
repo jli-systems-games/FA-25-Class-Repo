@@ -41,8 +41,12 @@ public class GridPlacementSystem : MonoBehaviour
     public GameManager gameManager;
     public ParticleSystem confettiParticle;
 
+    private AudioSource audioSource;
+
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         confettiParticle.gameObject.SetActive(false);
 
         grid10.SetActive(false);
@@ -69,7 +73,7 @@ public class GridPlacementSystem : MonoBehaviour
             paintCellPrefab.transform.GetChild(0).localScale = easyModeScale;
             paintCellPrefab.transform.GetChild(0).position = easyModePosition;
             cellIndicator.transform.GetChild(0).localScale = easyModeScale;
-            cellIndicator.transform.GetChild(0).position = easyModePosition;
+            cellIndicator.transform.GetChild(0).position = new Vector3(easyModePosition.x, easyModePosition.y, -0.03f);
         }
         else if (isHardLevel)
         {
@@ -78,7 +82,7 @@ public class GridPlacementSystem : MonoBehaviour
             paintCellPrefab.transform.GetChild(0).localScale = hardModeScale;
             paintCellPrefab.transform.GetChild(0).position = hardModePosition;
             cellIndicator.transform.GetChild(0).localScale = hardModeScale;
-            cellIndicator.transform.GetChild(0).position = hardModePosition;
+            cellIndicator.transform.GetChild(0).position = new Vector3(hardModePosition.x, hardModePosition.y, -0.03f);
         }
     }
 
@@ -106,6 +110,8 @@ public class GridPlacementSystem : MonoBehaviour
                 GameObject newPaintedCell = Instantiate(paintCellPrefab, worldPosition, Quaternion.identity);
 
                 paintedCells.Add(gridPosition, newPaintedCell);
+
+                audioSource.Play();
 
                 if (isEasyLevel)
                 {

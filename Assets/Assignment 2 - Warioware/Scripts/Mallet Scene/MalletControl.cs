@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class MalletControl : MonoBehaviour
 {
@@ -8,8 +9,12 @@ public class MalletControl : MonoBehaviour
     private float nailDownAmount;
     private float nailFinalPosition = -0.031f;
 
+    private AudioSource audioSource;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         malletAnimator = GetComponent<Animator>();
 
         if (Data.globalLevel == 1 || Data.globalLevel == 2)
@@ -41,6 +46,11 @@ public class MalletControl : MonoBehaviour
     {
         if (mouseClicked)
         {
+            if (other.transform.position.y > nailFinalPosition)
+            {
+                audioSource.Play();
+            }
+
             //Make nails go down when mallet hits it
             Vector3 newPos = other.transform.position;
             newPos.y -= nailDownAmount;

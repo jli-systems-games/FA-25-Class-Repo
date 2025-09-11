@@ -32,8 +32,12 @@ public class ScrewControl : MonoBehaviour
 
     private GameObject selectedScrew;
 
+    private AudioSource audioSource;
+
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         confettiParticle.gameObject.SetActive(false);
 
         screwMode = Data.globalScrewMode;
@@ -306,6 +310,8 @@ public class ScrewControl : MonoBehaviour
             newPos.z = Mathf.Min(newPos.z, screwFinalPosition);
             selectedScrew.transform.position = newPos;
 
+            audioSource.Play();
+
             if (newPos.z == screwFinalPosition)
             {
                 Debug.Log("Screw complete");
@@ -313,7 +319,6 @@ public class ScrewControl : MonoBehaviour
                 Data.globalConsecutiveRound += 1;
                 confettiParticle.gameObject.SetActive(true);
                 StartCoroutine(CompletionDelay(2f));
-                hasCompletedCircle = false;
             }
             else
             {
@@ -326,6 +331,8 @@ public class ScrewControl : MonoBehaviour
                     selectedScrew.transform.Rotate(0f, 0f, -screwRotationAmount);
                 }
             }
+
+            hasCompletedCircle = false;
         }
     }
 

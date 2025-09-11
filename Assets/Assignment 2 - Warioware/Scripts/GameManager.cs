@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private string[] gameSceneNames;
     public Timer timer;
+    public GameObject timerObject;
     [Space(10)]
 
     public Canvas TimeOverCanvas;
@@ -41,6 +42,8 @@ public class GameManager : MonoBehaviour
         TimeOverCanvas.gameObject.SetActive(false);
         InstructionCanvas.gameObject.SetActive(false);
         GameOverCanvas.gameObject.SetActive(false);
+
+        timerObject.SetActive(true);
     }
 
     private void Update()
@@ -81,32 +84,8 @@ public class GameManager : MonoBehaviour
 
         if (hasLoadedScene) return; //Stop duplicating calls
 
-        randomIndex = Random.Range(0, gameSceneNames.Length);
-        nextScene = gameSceneNames[randomIndex];
-
-        //Set paint mode
-        if (Data.globalLevel == 1 || Data.globalLevel == 2)
-        {
-            paintMode = Random.Range(0, 4);
-        }
-        else if (Data.globalLevel == 3 || Data.globalLevel == 4) 
-        {
-            paintMode = Random.Range(1, 3);
-        }
-
-        Data.globalPaintMode = paintMode;
-
-        //Set mallet mode
-        malletMode = Random.Range(0, 2);
-
-        Data.globalMalletMode = malletMode;
-
-        //Set screw mode
-        screwMode = Random.Range(0, 4);
-
-        Data.globalScrewMode = screwMode;
-
-        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 3)
+        //Set level change
+        if (Data.globalLevel == 1 && Data.globalConsecutiveRound > 4)
         {
             Data.globalLevel = 2;
 
@@ -137,10 +116,36 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        randomIndex = Random.Range(0, gameSceneNames.Length);
+        nextScene = gameSceneNames[randomIndex];
+
+        //Set paint mode
+        if (Data.globalLevel == 1 || Data.globalLevel == 2)
+        {
+            paintMode = Random.Range(0, 4);
+        }
+        else if (Data.globalLevel == 3 || Data.globalLevel == 4)
+        {
+            paintMode = Random.Range(1, 3);
+        }
+
+        Data.globalPaintMode = paintMode;
+
+        //Set mallet mode
+        malletMode = Random.Range(0, 2);
+
+        Data.globalMalletMode = malletMode;
+
+        //Set screw mode
+        screwMode = Random.Range(0, 4);
+
+        Data.globalScrewMode = screwMode;
+
         if (timer.isTimeOver)
         {
             hasLoadedScene = true;
             TimeOverCanvas.gameObject.SetActive(true);
+            timerObject.SetActive(false);
 
             Data.globalConsecutiveRound = 0;
             LoseHealth();
@@ -153,6 +158,7 @@ public class GameManager : MonoBehaviour
             {
                 hasLoadedScene = true;
 
+                timerObject.SetActive(false);
                 ShowInstructions();
             }
             else
