@@ -35,8 +35,18 @@ public class GameManager : MonoBehaviour
     public int screwMode;
     public int level;
 
+    public Image clockCircle;
+    public Image antiCircle;
+    public Image clockRect;
+    public Image antiRect;
+
     private void Start()
     {
+        clockCircle.enabled = false;
+        antiCircle.enabled = false;
+        clockRect.enabled = false;
+        antiRect.enabled = false;
+
         hasLoadedScene = false;
 
         TimeOverCanvas.gameObject.SetActive(false);
@@ -211,18 +221,22 @@ public class GameManager : MonoBehaviour
             if (screwMode == 0)
             {
                 instructionsText.text = ("Screw the screw by turning it clockwise!");
+                clockCircle.enabled = true;
             }
             else if (screwMode == 1)
             {
                 instructionsText.text = ("Screw the screw by turning it anticlockwise!");
+                antiCircle.enabled = true;
             }
             else if (screwMode == 2)
             {
-                instructionsText.text = ("Screw the screw by turning it clockwise in a square shape!");
+                instructionsText.text = ("Screw the screw by turning it clockwise in a rectangular shape!");
+                clockRect.enabled = true;
             }
             else if (screwMode == 3)
             {
-                instructionsText.text = ("Screw the screw by turning it anticlockwise in a square shape!");
+                instructionsText.text = ("Screw the screw by turning it anticlockwise in a rectangular shape!");
+                antiRect.enabled = true;
             }
         }
         else if (nextScene == "Paint Scene")

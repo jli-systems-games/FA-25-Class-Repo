@@ -14,6 +14,8 @@ public class StartLoadScene : MonoBehaviour
             GameOverCanvas.gameObject.SetActive(false);
             CompleteCanvas.gameObject.SetActive(false);
         }
+
+        Data.globalHealthAmount = 3;
     }
 
     void Update()

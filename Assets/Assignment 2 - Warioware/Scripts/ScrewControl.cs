@@ -310,8 +310,6 @@ public class ScrewControl : MonoBehaviour
             newPos.z = Mathf.Min(newPos.z, screwFinalPosition);
             selectedScrew.transform.position = newPos;
 
-            audioSource.Play();
-
             if (newPos.z == screwFinalPosition)
             {
                 Debug.Log("Screw complete");
@@ -322,6 +320,8 @@ public class ScrewControl : MonoBehaviour
             }
             else
             {
+                audioSource.Play();
+
                 if (isClockwiseMode || isSquareClockwiseMode)
                 {
                     selectedScrew.transform.Rotate(0f, 0f, screwRotationAmount);
