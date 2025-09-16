@@ -2,27 +2,70 @@ using UnityEngine;
 
 public class PeeProbe : MonoBehaviour
 {
-    public float life = 2.0f;
-    float t;
+    [Header("Lifetime")]
+    public float life = 10.0f; // 固定为 10 秒
+    public float gravityScale = 0.5f; // 自定义重力系数
+    public ParticleSystem splashFX;
+    public AudioClip hitSound;
+    public AudioClip missSound;
+    private float timer;
+    bool hit;
+    public ObjectPool<PeeProbe> myPool;
 
-    void OnEnable() { t = life; }
+    void OnEnable()
+    {
+        timer = life;
+        hit = false;
+        var rb = GetComponent<Rigidbody2D>();
+        if (rb) rb.gravityScale = gravityScale;
+        Debug.Log($"PeeProbe initialized with life: {timer} seconds");
+    }
 
     void Update()
     {
-        t -= Time.deltaTime;
-        if (t <= 0f) Destroy(gameObject);
+        if (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            Debug.Log($"Remaining time: {timer} seconds");
+            if (timer <= 0f)
+            {
+                Miss();
+            }
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Bowl"))
+        if (other.CompareTag("HitZone"))
         {
-            GameManager.I?.RegisterHit();
-            Destroy(gameObject);
+            hit = true;
+            if (GameManager.I != null) GameManager.I.RegisterHit();
+            if (splashFX) Instantiate(splashFX, transform.position, Quaternion.identity);
+            if (hitSound) AudioSource.PlayClipAtPoint(hitSound, transform.position);
+            Deactivate();
         }
-        else if (other.CompareTag("MissZone"))
+    }
+
+    void Miss()
+    {
+        if (!hit && GameManager.I != null)
         {
-            Destroy(gameObject);
+            GameManager.I.RegisterMiss();
+            if (splashFX) Instantiate(splashFX, transform.position, Quaternion.identity);
+            if (missSound) AudioSource.PlayClipAtPoint(missSound, transform.position);
+        }
+        Deactivate();
+    }
+
+    void Deactivate()
+    {
+        if (myPool != null)
+        {
+            myPool.Return(this);
+        }
+        else
+        {
+            gameObject.SetActive(false);
         }
     }
 }
