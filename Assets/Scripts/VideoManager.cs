@@ -8,6 +8,8 @@ public class VideoManager : MonoBehaviour
     public GameObject[] videoPrefabs;
     public Transform canvas;
 
+    public AudioSource videoAudioManager;
+
     public float spawnMinTime = 5f;
     public float spawnMaxTime = 10f;
 
@@ -16,6 +18,11 @@ public class VideoManager : MonoBehaviour
 
     private void Start()
     {
+        //stopButton1.onClick.AddListener(StopAudio);
+        //stopButton2.onClick.AddListener(StopAudio);
+        //stopButton3.onClick.AddListener(StopAudio);
+        //stopButton4.onClick.AddListener(StopAudio);
+
         ResetSpawnTimer();
     }
 
@@ -35,6 +42,9 @@ public class VideoManager : MonoBehaviour
 
     private void SpawnVideo()
     {
+        //videoAudioManager.clip = pianoSound;
+        //videoAudioManager.Play();
+
         if (videoPrefabs.Length == 0) return;
 
         int index = Random.Range(0, videoPrefabs.Length);
@@ -53,5 +63,10 @@ public class VideoManager : MonoBehaviour
     private void ResetSpawnTimer()
     {
         spawnTimer = Random.Range(spawnMinTime, spawnMaxTime);
+    }
+    private void StopAudio()
+    {
+        if (videoAudioManager.isPlaying)
+            videoAudioManager.Stop();
     }
 }

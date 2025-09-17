@@ -8,6 +8,8 @@ public class AnimationController : MonoBehaviour
     public string eatTrigger = "IsEating";
 
     public GameObject[] bugPrefabs;
+    public AudioSource bugAudioManager;
+    public AudioClip bugAte;
     public float spawnMinTime = 20f;
     public float spawnMaxTime = 60f;
 
@@ -44,6 +46,7 @@ public class AnimationController : MonoBehaviour
     {
         if (col.CompareTag("Respawn") && Input.GetKeyDown(KeyCode.Space))
         {
+            bugAudioManager.PlayOneShot(bugAte);
             spider.SetTrigger(eatTrigger);
             Destroy(col.gameObject);
         }
