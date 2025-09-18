@@ -5,6 +5,7 @@ using System.Collections;
 public class CheckGameOver : MonoBehaviour
 {
     public Canvas damageCanvas;
+    public GameObject confettiParticle;
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Black"))
@@ -16,8 +17,16 @@ public class CheckGameOver : MonoBehaviour
         else if (other.gameObject.CompareTag("Button"))
         {
             Debug.Log("Triggered Button");
-            SceneManager.LoadScene("Game Complete Scene");
+            confettiParticle.SetActive(true);
+            StartCoroutine(DelayBeforeCompletion(1f));
         }
+    }
+
+    private IEnumerator DelayBeforeCompletion(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        SceneManager.LoadScene("Game Complete Scene");
     }
 
     private IEnumerator DelayBeforeDeath(float delay)

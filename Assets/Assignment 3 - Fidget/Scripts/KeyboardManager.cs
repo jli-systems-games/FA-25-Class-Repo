@@ -7,6 +7,8 @@ public class KeyboardManager : MonoBehaviour
 {
     public Material keyboardWhite;
     public Material keyboardBlack;
+    public AudioSource audioSource;
+    public AudioClip keyAudio;
 
     private Vector3 OGpos;
     private float keyDownAmount = 0.0024f;
@@ -14,6 +16,8 @@ public class KeyboardManager : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         int randomColor = Random.Range(0, 4);
 
         if (randomColor == 0)
@@ -39,6 +43,8 @@ public class KeyboardManager : MonoBehaviour
             transform.localPosition = newPos;
 
             isDown = true;
+
+            audioSource.PlayOneShot(keyAudio);
 
             Debug.Log("Player hit keyboard");
         }
