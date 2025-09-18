@@ -14,15 +14,17 @@ public class KeyboardManager : MonoBehaviour
 
     void Start()
     {
-        int randomColor = Random.Range(0, 3);
+        int randomColor = Random.Range(0, 4);
 
         if (randomColor == 0)
         {
             gameObject.GetComponent<Renderer>().material = keyboardBlack;
+            gameObject.tag = "Black";
         }
         else
         {
             gameObject.GetComponent<Renderer>().material = keyboardWhite;
+            gameObject.tag = "Untagged";
         }
 
         OGpos = transform.localPosition;

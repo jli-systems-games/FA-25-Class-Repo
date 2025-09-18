@@ -3,15 +3,12 @@ using UnityEngine;
 
 public class CubeSpin : MonoBehaviour
 {
-    public float rotationSpeedMin;
-    public float rotationSpeedMax;
-
     private float randomSpeed;
     private int randomDir;
 
     private void Start()
     {
-        randomSpeed = Random.Range(rotationSpeedMin, rotationSpeedMax);
+        randomSpeed = Random.Range(50, 100);
 
         randomDir = Random.Range(0, 2);
     }
