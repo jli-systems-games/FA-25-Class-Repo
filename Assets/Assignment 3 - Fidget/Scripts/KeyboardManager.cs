@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using UnityEngine;
 using System.Collections;
-using static UnityEditor.PlayerSettings;
 
 public class KeyboardManager : MonoBehaviour
 {
