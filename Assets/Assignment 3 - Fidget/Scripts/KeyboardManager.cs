@@ -14,7 +14,7 @@ public class KeyboardManager : MonoBehaviour
 
     void Start()
     {
-        int randomColor = Random.Range(0, 2);
+        int randomColor = Random.Range(0, 3);
 
         if (randomColor == 0)
         {
@@ -30,7 +30,7 @@ public class KeyboardManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && !isDown)
+        if (other.CompareTag("Player") && !isDown)
         {
             Vector3 newPos = transform.localPosition;
             newPos.z -= keyDownAmount;
@@ -44,7 +44,7 @@ public class KeyboardManager : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             StartCoroutine(DelayBeforeReturningKey(0.5f));
         }

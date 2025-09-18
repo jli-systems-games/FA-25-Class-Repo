@@ -7,16 +7,18 @@ public class StartForce : MonoBehaviour
     {
         Rigidbody rb = GetComponent<Rigidbody>();
 
-        int randomForce = Random.Range(200, 400);
+        int randomForce = Random.Range(50, 200);
         Vector3 startForce = new Vector3(randomForce, randomForce, randomForce);
 
         rb.AddForce(startForce, ForceMode.Impulse);
         //Code from https://www.youtube.com/watch?v=ZOxnizAvMys&ab_channel=KetraGames
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Hit player");
+        }
     }
 }
