@@ -7,6 +7,7 @@ public class ClickCycle : MonoBehaviour
     public int nextButton;
     private int currentIndex = 0;
     public GameObject muyu;
+    public GameObject huang;
     void Start()
     {
         
@@ -30,9 +31,10 @@ public class ClickCycle : MonoBehaviour
             if (clickAudio != null)
                 clickAudio.Play();
         }
-        if (nextButton == 5)
+        if (nextButton == 15)
         {
             muyu.SetActive(true);
+            huang.SetActive(true);
         }
     }
 
