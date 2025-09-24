@@ -7,6 +7,7 @@ public class PhotoSystem : MonoBehaviour
     public Camera mainCamera;
     public GameObject photoPrefab;
     public float photoSize = 10f;
+    public AudioSource shutterSound;
 
     private List<Texture2D> album = new List<Texture2D>();
 
@@ -14,6 +15,7 @@ public class PhotoSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
+            shutterSound.PlayOneShot(shutterSound.clip);
             TakePhoto();
         }
     }

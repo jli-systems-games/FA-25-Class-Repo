@@ -7,4 +7,8 @@ public class SceneSwicther : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+    public void Play711(AudioSource audio)
+    {
+        audio.Play();
+    }
 }

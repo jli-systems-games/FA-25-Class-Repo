@@ -5,6 +5,8 @@ public class FirstPersonMovement : MonoBehaviour
     public float moveSpeed = 5f;
     private float sprintSpeed;
     public float lookSpeed = 2f;
+    public AudioSource speedUpAudio;
+
     private CharacterController controller;
     private Vector3 moveDirection;
     //public CharacterController fly;
@@ -12,6 +14,7 @@ public class FirstPersonMovement : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         sprintSpeed = moveSpeed * 5f;
         controller = GetComponent<CharacterController>();
     }
@@ -24,11 +27,16 @@ public class FirstPersonMovement : MonoBehaviour
         if ((Input.GetKey(KeyCode.LeftArrow)|| Input.GetKey(KeyCode.A)) && (Input.GetKey(KeyCode.RightArrow)|| Input.GetKey(KeyCode.D)))
         {
             moveDirection = Camera.main.transform.forward;
-            if(Input.GetKey(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space))
             {
+                speedUpAudio.pitch = 1.3f;
                 controller.Move(moveDirection * sprintSpeed * Time.deltaTime);
             }
-            else controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+            else
+            {
+                speedUpAudio.pitch = 1f;
+                controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+            }
 
 
         }
