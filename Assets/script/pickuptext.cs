@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class pickuptext : MonoBehaviour
 {
-    public GameObject talk;
-    public GameObject talkbefore;
+    public GameObject pickuptexts;
+    public GameObject groundObject;
+    public GameObject inhand;
    
     // Start is called before the first frame update
     void Start()
     {
-        talk.SetActive(false);
+        pickuptexts.SetActive(false);
      
     }
 
@@ -18,13 +19,19 @@ public class pickuptext : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            talk.SetActive(true);
-            talkbefore.SetActive(false);
+            pickuptexts.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                groundObject.SetActive(false);
+                pickuptexts.SetActive(false);
+                inhand.SetActive(true);
+            }
         }
-
+      
     }
+
     private void OnTriggerExit(Collider other)
     {
-        talk.SetActive(false);
+        pickuptexts.SetActive(false);
     }
 }
