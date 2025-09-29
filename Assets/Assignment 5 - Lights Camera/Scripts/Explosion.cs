@@ -52,7 +52,7 @@ public class Explosion : MonoBehaviour
 
     public void Explode()
     {
-        //explosionParticle.SetActive(true);
+        explosionParticle.SetActive(true);
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
 
