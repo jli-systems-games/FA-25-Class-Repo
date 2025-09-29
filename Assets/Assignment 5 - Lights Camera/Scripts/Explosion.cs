@@ -1,57 +1,96 @@
+using System.Collections;
 using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
-    public float explosionRadius = 5f;
+    //Explosion Force Varables
+    public float explosionRadius = 2600f;
     public float explosionForce = 700f;
-    public float upwardForce = 200f;
+    public float upwardForce = 1f;
+    [Space(10)]
 
-    public GameObject explosionEffect;
+    //Random Explosion Force Variables
+    public float minRandomForce = 20000f;
+    public float minRandomTorque = 10000f;
+    public float maxRandomForce = 50000f;
+    public float maxRandomTorque = 20000f;
 
-    // A function to trigger the explosion
+    public GameObject explosionParticle;
+
+    private bool isInExplosion = false;
+
+    private void Start()
+    {
+        explosionParticle.SetActive(false);
+        StartCoroutine(TimeBeforeExplosion(4f));        
+    }
+
+    private IEnumerator TimeBeforeExplosion(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Explode();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Car"))
+        {
+            isInExplosion = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Car"))
+        {
+            isInExplosion = false;
+        }
+    }
+
     public void Explode()
     {
-        // Find all colliders within the explosion radius
+        //explosionParticle.SetActive(true);
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
 
-        // Loop through each collider found
         foreach (Collider hit in colliders)
         {
-            // Check if the collider has a Rigidbody component
             Rigidbody rb = hit.GetComponent<Rigidbody>();
+
+            Debug.Log(rb);
 
             if (rb != null)
             {
-                // Calculate the direction vector from the explosion center to the object
-                Vector3 direction = (rb.transform.position - transform.position).normalized;
+                if (!isInExplosion)
+                {
+                    Vector3 direction = (rb.transform.position - transform.position).normalized;
 
-                // Calculate a force that diminishes with distance
-                float distance = Vector3.Distance(transform.position, rb.transform.position);
-                float forceMultiplier = 1f - Mathf.Clamp01(distance / explosionRadius);
+                    float distance = Vector3.Distance(transform.position, rb.transform.position);
+                    float forceMultiplier = 1f - Mathf.Clamp01(distance / explosionRadius);
 
-                // Apply a combined force: a directional force and an upward lift
-                Vector3 finalForce = direction * (explosionForce * forceMultiplier) + Vector3.up * upwardForce;
+                    Vector3 finalForce = direction * (explosionForce * forceMultiplier) + Vector3.up * upwardForce;
 
-                // Apply the force to the rigidbody
-                rb.AddForce(finalForce);
+                    rb.AddForce(finalForce);
+                }
+                else
+                {
+                    Vector3 randomForceVector = new Vector3(
+                        Random.Range(minRandomForce, maxRandomForce),
+                        Random.Range(minRandomForce, maxRandomForce),
+                        Random.Range(minRandomForce, maxRandomForce)
+                    );
+
+                    Vector3 randomTorqueVector = new Vector3(
+                        Random.Range(minRandomTorque, maxRandomTorque),
+                        Random.Range(minRandomTorque, maxRandomTorque),
+                        Random.Range(minRandomTorque, maxRandomTorque)
+                    );
+
+                    rb.AddForce(randomForceVector, ForceMode.Impulse);
+                    rb.AddTorque(randomTorqueVector, ForceMode.Impulse);
+                }
             }
         }
-
-        // Optional: Instantiate the visual effect and destroy it after a short time
-        if (explosionEffect != null)
-        {
-            GameObject effectInstance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
-            Destroy(effectInstance, 2f); // Destroys the effect after 2 seconds
-        }
-
-        // Destroy the explosion sphere itself after the effect is triggered
-        Destroy(gameObject);
-    }
-
-    // Optional: Use this to visualize the explosion radius in the editor
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 }

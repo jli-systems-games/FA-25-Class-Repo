@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class CarControl : MonoBehaviour
 {
+    //Car Forward Variables
     public float forwardForce = 500f;
     public float extraGravity = 30f;
     public float forwardAngle = 2f;
+
+    private float speedMultiplier = 1f;
 
     private Rigidbody rb;
     private bool inBuilding = true;
@@ -25,7 +28,9 @@ public class CarControl : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && inBuilding)
         {
-            rb.AddForce(transform.forward * forwardForce, ForceMode.Impulse);
+            rb.AddForce(transform.forward * forwardForce * speedMultiplier, ForceMode.Impulse);
+
+            speedMultiplier *= 1.1f;
 
             Debug.Log("Force pushed.");
         }
