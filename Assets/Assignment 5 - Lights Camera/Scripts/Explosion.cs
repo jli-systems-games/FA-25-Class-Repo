@@ -19,10 +19,12 @@ public class Explosion : MonoBehaviour
 
     private bool isInExplosion = false;
 
+    public Timer timer;
+
     private void Start()
     {
         explosionParticle.SetActive(false);
-        StartCoroutine(TimeBeforeExplosion(4f));        
+        StartCoroutine(TimeBeforeExplosion(timer.currentTime));        
     }
 
     private IEnumerator TimeBeforeExplosion(float delay)

@@ -1,0 +1,28 @@
+using UnityEngine;
+using TMPro;
+
+public class Timer : MonoBehaviour
+{
+    public TextMeshProUGUI timerText;
+    public float currentTime;
+
+    private bool hasEnded = false;
+
+    void Update()
+    {
+        if (!hasEnded)
+        {
+            currentTime -= Time.deltaTime;
+
+            if (currentTime <= 0)
+            {
+                currentTime = 0;
+                hasEnded = true;
+            }
+
+            int seconds = Mathf.FloorToInt(currentTime);
+            timerText.text = string.Format("00.00.{0:D2}", seconds);
+            //Timer code from https://www.youtube.com/watch?v=POq1i8FyRyQ
+        }
+    }
+}
