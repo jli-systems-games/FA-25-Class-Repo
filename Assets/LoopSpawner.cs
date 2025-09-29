@@ -2,32 +2,32 @@ using UnityEngine;
 
 public class LoopSpawner : MonoBehaviour
 {
-    [Header("Prefab ÉèÖÃ")]
-    public GameObject prefabA;   // µÚÒ»¸ö prefab
-    public GameObject prefabB;   // µÚ¶þ¸ö prefab
+    [Header("Prefab ç”»å»Š")]
+    public GameObject prefabA;   // æ­£å¸¸ç”»å»Š
+    public GameObject prefabB;   // ç‰¹æ®Šçš„ç”»å»Š
     public Vector3 spawnPosition = new Vector3(-57.6f, 16.21f, 0.0157f);
 
-    [Header("´¥·¢ÓëÏú»ÙÎ»ÖÃ")]
-    public float triggerX = -2.8f;   // ´¥·¢Éú³ÉµÄ X Öµ
-    public float destroyX = 47.8f;   // Ïú»ÙµÄ X Öµ
+    [Header("è§¦å‘å’Œé”€æ¯çš„x")]
+    public float triggerX = -2.8f;   // è§¦å‘ç”Ÿæˆçš„ X 
+    public float destroyX = 47.8f;   // é”€æ¯çš„ X 
 
     private bool hasSpawned = false;
 
-    // ¼ÇÂ¼ÉÏÒ»´ÎÉú³ÉµÄ prefab£¨null = Ã»Éú³É¹ý£©
+    // è®°å½•ä¸Šä¸€æ¬¡ç”Ÿæˆçš„ï¼ˆè¿™ä¸ªæ˜¯ä¸ºäº†é‚£ä¸ª ä¸é‡å¤ç”Ÿæˆçš„é€»è¾‘ï¼‰
     private static GameObject lastSpawnedPrefab = null;
 
     void Update()
     {
         float x = transform.position.x;
 
-        // ¼ì²âÊÇ·ñ¾­¹ý´¥·¢µã
+        // ç”Ÿæˆçš„ç‚¹ï¼Œè¿›è¡Œä¸€ä¸ªæ£€æµ‹
         if (!hasSpawned && x >= triggerX)
         {
             SpawnNewPrefab();
             hasSpawned = true;
         }
 
-        // ¼ì²âÊÇ·ñµ½´ïÏú»Ùµã
+        // é”€æ¯çš„ç‚¹è¿›è¡Œä¸€ä¸ªæ£€æµ‹
         if (x >= destroyX)
         {
             Destroy(gameObject);
@@ -40,22 +40,22 @@ public class LoopSpawner : MonoBehaviour
 
         GameObject toSpawn;
 
-        if (roll < 85)  //Éú³ÉÎÞÌØÊâ»­¿òµÄ¼¸ÂÊ
+        if (roll < 85)  //ç”Ÿæˆæ— ç‰¹æ®Šç”»æ¡†çš„å‡ çŽ‡
         {
             toSpawn = prefabA;
         }
         else            
         {
-            toSpawn = prefabB;//·´Ö®
+            toSpawn = prefabB;//åä¹‹
         }
 
-        // Èç¹ûÉÏ´ÎÉú³ÉÁËÌØÊâ»­¿òÄÇÃ´Õâ´Î¾Í²»¿ÉÒÔ¼ÌÐøÉú²úÌØÊâ»­¿òÁË·ÀÖ¹³öÏÖµÄ¹ýÓÚÆµ·±
+        // å¦‚æžœä¸Šæ¬¡ç”Ÿæˆäº†ç‰¹æ®Šç”»æ¡†é‚£ä¹ˆè¿™æ¬¡å°±ä¸å¯ä»¥ç»§ç»­ç”Ÿäº§ç‰¹æ®Šç”»æ¡†äº†é˜²æ­¢å‡ºçŽ°çš„è¿‡äºŽé¢‘ç¹
         if (lastSpawnedPrefab == prefabB && toSpawn == prefabB)
         {
             toSpawn = prefabA;
         }
 
-        // Éú³É²¢¼ÇÂ¼ÉÏÒ»¸öÉú³ÉµÄÊÇÊ²Ã´£¬Õâ¸öÂß¼­ÊÇÎªÁË·þÎñÖ®Ç°ÄÇ¸ö·ÀÖ¹ÖØ¸´Éú³ÉÎÒµÄprefabb
+        // ç”Ÿæˆå¹¶è®°å½•ä¸Šä¸€ä¸ªç”Ÿæˆçš„æ˜¯ä»€ä¹ˆï¼Œè¿™ä¸ªé€»è¾‘æ˜¯ä¸ºäº†æœåŠ¡ä¹‹å‰é‚£ä¸ªé˜²æ­¢é‡å¤ç”Ÿæˆæˆ‘çš„prefabb
         Instantiate(toSpawn, spawnPosition, Quaternion.identity);
         lastSpawnedPrefab = toSpawn;
     }
