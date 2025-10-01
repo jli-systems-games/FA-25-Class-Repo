@@ -40,7 +40,7 @@ public class MyBike : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Finish"))
         {
-            SceneManager.LoadScene("SceneTwo");
+            SceneManager.LoadScene("Main");
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class ScriptPlayer : MonoBehaviour
@@ -31,5 +32,10 @@ public class ScriptPlayer : MonoBehaviour
         Debug.Log("GetNextLine called");
         dialogueText.text = dialogue[currentIndex];
         currentIndex++;
+    }
+
+    public void NextScene()
+    {
+        SceneManager.LoadScene("Main");
     }
 }
