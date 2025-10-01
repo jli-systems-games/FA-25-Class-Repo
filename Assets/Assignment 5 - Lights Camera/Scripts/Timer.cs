@@ -4,6 +4,7 @@ using TMPro;
 public class Timer : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
+    public TextMeshPro bombTimerText;
     public float currentTime;
 
     private bool hasEnded = false;
@@ -22,6 +23,7 @@ public class Timer : MonoBehaviour
 
             int seconds = Mathf.FloorToInt(currentTime);
             timerText.text = string.Format("00.00.{0:D2}", seconds);
+            bombTimerText.text = string.Format("00.00.{0:D2}", seconds);
             //Timer code from https://www.youtube.com/watch?v=POq1i8FyRyQ
         }
     }
