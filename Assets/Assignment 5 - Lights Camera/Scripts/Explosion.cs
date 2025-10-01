@@ -18,6 +18,7 @@ public class Explosion : MonoBehaviour
     public GameObject explosionParticle;
 
     private bool isInExplosion = false;
+    public GameObject carEnterArea;
 
     public Timer timer;
 
@@ -91,6 +92,8 @@ public class Explosion : MonoBehaviour
 
                     rb.AddForce(randomForceVector, ForceMode.Impulse);
                     rb.AddTorque(randomTorqueVector, ForceMode.Impulse);
+
+                    carEnterArea.SetActive(false);
                 }
             }
         }

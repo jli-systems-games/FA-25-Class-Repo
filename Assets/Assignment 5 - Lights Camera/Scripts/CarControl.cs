@@ -12,6 +12,11 @@ public class CarControl : MonoBehaviour
     private Rigidbody rb;
     private bool inBuilding = true;
 
+    public PlayerEnter playerEnter;
+
+    public GameObject carCam;
+    public GameObject jumpCam;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -26,17 +31,20 @@ public class CarControl : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && inBuilding)
+        if (playerEnter.hasEnteredCar)
         {
-            rb.AddForce(transform.forward * forwardForce * speedMultiplier, ForceMode.Impulse);
+            if (Input.GetKeyDown(KeyCode.Space) && inBuilding)
+            {
+                rb.AddForce(transform.forward * forwardForce * speedMultiplier, ForceMode.Impulse);
 
-            speedMultiplier *= 1.1f;
+                speedMultiplier *= 1.1f;
 
-            Debug.Log("Force pushed.");
-        }
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("No more speed.");
+                Debug.Log("Force pushed.");
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("No more speed.");
+            }
         }
     }
 
@@ -47,6 +55,15 @@ public class CarControl : MonoBehaviour
             rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
 
             rb.AddTorque(Vector3.right * forwardAngle, ForceMode.Acceleration);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Car Jump"))
+        {
+            carCam.SetActive(false);
+            jumpCam.SetActive(true);
         }
     }
 }
