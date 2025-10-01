@@ -16,6 +16,7 @@ public class CarControl : MonoBehaviour
 
     public GameObject carCam;
     public GameObject jumpCam;
+    public GameObject airCam;
 
     void Start()
     {
@@ -64,6 +65,11 @@ public class CarControl : MonoBehaviour
         {
             carCam.SetActive(false);
             jumpCam.SetActive(true);
+        }
+        else if (other.gameObject.CompareTag("Car Air"))
+        {
+            jumpCam.SetActive(false);
+            airCam.SetActive(true);
         }
     }
 }
