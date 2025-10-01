@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MyBike : MonoBehaviour
 {
@@ -20,21 +21,26 @@ public class MyBike : MonoBehaviour
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
-        // ǰ��
         if (v > 0)
         {
             if (rb.linearVelocity.magnitude < maxSpeed)
                 rb.AddForce(transform.forward * v * moveForce * Time.fixedDeltaTime);
         }
 
-        // ɲ��
         if (Input.GetKey(KeyCode.Space))
         {
             rb.AddForce(-rb.linearVelocity.normalized * brakeForce * Time.fixedDeltaTime);
         }
 
-        // ת��
         transform.Rotate(Vector3.up * h * turnTorque * Time.deltaTime);
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Finish"))
+        {
+            SceneManager.LoadScene("SceneTwo");
+        }
     }
 }

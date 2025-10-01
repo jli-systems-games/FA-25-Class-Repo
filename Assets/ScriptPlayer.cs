@@ -4,6 +4,7 @@ using TMPro;
 
 public class ScriptPlayer : MonoBehaviour
 {
+
     public List<string> dialogue = new List<string>()
     {
         "While walking, I asked him to take me home.",
@@ -19,8 +20,15 @@ public class ScriptPlayer : MonoBehaviour
 
     public TextMeshProUGUI dialogueText;
 
+    private void Start()
+    {
+        currentIndex = 0;
+        dialogueText.text = "";
+    }
+
     public void GetNextLine()
     {
+        Debug.Log("GetNextLine called");
         dialogueText.text = dialogue[currentIndex];
         currentIndex++;
     }
