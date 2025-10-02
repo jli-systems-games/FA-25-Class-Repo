@@ -21,7 +21,14 @@ public class BreakableObject:MonoBehaviour{
 	bool broken;                                    //Determines if the object has been broken or not 
 	Transform frags;
 
-	public void OnTriggerEnter(Collider other) {
+	private AudioSource audioSource;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public void OnTriggerEnter(Collider other) {
 		triggerBreak();
 	}
 	
@@ -36,6 +43,8 @@ public class BreakableObject:MonoBehaviour{
 	    Destroy(transform.GetComponent<Collider>());
 	    Destroy(transform.GetComponent<Rigidbody>());
 	    StartCoroutine(breakObject());
+
+		audioSource.Play();
 	}
 
 	// breaks object

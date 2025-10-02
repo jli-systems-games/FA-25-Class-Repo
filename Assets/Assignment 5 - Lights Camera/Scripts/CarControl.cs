@@ -26,9 +26,15 @@ public class CarControl : MonoBehaviour
 
     public GameObject splashEffect;
 
+    private AudioSource audioSource;
+
+    public bool hasJumped = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        audioSource = GetComponent<AudioSource>();
     }
     private void OnTriggerExit(Collider other)
     {
@@ -44,6 +50,8 @@ public class CarControl : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) && inBuilding)
             {
+                audioSource.Play();
+
                 windowCollider.SetActive(false);
 
                 rb.AddForce(transform.forward * forwardForce * speedMultiplier, ForceMode.Impulse);
@@ -75,6 +83,7 @@ public class CarControl : MonoBehaviour
         {
             carCam.SetActive(false);
             jumpCam.SetActive(true);
+            hasJumped = true;
         }
         else if (other.gameObject.CompareTag("Car Air"))
         {
@@ -100,7 +109,7 @@ public class CarControl : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
 
-            StartCoroutine(DelayBeforeWin(2f));
+            StartCoroutine(DelayBeforeWin(5f));
         }
     }
     private IEnumerator DelayBeforeWin(float delay)

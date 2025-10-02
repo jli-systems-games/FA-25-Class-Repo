@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Explosion : MonoBehaviour
 {
@@ -22,10 +23,12 @@ public class Explosion : MonoBehaviour
 
     public Timer timer;
 
+    public CarControl carControl;
+
     private void Start()
     {
         explosionParticle.SetActive(false);
-        StartCoroutine(TimeBeforeExplosion(timer.currentTime));        
+        StartCoroutine(TimeBeforeExplosion(timer.currentTime));
     }
 
     private IEnumerator TimeBeforeExplosion(float delay)
@@ -97,5 +100,16 @@ public class Explosion : MonoBehaviour
                 }
             }
         }
+        
+        if (!carControl.hasJumped)
+        {
+            StartCoroutine(DelayBeforeLose(5f));
+        }
+    }
+    private IEnumerator DelayBeforeLose(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        SceneManager.LoadScene("Game Over Scene");
     }
 }

@@ -5,7 +5,7 @@ public class LoadScene : MonoBehaviour
 {
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             SceneManager.LoadScene("Game Scene");
         }
