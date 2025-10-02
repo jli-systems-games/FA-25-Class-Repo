@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CarControl : MonoBehaviour
 {
@@ -17,6 +19,12 @@ public class CarControl : MonoBehaviour
     public GameObject carCam;
     public GameObject jumpCam;
     public GameObject airCam;
+    public GameObject sideCam;
+    public GameObject poolCam;
+
+    public GameObject windowCollider;
+
+    public GameObject splashEffect;
 
     void Start()
     {
@@ -36,6 +44,8 @@ public class CarControl : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) && inBuilding)
             {
+                windowCollider.SetActive(false);
+
                 rb.AddForce(transform.forward * forwardForce * speedMultiplier, ForceMode.Impulse);
 
                 speedMultiplier *= 1.1f;
@@ -71,5 +81,32 @@ public class CarControl : MonoBehaviour
             jumpCam.SetActive(false);
             airCam.SetActive(true);
         }
+        else if (other.gameObject.CompareTag("Car Side"))
+        {
+            airCam.SetActive(false);
+            sideCam.SetActive(true);
+        }
+        else if (other.gameObject.CompareTag("Game Over"))
+        {
+            SceneManager.LoadScene("Game Over Scene");
+        }
+        else if (other.gameObject.CompareTag("Pool"))
+        {
+            sideCam.SetActive(false);
+            poolCam.SetActive(true);
+
+            splashEffect.SetActive(true);
+
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+
+            StartCoroutine(DelayBeforeWin(2f));
+        }
+    }
+    private IEnumerator DelayBeforeWin(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        SceneManager.LoadScene("Win Scene");
     }
 }
