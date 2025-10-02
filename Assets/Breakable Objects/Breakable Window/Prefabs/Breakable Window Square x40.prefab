@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400000}
-  - component: {fileID: 11400000}
   - component: {fileID: 6500000}
+  - component: {fileID: 2502214705182287725}
   m_Layer: 0
   m_Name: Breakable Window Square x40
   m_TagString: Untagged
@@ -28,32 +28,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.54095745, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 694.0499, y: 694.0499, z: 694.0499}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 400002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d76b2b1bb8cabb40a877fdc23f45994, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fragments: {fileID: 400000, guid: 4092b4ad1257d6549a1f67e3e3e0ff6c, type: 3}
-  waitForRemoveCollider: 3
-  waitForRemoveRigid: 4
-  waitForDestroy: 4
-  explosiveForce: 100
-  durability: 3
-  breakParticles: {fileID: 0}
-  mouseClickDestroy: 0
 --- !u!65 &6500000
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -75,6 +55,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 0.03}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2502214705182287725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d76b2b1bb8cabb40a877fdc23f45994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fragments: {fileID: 400000, guid: 4092b4ad1257d6549a1f67e3e3e0ff6c, type: 3}
+  waitForRemoveCollider: 1
+  waitForRemoveRigid: 10
+  waitForDestroy: 2
+  explosiveForce: 350
+  durability: 5
+  breakParticles: {fileID: 0}
+  mouseClickDestroy: 0
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0
