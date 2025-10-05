@@ -3,8 +3,8 @@ using System.Collections;
 
 public class NPCEmotion : MonoBehaviour
 {
-    public GameObject normalSprite;   // default
-    public GameObject emotionSprite;  // alternate emotion
+    public GameObject normalSprite; 
+    public GameObject emotionSprite;  
     public float emotionTime = 2f;
 
     public void ChangeEmotion()

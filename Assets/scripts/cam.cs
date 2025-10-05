@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-
+using TMPro;
 public class FirstPersonAimInteract : MonoBehaviour
 {
     [Header("Mouse Look")]
@@ -17,14 +17,26 @@ public class FirstPersonAimInteract : MonoBehaviour
     public GameObject defaultCrosshair;
     public GameObject npcCrosshair;
 
+
     [Header("Settings")]
-    public float rayDistance = 10f; // max distance to detect NPC
+    public float rayDistance = 10f;
 
     private float rotationX;
     private Coroutine handRoutine;
 
+    [Header("Score")]
+    public TextMeshProUGUI scoreText;
+    private int score = 0;
+
+    [Header("End")]
+    public Animator winAnimator;
+    public string winTrigger = "Win";
+    public float pauseDelay = 2f;
+    public GameObject bgm;
+    public GameObject end;
     void Start()
     {
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -38,6 +50,11 @@ public class FirstPersonAimInteract : MonoBehaviour
         HandleMouseLook();
         HandleAiming();
         HandleClick();
+        if (score >= 20)
+        {
+            end.SetActive(true);
+            StartCoroutine(WinSequence());
+        }
     }
 
     void HandleMouseLook()
@@ -45,10 +62,10 @@ public class FirstPersonAimInteract : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
 
-        // rotate camera horizontally
+
         transform.Rotate(Vector3.up * mouseX);
 
-        // rotate vertically
+
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, minLookX, maxLookX);
         transform.localEulerAngles = new Vector3(rotationX, transform.localEulerAngles.y, 0);
@@ -56,7 +73,7 @@ public class FirstPersonAimInteract : MonoBehaviour
 
     void HandleAiming()
     {
-        // cast a ray from camera center
+
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray, rayDistance);
 
@@ -76,7 +93,7 @@ public class FirstPersonAimInteract : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // Show hand temporarily
+
             if (handRoutine != null) StopCoroutine(handRoutine);
             handRoutine = StartCoroutine(ShowHand());
 
@@ -88,6 +105,9 @@ public class FirstPersonAimInteract : MonoBehaviour
             {
                 NPCEmotion npc = hit.collider.GetComponent<NPCEmotion>();
                 if (npc != null) npc.ChangeEmotion();
+                score++;
+                UpdateScoreUI();
+
             }
         }
     }
@@ -97,5 +117,26 @@ public class FirstPersonAimInteract : MonoBehaviour
         if (hand != null) hand.SetActive(true);
         yield return new WaitForSeconds(handVisibleTime);
         if (hand != null) hand.SetActive(false);
+    }
+    void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "" + score;
+        }
+    }
+    IEnumerator WinSequence()
+    {
+        
+        if (winAnimator != null)
+        {
+            winAnimator.SetTrigger(winTrigger);
+        }
+
+       
+        yield return new WaitForSecondsRealtime(pauseDelay);
+
+       
+        Time.timeScale = 0f;
     }
 }
