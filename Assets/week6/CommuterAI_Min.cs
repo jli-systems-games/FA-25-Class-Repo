@@ -50,7 +50,7 @@ public class CommuterAI_Min : MonoBehaviour
             {
                 if (!rb.isKinematic) // kinematic일 땐 velocity 건드리지 않음
                 {
-                    rb.linearVelocity = Vector3.zero;       // ← linearVelocity가 아니라 velocity
+                    rb.linearVelocity = Vector3.zero;
                     rb.angularVelocity = Vector3.zero;
                 }
                 rb.isKinematic = true;
