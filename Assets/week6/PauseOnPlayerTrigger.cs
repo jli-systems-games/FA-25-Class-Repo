@@ -60,7 +60,6 @@ public class PauseOnPlayerTrigger : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-        if (TimeOut.Instance) TimeOut.Instance.RegisterSuccess();
     }
 
     // (선택) 재시작용
