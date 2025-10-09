@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TicketManager : MonoBehaviour
 {
+    public RaycastLogic raycastLogic;
+
     //Fake Flags
     public bool isFake;
     public bool isDate;
@@ -62,6 +64,11 @@ public class TicketManager : MonoBehaviour
     public RawImage logoImage;
 
     private Renderer passengerRenderer;
+
+    public bool isMistakenCaught = false;
+    public bool isCaught = false;
+    public bool isFine = false;
+    public bool isMistakeFine = false;
 
     void Start()
     {
@@ -249,19 +256,33 @@ public class TicketManager : MonoBehaviour
 
     public void CheckPassengerStatus()
     {
-        if (!isFake)
-        {
-            Debug.Log($"{gameObject.name} checked: Ticket is real. Nothing changed.");
-        }
-        else
-        {
-            Debug.Log($"{gameObject.name} checked: Ticket is FAKE! Status updated.");
+        gameObject.GetComponent<Collider>().enabled = false;
 
-            isFake = false;
-
+        if (raycastLogic.hasCheckedFalse)
+        {
             passengerRenderer.material.color = Color.red;
 
-            gameObject.GetComponent<Collider>().enabled = false;
+            if (isFake)
+            {
+                isCaught = true;
+            }
+            else
+            {
+                isMistakenCaught = true;
+            }
+        }
+        else if (raycastLogic.hasCheckedTrue)
+        {
+            passengerRenderer.material.color = Color.green;
+
+            if (isFake)
+            {
+                isMistakeFine = true;
+            }
+            else
+            {
+                isFine = true;
+            }
         }
     }
 

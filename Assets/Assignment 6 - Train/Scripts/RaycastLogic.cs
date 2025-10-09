@@ -9,6 +9,9 @@ public class RaycastLogic : MonoBehaviour
     public Canvas ticketCanvas;
     public LayerMask interactableLayer;
 
+    public bool hasCheckedTrue = false;
+    public bool hasCheckedFalse = false;
+
     private TicketManager currentTicketManager;
 
     void Start()
@@ -46,6 +49,9 @@ public class RaycastLogic : MonoBehaviour
 
         if (interactionCanvas.isActiveAndEnabled)
         {
+            hasCheckedFalse = false;
+            hasCheckedTrue = false;
+
             if (Input.GetKeyDown(KeyCode.E))
             {
                 ShowTicket(currentTicketManager);
@@ -61,8 +67,14 @@ public class RaycastLogic : MonoBehaviour
             {
                 ticketCanvas.gameObject.SetActive(false);
             }
-            else if (Input.GetKeyDown(KeyCode.Return))
+            else if (Input.GetKeyDown(KeyCode.F))
             {
+                hasCheckedFalse = true;
+                ProcessTicket(currentTicketManager);
+            }
+            else if (Input.GetKey(KeyCode.T))
+            {
+                hasCheckedTrue = true;
                 ProcessTicket(currentTicketManager);
             }
         }
