@@ -9,6 +9,8 @@ public class RaycastLogic : MonoBehaviour
     public Canvas ticketCanvas;
     public LayerMask interactableLayer;
 
+    private TicketManager currentTicketManager;
+
     void Start()
     {
         interactionCanvas.gameObject.SetActive(false);
@@ -26,19 +28,27 @@ public class RaycastLogic : MonoBehaviour
         {
             if (hit.collider.CompareTag("Passenger"))
             {
+                TicketManager ticketManager = hit.collider.GetComponent<TicketManager>();
+
+                if (ticketManager != null)
+                {
+                    currentTicketManager = ticketManager;
+                }
+
                 Debug.Log("Found passenger");
                 interactionCanvas.gameObject.SetActive(true);
             }
-            else
-            {
-                interactionCanvas.gameObject.SetActive(false);
-            }
+        }
+        else
+        {
+            interactionCanvas.gameObject.SetActive(false);
         }
 
         if (interactionCanvas.isActiveAndEnabled)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
+                ShowTicket(currentTicketManager);
                 ticketCanvas.gameObject.SetActive(true);
             }
         }
@@ -51,6 +61,22 @@ public class RaycastLogic : MonoBehaviour
             {
                 ticketCanvas.gameObject.SetActive(false);
             }
+            else if (Input.GetKeyDown(KeyCode.Return))
+            {
+                ProcessTicket(currentTicketManager);
+            }
         }
+    }
+
+    private void ShowTicket(TicketManager ticketManager)
+    {
+        ticketManager.ShowTicketUI(ticketCanvas.gameObject);
+    }
+
+    private void ProcessTicket(TicketManager ticketManager)
+    {
+        ticketManager.CheckPassengerStatus();
+
+        ticketCanvas.gameObject.SetActive(false);
     }
 }
