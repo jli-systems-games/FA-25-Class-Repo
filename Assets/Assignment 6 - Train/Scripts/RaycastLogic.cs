@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RaycastLogic : MonoBehaviour
 {
@@ -8,16 +9,22 @@ public class RaycastLogic : MonoBehaviour
     public Canvas interactionCanvas;
     public Canvas ticketCanvas;
     public LayerMask interactableLayer;
+    public Canvas endCanvas;
+    public GameObject notFinishText;
 
     public bool hasCheckedTrue = false;
     public bool hasCheckedFalse = false;
 
     private TicketManager currentTicketManager;
 
+    public CheckTicketStatus checkTicketStatus;
+
     void Start()
     {
         interactionCanvas.gameObject.SetActive(false);
         ticketCanvas.gameObject.SetActive(false);
+        endCanvas.gameObject.SetActive(false);
+        notFinishText.SetActive(false);
     }
     
     void Update()
@@ -40,11 +47,39 @@ public class RaycastLogic : MonoBehaviour
 
                 Debug.Log("Found passenger");
                 interactionCanvas.gameObject.SetActive(true);
+                endCanvas.gameObject.SetActive(false);
+                notFinishText.SetActive(false);
+            }
+            else if (hit.collider.CompareTag("End Game"))
+            {
+                endCanvas.gameObject.SetActive(true);
+                interactionCanvas.gameObject.SetActive(false);
+
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    if (checkTicketStatus.HaveAllPassengersBeenChecked())
+                    {
+                        if (checkTicketStatus.HasPlayerMadeMistake())
+                        {
+                            SceneManager.LoadScene("Game Over Scene");
+                        }
+                        else if (!checkTicketStatus.HasPlayerMadeMistake())
+                        {
+                            SceneManager.LoadScene("Complete Scene");
+                        }
+                    }
+                    else
+                    {
+                        notFinishText.SetActive(true);
+                    }
+                }
             }
         }
         else
         {
             interactionCanvas.gameObject.SetActive(false);
+            endCanvas.gameObject.SetActive(false);
+            notFinishText.SetActive(false);
         }
 
         if (interactionCanvas.isActiveAndEnabled)

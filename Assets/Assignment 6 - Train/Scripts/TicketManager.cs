@@ -311,14 +311,16 @@ public class TicketManager : MonoBehaviour
         {
             int timeDifference = trueTime - difference;
             int fakePast = Random.Range(timeDifference, trueTime);
+
+            return fakePast;
         }
         else
         {
             int timeDifference = trueTime + difference;
             int fakeFuture = Random.Range(trueTime + 1, timeDifference);
-        }
 
-        return calculatedTime;
+            return fakeFuture;
+        }
     }
 
     public int RandomTimeRandomizerLimit(int trueTime, int start,  int end, int startDifference)
@@ -328,13 +330,13 @@ public class TicketManager : MonoBehaviour
         if (randomTense == 0)
         {
             int fakePast = Random.Range(start, trueTime - startDifference);
+            return fakePast;
         }
         else
         {
             int fakeFuture = Random.Range(trueTime + 1, end + 1);
+            return fakeFuture;
         }
-
-        return calculatedTime;
     }
 
     public char RandomLetterGenerator(char endLetter, char trueLetter)

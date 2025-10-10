@@ -11,8 +11,11 @@ public class TrueDateAndTime : MonoBehaviour
 
     void Start()
     {
+        int currentHour = trueValue.hour - 1;
+
         yearText.text = trueValue.year.ToString();
         monthText.text = trueValue.month.ToString("D2");
         dayText.text = trueValue.day.ToString("D2");
+        hourText.text = currentHour.ToString("D2");
     }
 }
