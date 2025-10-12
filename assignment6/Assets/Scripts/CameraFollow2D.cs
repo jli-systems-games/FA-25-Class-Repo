@@ -7,7 +7,7 @@ public class CameraFollow2D : MonoBehaviour
 
     [Header("偏移与看前方")]
     public Vector2 baseOffset = new Vector2(0f, 2.5f);
-    public Vector2 forwardAxis = Vector2.up; // 向上推进；横版改为 Vector2.right
+    public Vector2 forwardAxis = Vector2.up; 
     public float lookAheadDistPerSpeed = 0.25f;
     public float lookAheadMax = 4f;
     public float followSmooth = 0.15f;

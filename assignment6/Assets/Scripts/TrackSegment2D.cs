@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 public class TrackSegment2D : MonoBehaviour
 {
-    [Header("锚点（Entry 必须存在）")]
+    [Header("Entry")]
     public Transform entryAnchor;
-    public Transform exitAnchor;         // 直/弯片段使用
+    public Transform exitAnchor;      
 
-    [Header("Junction 额外锚点（Y型道岔）")]
+    [Header("Junction Y")]
     public Transform leftAnchor;
     public Transform rightAnchor;
 
-    [Header("路径节点（放在 nodesRoot 下：N0, N1, ...）")]
+    [Header("N0, N1, ...）")]
     public Transform nodesRoot;
     public List<Transform> nodes = new List<Transform>();
 
-    [Header("是否为 Y 型道岔片段")]
+    [Header(" Y ？")]
     public bool isJunction = false;
 
     void OnValidate() { RefreshNodesFromChildren(); }

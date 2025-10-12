@@ -1,183 +1,258 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager2D : MonoBehaviour
 {
     public static GameManager2D I;
 
-    [Header("HUD (TMP)")]
-    public TMP_Text scoreText;      // Canvas/TopBar/ScoreText
-    public TMP_Text speedText;      // Canvas/TopBar/SpeedText
-    public TMP_Text tipText;        // Canvas/Tips
+    [Header("HUD")]
+    public TMP_Text scoreText;    
+    public TMP_Text speedText;   
+    public TMP_Text tipText;  
+
+    [Header("Stability UI (optional)")]
+    public Slider stabilityBar;    
+    public Image stabilityFill;   
+    public Color stableColor = new Color(0.4f, 1f, 0.5f, 1f);
+    public Color dangerColor = new Color(1f, 0.5f, 0.4f, 1f);
+
+    [Header("Start Panel")]
+    public GameObject startPanel;    
+    public Image coverImage;     
+    public TMP_Text startTitleText; 
+    public TMP_Text pressText;   
+    [Tooltip("Accept mouse/touch to start as well as SPACE")]
+    public bool allowMouseStart = true;
+    [Tooltip("Title shown on start panel")]
+    public string gameTitle = "Rhythm Rails";
+    [Tooltip("Blink speed of 'Press SPACE to Start'")]
+    public float pressBlinkSpeed = 2.2f;
 
     [Header("End Panel")]
-    public GameObject endPanel;     // Canvas/EndPanel
-    public TMP_Text titleText;      // Canvas/EndPanel/TitleText
-    public TMP_Text finalScoreText; // Canvas/EndPanel/FinalScoreText
+    public GameObject endPanel;       
+    public TMP_Text titleText;  
+    public TMP_Text finalScoreText;   
 
     [Header("Refs")]
     public Train2DController_Pos train;
+    public TrackGenerator2D_Pos generator;   
 
-    [Header("Options")]
-    [SerializeField] bool alwaysSyncHUD = true;   // 每帧同步 HUD
-    [SerializeField] bool autoWireByPath = true;  // 按层级路径自动连线（当 Inspector 未手动绑定时生效）
+    [Header("Game Flow")]
+    public bool pauseOnGameOver = true;      
+    public bool disableGeneratorOnGameOver = true;
 
-    // -------- 分数脉冲（不叠加 + 上限）--------
-    [Header("Score pulse (UI feedback)")]
-    [SerializeField] float pulseScale = 1.06f;     // 每次脉冲目标倍数（1.03~1.10）
-    [SerializeField] float pulseDuration = 0.10f;  // 动画时长（秒）
-    [SerializeField] float pulseMax = 1.20f;       // 绝对上限
-    [SerializeField] Color pulseColor = Color.white;
+    [Header("Tips")]
+    public float tipInterval = 10f;    
+    float _tipTimer;
+
+    static readonly string[] FUN_TIPS_EN = {
+      "Tap SPACE to nudge the throttle. Mashing keeps the train alive!",
+      "Too slow drains stability, too fast drains it too. Find the sweet spot.",
+      "Near zero stability? Mash SPACE now or never!",
+      "Don’t hold—tap! SPACE, SPACE, SPACE!",
+     // "Junctions switch with a click/tap. Let SPACE handle speed only.",
+     // "Obstacles are instant breakup. Keep it steady and dodge.",
+     // "Green zone speed = comfy ride. Red zone = risky ride.",
+    //  "If the bar turns red, ease up the SPACE taps.",
+      "Stall window active: you have a second—hammer SPACE!",
+      "Every SPACE tap adds a burst. Don’t waste the rhythm.",
+      "You’re driving a train, not a rocket. Tap SPACE, don’t launch.",
+      "Speed isn’t glory—survival is. Tap SPACE to stay smooth.",
+      "SPACE taps work better in rhythm. Find your beat.",
+      //"Cargo gives points. No points if you crash into obstacles.",
+      "Almost zero? Don’t panic. Rapid SPACE can still save you.",
+      "The track won’t wait—be decisive with SPACE.",
+      //"Stability under 0.35 is danger zone. Tap SPACE harder.",
+      "Short bursts > long holds. SPACE is a drum, not a lever.",
+     // "Click to switch at junctions; SPACE controls speed only.",
+      "If you overshoot speed, tap slower—let drag do the work.",
+      "Don’t chase max speed. Chase the green zone.",
+      "If it wiggles, it lives. Keep tapping SPACE to keep it alive!",
+      "SPACE taps pause some drain for a moment—use that window.",
+      "Calm mind, fast fingers: SPACE is your heartbeat."
+    };
+
+    [Header("Score pulse")]
+    [SerializeField] float pulseScale = 1.08f;     
+    [SerializeField] float pulseDuration = 0.12f;  
+    [SerializeField] float pulseMax = 1.20f;  
     Coroutine _pulseCo;
     Vector3 _scoreBaseScale = Vector3.one;
 
     int _score = 0;
-    int _lastShownScore = int.MinValue;
+    bool _isGameOver = false;
+    bool _hasStarted = false; 
 
     void Awake()
     {
-        // 单例
         if (I != null && I != this) { Destroy(gameObject); return; }
         I = this;
 
-        // 自动连线（仅在对应字段为空时）
-        if (autoWireByPath)
-        {
-            TryWireIfNull(ref scoreText, "Canvas/TopBar/ScoreText");
-            TryWireIfNull(ref speedText, "Canvas/TopBar/SpeedText");
-            TryWireIfNull(ref tipText, "Canvas/Tips");
-            TryWireIfNull(ref titleText, "Canvas/EndPanel/TitleText");
-            TryWireIfNull(ref finalScoreText, "Canvas/EndPanel/FinalScoreText");
-            if (!endPanel)
-            {
-                var go = GameObject.Find("Canvas/EndPanel");
-                if (go) endPanel = go;
-            }
-            if (!train) train = FindObjectOfType<Train2DController_Pos>();
-        }
+        if (!generator) generator = FindObjectOfType<TrackGenerator2D_Pos>();
+        if (!train) train = FindObjectOfType<Train2DController_Pos>();
 
         if (endPanel) endPanel.SetActive(false);
 
-        // 记住分数字体初始缩放
         if (scoreText) _scoreBaseScale = scoreText.rectTransform.localScale;
 
-        // 初始 HUD
-        SyncScoreUI(force: true);
-        if (tipText && string.IsNullOrEmpty(tipText.text))
-            tipText.text = "Tap / Space to switch";
+        UpdateScoreUI();
 
-        Debug.Log($"[GM] scoreText bound to: {PathOf(scoreText)}");
+        if (startPanel) startPanel.SetActive(true);
+        if (startTitleText) startTitleText.text = string.IsNullOrEmpty(gameTitle) ? "Rhythm Rails" : gameTitle;
+        if (pressText) pressText.text = "Press SPACE to Start";
+
+        Time.timeScale = 0f;
+        if (generator) generator.enabled = false;
+        _hasStarted = false;
+
+        if (FUN_TIPS_EN.Length > 0) ShowTip(FUN_TIPS_EN[0]);
     }
 
     void Update()
     {
-        if (speedText && train)
-            speedText.text = $"Speed: {train.speed:0.0}";
+        if (!_hasStarted)
+        {
+            if (pressText)
+            {
+                float a = 0.6f + 0.4f * Mathf.Abs(Mathf.Sin(Time.unscaledTime * pressBlinkSpeed));
+                var c = pressText.color; c.a = a; pressText.color = c;
+            }
 
-        if (alwaysSyncHUD) SyncScoreUI();
+            if (Input.GetKeyDown(KeyCode.Space) ||
+               (allowMouseStart && (Input.GetMouseButtonDown(0) ||
+                                   (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))))
+            {
+                StartGame();
+            }
+            return; 
+        }
+
+        _tipTimer += Time.unscaledDeltaTime;
+        if (_tipTimer >= tipInterval)
+        {
+            _tipTimer = 0f;
+            if (FUN_TIPS_EN.Length > 0)
+                ShowTip(FUN_TIPS_EN[Random.Range(0, FUN_TIPS_EN.Length)]);
+        }
     }
 
-    // ======= 外部接口 =======
+    void StartGame()
+    {
+        _hasStarted = true;
+
+        if (startPanel) startPanel.SetActive(false);
+        if (generator) generator.enabled = true;
+
+        Time.timeScale = 1f;
+
+        ShowTip("Tap SPACE to keep speed in the green zone!");
+    }
 
     public void AddScore(int s)
     {
+        if (_isGameOver) return;
         _score += s;
-        Debug.Log($"[GM] score = {_score}");
-        SyncScoreUI(force: true);
+        UpdateScoreUI();
         StartScorePulse();
+    }
+
+    public void SetSpeedAndStability(float speed, float stability01, bool inZone)
+    {
+        if (speedText) speedText.text = $"Speed: {speed:0.0}";
+        if (stabilityBar)
+        {
+            stabilityBar.value = Mathf.Clamp01(stability01);
+            if (stabilityFill)
+                stabilityFill.color = inZone ? stableColor : dangerColor;
+        }
     }
 
     public void GameOver()
     {
+        if (_isGameOver) return;
+        _isGameOver = true;
+
+        if (disableGeneratorOnGameOver && generator) generator.enabled = false;
+        if (pauseOnGameOver) Time.timeScale = 0f;
+
         if (endPanel) endPanel.SetActive(true);
         if (titleText) titleText.text = "Game Over";
         if (finalScoreText) finalScoreText.text = $"Score: {_score}";
-        // 可选：Time.timeScale = 0f;
+        ShowTip("You crashed! Tap SPACE to keep speed in the green next time.");
     }
 
     public void Win()
     {
+        if (_isGameOver) return;
+        _isGameOver = true;
+
+        if (disableGeneratorOnGameOver && generator) generator.enabled = false;
+        if (pauseOnGameOver) Time.timeScale = 0f;
+
         if (endPanel) endPanel.SetActive(true);
         if (titleText) titleText.text = "You Win!";
         if (finalScoreText) finalScoreText.text = $"Score: {_score}";
-        // 可选：Time.timeScale = 0f;
+        ShowTip("Smooth ride! Keep tapping SPACE to stay in the sweet spot.");
     }
 
     public void Restart()
     {
-        //Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+        Scene current = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(current.buildIndex);
     }
 
-    // ======= 内部实现 =======
-
-    void SyncScoreUI(bool force = false)
+    public void ShowTip(string msg)
     {
-        if (!scoreText) return;
-        if (force || _lastShownScore != _score)
-        {
-            scoreText.SetText($"Score: {_score}");
-            _lastShownScore = _score;
-            Canvas.ForceUpdateCanvases(); // 保险刷新
-        }
+        if (!tipText) return;
+        tipText.text = msg;
+    }
+
+    public void Tip_NearZero() => ShowTip("Near zero stability! Mash SPACE!");
+    public void Tip_StallEnter() => ShowTip("Stall! You have a moment—hammer SPACE!");
+    public void Tip_StallRecover() => ShowTip("Recovered! Keep tapping SPACE inside the green zone.");
+    public void Tip_Obstacle() => ShowTip("Obstacle ahead—steady! Tap SPACE, don’t panic.");
+    public void Tip_Cargo() => ShowTip("+1 score! Smooth driving = more cargo.");
+    public void Tip_Junction() => ShowTip("Junction ahead: click to switch. SPACE is only for speed.");
+
+    void UpdateScoreUI()
+    {
+        if (scoreText) scoreText.text = $"Score: {_score}";
     }
 
     void StartScorePulse()
     {
         if (!scoreText) return;
 
-        // 若上一次还在执行，先停止并恢复到基准，避免叠加
         if (_pulseCo != null)
         {
             StopCoroutine(_pulseCo);
             scoreText.rectTransform.localScale = _scoreBaseScale;
+            _pulseCo = null;
         }
-        _pulseCo = StartCoroutine(PulseTMP_Clamped(scoreText, pulseScale, pulseDuration, pulseMax, pulseColor));
+        _pulseCo = StartCoroutine(PulseTMP_Clamped(scoreText, pulseScale, pulseDuration, pulseMax));
     }
 
-    System.Collections.IEnumerator PulseTMP_Clamped(TMP_Text t, float scale, float dur, float maxScale, Color flash)
+    System.Collections.IEnumerator PulseTMP_Clamped(TMP_Text t, float scale, float dur, float maxScale)
     {
         var rt = t.rectTransform;
 
-        // 基准缩放：以记录的 _scoreBaseScale 为准
         Vector3 from = _scoreBaseScale;
         Vector3 to = _scoreBaseScale * Mathf.Min(scale, maxScale);
 
-        Color orig = t.color;
-        t.color = flash;
-
         float t0 = 0f;
-        // ease-out（前快后慢）
         while (t0 < dur)
         {
-            t0 += Time.unscaledDeltaTime; // 不受暂停影响
+            t0 += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(t0 / dur);
-            float e = 1f - (1f - k) * (1f - k); // easeOutQuad
+            float e = 1f - (1f - k) * (1f - k); 
             rt.localScale = Vector3.LerpUnclamped(from, to, e);
             yield return null;
         }
 
-        // 回到基准
         rt.localScale = _scoreBaseScale;
-        t.color = orig;
         _pulseCo = null;
-    }
-
-    void TryWireIfNull(ref TMP_Text target, string path)
-    {
-        if (target) return;
-        var go = GameObject.Find(path);
-        if (go) target = go.GetComponent<TMP_Text>();
-    }
-
-    static string PathOf(Component c)
-    {
-        if (!c) return "null";
-        var t = c.transform;
-        System.Text.StringBuilder sb = new();
-        while (t != null) { sb.Insert(0, "/" + t.name); t = t.parent; }
-        return sb.ToString();
     }
 }
