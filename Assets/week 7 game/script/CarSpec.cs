@@ -14,4 +14,6 @@ public class CarSpec : ScriptableObject
     public float grip_rating;
     public float downforce_rating;
     public float weight_kg;
+
+    public GameObject uiCardPrefab;
 }
