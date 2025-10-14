@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class CarCustomizerManager : MonoBehaviour
 {
@@ -111,5 +112,19 @@ public class CarCustomizerManager : MonoBehaviour
         PlayerPrefs.SetFloat("car_color_b", savedColor.b);
         PlayerPrefs.SetFloat("car_color_a", savedColor.a);
         PlayerPrefs.Save();
+    }
+
+    public void SubmitAndGoRace(string raceSceneName)
+    {
+        // 선택 인덱스/색 저장
+        PlayerPrefs.SetInt("car_index", currentIndex);
+        PlayerPrefs.SetFloat("car_color_r", savedColor.r);
+        PlayerPrefs.SetFloat("car_color_g", savedColor.g);
+        PlayerPrefs.SetFloat("car_color_b", savedColor.b);
+        PlayerPrefs.SetFloat("car_color_a", savedColor.a);
+        PlayerPrefs.Save();
+
+        // 다음 씬 로드
+        SceneManager.LoadScene(raceSceneName);
     }
 }
