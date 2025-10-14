@@ -6,11 +6,16 @@ public class CarCustomizerManager : MonoBehaviour
     [Header("교체할 차 프리팹들(각 프리팹엔 CarColor가 붙어 있어야 함)")]
     public List<GameObject> carPrefabs = new List<GameObject>();
 
+    [Header("차 정보 UI 프리팹들(차 순서와 동일)")]
+    public List<GameObject> uiCardPrefabs = new List<GameObject>();  // ★ 추가
+    public Transform uiParent;                                        // ★ 추가 (Canvas/CarCardRoot 등)
+
     [Header("생성 위치/회전 기준")]
     public Transform spawnPoint;
 
     int currentIndex = 0;
     GameObject currentCar;
+    GameObject currentCardUI;     // ★ 추가
     CarColor currentCarColor;
 
     // 현재 선택된 색 (버튼이 이 값을 바꾸고, 매니저가 현 차에 적용)
@@ -53,8 +58,11 @@ public class CarCustomizerManager : MonoBehaviour
 
     void SpawnCar(int index)
     {
+        // 기존 차/카드 정리
         if (currentCar) Destroy(currentCar);
+        if (currentCardUI) Destroy(currentCardUI);   // ★ 추가
 
+        // 차 스폰
         Vector3 pos = spawnPoint ? spawnPoint.position : Vector3.zero;
         Quaternion rot = spawnPoint ? spawnPoint.rotation : Quaternion.identity;
 
@@ -62,6 +70,20 @@ public class CarCustomizerManager : MonoBehaviour
         currentCarColor = currentCar.GetComponentInChildren<CarColor>(true);
         if (!currentCarColor)
             Debug.LogWarning("새 차 프리팹에 CarColor가 없습니다. Body Renderer 연결된 CarColor를 붙여주세요.");
+
+        // UI 카드 스폰 (차 순서와 동일한 인덱스의 UI 프리팹 사용) ★ 추가
+        if (uiParent && index < uiCardPrefabs.Count && uiCardPrefabs[index] != null)
+        {
+            currentCardUI = Instantiate(uiCardPrefabs[index], uiParent);
+            currentCardUI.SetActive(true);
+        }
+        else
+        {
+            // 문제가 있으면 한 번만 로그로 확인
+            if (!uiParent) Debug.LogWarning("[UI] uiParent가 비었습니다. Canvas 아래 빈 오브젝트를 연결하세요.");
+            if (index >= uiCardPrefabs.Count) Debug.LogWarning("[UI] uiCardPrefabs 개수가 carPrefabs보다 적습니다.");
+            if (index < uiCardPrefabs.Count && uiCardPrefabs[index] == null) Debug.LogWarning("[UI] 해당 인덱스의 UI 프리팹이 null입니다.");
+        }
     }
 
     void ApplySavedColorToCurrent()
