@@ -116,6 +116,7 @@ public class CarCustomizerManager : MonoBehaviour
         // 다음 씬 로드
         SceneManager.LoadScene(raceSceneName);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     void SaveIndex()
     {
@@ -137,6 +138,8 @@ public class CarCustomizerManager : MonoBehaviour
 >>>>>>> parent of 5ec2ef95 (final racing input)
 =======
 >>>>>>> parent of 5ec2ef95 (final racing input)
+=======
+>>>>>>> parent of ca2c6488 (???)
 =======
 >>>>>>> parent of ca2c6488 (???)
     }
