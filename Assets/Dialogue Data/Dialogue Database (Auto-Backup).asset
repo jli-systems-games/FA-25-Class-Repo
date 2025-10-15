@@ -3034,7 +3034,7 @@ MonoBehaviour:
         destinationDialogueID: 51
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: CheckCourage(4)
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -3042,7 +3042,7 @@ MonoBehaviour:
       canvasRect:
         serializedVersion: 2
         x: 72.5269
-        y: 2665.856
+        y: 2668.711
         width: 160
         height: 30
     - id: 50
@@ -3089,7 +3089,7 @@ MonoBehaviour:
         destinationDialogueID: 73
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckLogic(3) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -3370,7 +3370,7 @@ MonoBehaviour:
         destinationDialogueID: 62
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckTech(4) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -3425,7 +3425,7 @@ MonoBehaviour:
         destinationDialogueID: 57
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckCourage(4) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -4624,14 +4624,14 @@ MonoBehaviour:
         destinationDialogueID: 81
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckLogic(4) '
       userScript: 
       onExecute:
         m_PersistentCalls:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 320.74844
+        x: 322.1354
         y: 3735.5676
         width: 160
         height: 30
@@ -5987,7 +5987,7 @@ MonoBehaviour:
         destinationDialogueID: 104
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckEmpathy(3) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -5995,7 +5995,7 @@ MonoBehaviour:
       canvasRect:
         serializedVersion: 2
         x: 1826.7852
-        y: 1166.8583
+        y: 1169.8031
         width: 160
         height: 30
     - id: 104
@@ -6219,15 +6219,15 @@ MonoBehaviour:
         destinationDialogueID: 109
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckEmpathy(5) '
       userScript: 
       onExecute:
         m_PersistentCalls:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 1319.9993
-        y: 1502.8414
+        x: 1322.6003
+        y: 1504.1418
         width: 160
         height: 30
     - id: 108
@@ -6274,15 +6274,15 @@ MonoBehaviour:
         destinationDialogueID: 158
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckLogic(3) '
       userScript: 
       onExecute:
         m_PersistentCalls:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 1326.9016
-        y: 1165.9926
+        x: 1325.699
+        y: 1168.9374
         width: 160
         height: 30
     - id: 109
@@ -6775,7 +6775,7 @@ MonoBehaviour:
         destinationDialogueID: 118
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckCourage(4) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -8794,7 +8794,7 @@ MonoBehaviour:
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: -1
+        value: 4
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -8816,7 +8816,13 @@ MonoBehaviour:
       delaySimStatus: 0
       falseConditionAction: Block
       conditionPriority: 2
-      outgoingLinks: []
+      outgoingLinks:
+      - originConversationID: 1
+        originDialogueID: 154
+        destinationConversationID: 1
+        destinationDialogueID: 440
+        isConnector: 0
+        priority: 2
       conditionsString: 
       userScript: 
       onExecute:
@@ -8824,8 +8830,8 @@ MonoBehaviour:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 2647.7024
-        y: 1376.7194
+        x: 2646.4814
+        y: 1379.1614
         width: 160
         height: 30
     - id: 155
@@ -9257,7 +9263,7 @@ MonoBehaviour:
         destinationDialogueID: 164
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckLogic(3) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -9265,7 +9271,7 @@ MonoBehaviour:
       canvasRect:
         serializedVersion: 2
         x: 2141.4434
-        y: 1580.4973
+        y: 1581.9158
         width: 160
         height: 30
     - id: 163
@@ -11623,7 +11629,7 @@ MonoBehaviour:
         destinationDialogueID: 208
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckEmpathy(5) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -12425,7 +12431,7 @@ MonoBehaviour:
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 2
+        value: -1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -12440,6 +12446,10 @@ MonoBehaviour:
         value: 
         type: 0
         typeString: 
+      - title: Response Menu Sequence
+        value: 
+        type: 0
+        typeString: 
       conversationID: 1
       isRoot: 0
       isGroup: 0
@@ -12447,16 +12457,40 @@ MonoBehaviour:
       delaySimStatus: 0
       falseConditionAction: Block
       conditionPriority: 2
-      outgoingLinks: []
+      outgoingLinks:
+      - originConversationID: 1
+        originDialogueID: 222
+        destinationConversationID: 1
+        destinationDialogueID: 35
+        isConnector: 0
+        priority: 2
+      - originConversationID: 1
+        originDialogueID: 222
+        destinationConversationID: 1
+        destinationDialogueID: 34
+        isConnector: 0
+        priority: 2
       conditionsString: 
       userScript: 
       onExecute:
         m_PersistentCalls:
-          m_Calls: []
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: 
+            m_MethodName: 
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: 
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
       canvasRect:
         serializedVersion: 2
-        x: 3032.2231
-        y: 3451.9268
+        x: 3033.6025
+        y: 3454.6855
         width: 160
         height: 30
     - id: 223
@@ -13016,7 +13050,7 @@ MonoBehaviour:
         destinationDialogueID: 235
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckTech(5) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -13024,7 +13058,7 @@ MonoBehaviour:
       canvasRect:
         serializedVersion: 2
         x: 1757.8816
-        y: 4294.507
+        y: 4292.4824
         width: 160
         height: 30
     - id: 233
@@ -14562,7 +14596,7 @@ MonoBehaviour:
         destinationDialogueID: 267
         isConnector: 0
         priority: 2
-      conditionsString: 
+      conditionsString: 'CheckLogic(3) '
       userScript: 
       onExecute:
         m_PersistentCalls:
@@ -15495,7 +15529,7 @@ MonoBehaviour:
       canvasRect:
         serializedVersion: 2
         x: 1415.2355
-        y: 5735.7817
+        y: 5738.861
         width: 160
         height: 30
     - id: 279
@@ -24371,9 +24405,156 @@ MonoBehaviour:
         y: 3843.2815
         width: 160
         height: 30
+    - id: 440
+      fields:
+      - title: Title
+        value: 
+        type: 0
+        typeString: 
+      - title: Description
+        value: 
+        type: 0
+        typeString: 
+      - title: Actor
+        value: 4
+        type: 5
+        typeString: CustomFieldType_Actor
+      - title: Conversant
+        value: -1
+        type: 5
+        typeString: CustomFieldType_Actor
+      - title: Menu Text
+        value: 
+        type: 0
+        typeString: 
+      - title: Dialogue Text
+        value: 
+        type: 0
+        typeString: 
+      - title: Sequence
+        value: SendMessage(RestartGame, GlobalRestart, BroadcastMessage)
+        type: 0
+        typeString: 
+      conversationID: 1
+      isRoot: 0
+      isGroup: 0
+      nodeColor: 
+      delaySimStatus: 0
+      falseConditionAction: Block
+      conditionPriority: 2
+      outgoingLinks: []
+      conditionsString: 
+      userScript: 
+      onExecute:
+        m_PersistentCalls:
+          m_Calls: []
+      canvasRect:
+        serializedVersion: 2
+        x: 2646.4814
+        y: 1427.9404
+        width: 160
+        height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 0, y: 927.43713}
-    canvasZoom: 0.24600436
+    canvasScrollPosition: {x: 1412.3845, y: 3546.838}
+    canvasZoom: 0.49399042
+  - id: 2
+    fields:
+    - title: Title
+      value: New Conversation 2
+      type: 0
+      typeString: 
+    - title: Description
+      value: 
+      type: 0
+      typeString: 
+    - title: Actor
+      value: 1
+      type: 5
+      typeString: CustomFieldType_Actor
+    - title: Conversant
+      value: 3
+      type: 5
+      typeString: CustomFieldType_Actor
+    overrideSettings:
+      useOverrides: 0
+      overrideSubtitleSettings: 0
+      showNPCSubtitlesDuringLine: 1
+      showNPCSubtitlesWithResponses: 1
+      showPCSubtitlesDuringLine: 0
+      skipPCSubtitleAfterResponseMenu: 0
+      subtitleCharsPerSecond: 30
+      minSubtitleSeconds: 2
+      continueButton: 0
+      overrideSequenceSettings: 0
+      defaultSequence: 
+      defaultPlayerSequence: 
+      defaultResponseMenuSequence: 
+      overrideInputSettings: 0
+      alwaysForceResponseMenu: 1
+      includeInvalidEntries: 0
+      responseTimeout: 0
+      emTagForOldResponses: 0
+      emTagForInvalidResponses: 0
+      cancelSubtitle:
+        key: 27
+        buttonName: 
+      cancelConversation:
+        key: 27
+        buttonName: 
+    nodeColor: 
+    dialogueEntries:
+    - id: 0
+      fields:
+      - title: Title
+        value: START
+        type: 0
+        typeString: 
+      - title: Description
+        value: 
+        type: 0
+        typeString: 
+      - title: Actor
+        value: 1
+        type: 5
+        typeString: CustomFieldType_Actor
+      - title: Conversant
+        value: 3
+        type: 5
+        typeString: CustomFieldType_Actor
+      - title: Menu Text
+        value: 
+        type: 0
+        typeString: 
+      - title: Dialogue Text
+        value: 
+        type: 0
+        typeString: 
+      - title: Sequence
+        value: None()
+        type: 0
+        typeString: 
+      conversationID: 0
+      isRoot: 1
+      isGroup: 0
+      nodeColor: 
+      delaySimStatus: 0
+      falseConditionAction: 
+      conditionPriority: 2
+      outgoingLinks: []
+      conditionsString: 
+      userScript: 
+      onExecute:
+        m_PersistentCalls:
+          m_Calls: []
+      canvasRect:
+        serializedVersion: 2
+        x: 160
+        y: 30
+        width: 160
+        height: 30
+    entryGroups: []
+    canvasScrollPosition: {x: 0, y: 0}
+    canvasZoom: 1
   syncInfo:
     syncActors: 0
     syncItems: 0

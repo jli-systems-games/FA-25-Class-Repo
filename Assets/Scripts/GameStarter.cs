@@ -9,28 +9,28 @@ public class GameStarter : MonoBehaviour
     
     void Start()
     {
+
+        if (DialogueManager.isConversationActive)
+        {
+            DialogueManager.StopConversation();
+        }
+        
         if (autoStart)
         {
-            StartGame();
+
+            Invoke("StartGame", 0.1f);
         }
     }
     
     public void StartGame()
     {
-        ResetGameVariables();
+
+        if (DialogueManager.isConversationActive)
+        {
+            Debug.LogWarning("对话仍在运行，停止后重新开始");
+            DialogueManager.StopConversation();
+        }
         
         DialogueManager.StartConversation(startConversation);
-    }
-    
-    void ResetGameVariables()
-    {
-        DialogueLua.SetVariable("Courage", 1);
-        DialogueLua.SetVariable("Logic", 1);
-        DialogueLua.SetVariable("Empathy", 1);
-        DialogueLua.SetVariable("Technical", 1);
-        DialogueLua.SetVariable("PointsRemaining", 6);
-        DialogueLua.SetVariable("StoryProgress", 0);
-        DialogueLua.SetVariable("ChoicePath", "");
-        DialogueLua.SetVariable("EndingID", "None");
     }
 }
