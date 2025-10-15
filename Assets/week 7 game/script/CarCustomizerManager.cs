@@ -129,6 +129,12 @@ public class CarCustomizerManager : MonoBehaviour
         PlayerPrefs.SetFloat("car_color_b", savedColor.b);
         PlayerPrefs.SetFloat("car_color_a", savedColor.a);
         PlayerPrefs.Save();
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 5ec2ef95 (final racing input)
+=======
+>>>>>>> parent of 5ec2ef95 (final racing input)
+=======
 >>>>>>> parent of 5ec2ef95 (final racing input)
     }
 }
