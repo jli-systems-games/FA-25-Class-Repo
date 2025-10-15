@@ -144,6 +144,11 @@ public class CarCustomizerManager : MonoBehaviour
         PlayerPrefs.Save();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 5ec2ef95 (final racing input)
+=======
+>>>>>>> 139657ef44585d72ef37f743482c08b751391baf
 >>>>>>> parent of 5ec2ef95 (final racing input)
 =======
 >>>>>>> parent of 5ec2ef95 (final racing input)
