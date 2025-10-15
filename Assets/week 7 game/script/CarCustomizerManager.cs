@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class CarCustomizerManager : MonoBehaviour
 {
@@ -112,7 +113,6 @@ public class CarCustomizerManager : MonoBehaviour
         PlayerPrefs.SetFloat("car_color_a", savedColor.a);
         PlayerPrefs.Save();
     }
-<<<<<<< HEAD
 
     public void SubmitAndGoRace(string raceSceneName)
     {
@@ -126,39 +126,5 @@ public class CarCustomizerManager : MonoBehaviour
 
         // 다음 씬 로드
         SceneManager.LoadScene(raceSceneName);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    void SaveIndex()
-    {
-        PlayerPrefs.SetInt("car_index", currentIndex);
-        PlayerPrefs.Save();
     }
-
-    void SaveColor()
-    {
-        PlayerPrefs.SetFloat("car_color_r", savedColor.r);
-        PlayerPrefs.SetFloat("car_color_g", savedColor.g);
-        PlayerPrefs.SetFloat("car_color_b", savedColor.b);
-        PlayerPrefs.SetFloat("car_color_a", savedColor.a);
-        PlayerPrefs.Save();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 5ec2ef95 (final racing input)
-=======
->>>>>>> 139657ef44585d72ef37f743482c08b751391baf
->>>>>>> parent of 5ec2ef95 (final racing input)
-=======
->>>>>>> parent of 5ec2ef95 (final racing input)
-=======
->>>>>>> parent of 5ec2ef95 (final racing input)
-=======
->>>>>>> parent of ca2c6488 (???)
-=======
->>>>>>> parent of ca2c6488 (???)
-    }
-=======
->>>>>>> parent of 5ec2ef95 (final racing input)
 }
