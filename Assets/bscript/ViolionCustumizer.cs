@@ -3,22 +3,38 @@ using UnityEngine.SceneManagement;
 
 public class ViolinCustomizer : MonoBehaviour
 {
-    public Renderer violinBody;
-    public Material[] bodyMaterials;
+    [Header("Sprite Options")]
+    public SpriteRenderer bodyRenderer;
+    public Sprite[] bodySprites;
 
-    // For string audio selection
+    public SpriteRenderer[] stringRenderers;
+    public Sprite[] stringSprites;
+
+    [Header("Sound Options")]
     public AudioClip[] stringAudioOptions;
-    private int[] chosenStringSound = new int[4];
 
-    public void SelectBodyColor(int index)
+    // Player selections
+    private int selectedBodyIndex;
+    private int[] selectedStringSprite = new int[4];
+    private int[] selectedStringSound = new int[4];
+
+    public void ChooseBody(int index)
     {
-        CentralData.current.bodyColorIndex = index;
-        violinBody.material = bodyMaterials[index];
+        selectedBodyIndex = index;
+        bodyRenderer.sprite = bodySprites[index];
+        CentralData.current.bodySpriteIndex = index;
     }
 
-    public void SelectStringSound(int stringIndex, int soundIndex)
+    public void ChooseStringSprite(int stringIndex, int spriteIndex)
     {
-        chosenStringSound[stringIndex] = soundIndex;
+        selectedStringSprite[stringIndex] = spriteIndex;
+        stringRenderers[stringIndex].sprite = stringSprites[spriteIndex];
+        CentralData.current.stringSpriteIndices[stringIndex] = spriteIndex;
+    }
+
+    public void ChooseStringSound(int stringIndex, int soundIndex)
+    {
+        selectedStringSound[stringIndex] = soundIndex;
         CentralData.current.stringSoundIndices[stringIndex] = soundIndex;
     }
 
