@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 
 public class CarCustomizerManager : MonoBehaviour
 {
@@ -113,6 +112,7 @@ public class CarCustomizerManager : MonoBehaviour
         PlayerPrefs.SetFloat("car_color_a", savedColor.a);
         PlayerPrefs.Save();
     }
+<<<<<<< HEAD
 
     public void SubmitAndGoRace(string raceSceneName)
     {
@@ -159,4 +159,6 @@ public class CarCustomizerManager : MonoBehaviour
 =======
 >>>>>>> parent of ca2c6488 (???)
     }
+=======
+>>>>>>> parent of 5ec2ef95 (final racing input)
 }
