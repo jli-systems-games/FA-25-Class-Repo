@@ -12,10 +12,11 @@ public class Data
     //public static List<Sprite> data_customizerShoes;
 }
 
+
 public class GameData
 {
     public int selectedBodyIndex;
-    public int[] selectedStringIndices = new int[4];
+    public int selectedStringIndex;
 }
 
 

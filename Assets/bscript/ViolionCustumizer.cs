@@ -4,43 +4,30 @@ using UnityEngine.SceneManagement;
 public class ViolinCustomizer : MonoBehaviour
 {
     [Header("Bodies")]
-    public GameObject[] bodyOptions;
+    public GameObject[] bodyOptions;  
 
     [Header("Strings")]
-    public GameObject[][] stringOptions = new GameObject[4][]; // optional if you have organized each string's options separately
-    public GameObject[] string1Options;
-    public GameObject[] string2Options;
-    public GameObject[] string3Options;
-    public GameObject[] string4Options;
-
-    private void Awake()
-    {
-        // Assign manually since Unity can’t serialize jagged arrays
-        stringOptions[0] = string1Options;
-        stringOptions[1] = string2Options;
-        stringOptions[2] = string3Options;
-        stringOptions[3] = string4Options;
-    }
+    public GameObject[] stringOptions;
 
     public void ChooseBody(int index)
     {
         CentralData.current.selectedBodyIndex = index;
 
-        // Show chosen one, hide others
+       
         for (int i = 0; i < bodyOptions.Length; i++)
         {
             bodyOptions[i].SetActive(i == index);
         }
     }
 
-    public void ChooseString(int stringIndex, int optionIndex)
+    public void ChooseString(int index)
     {
-        CentralData.current.selectedStringIndices[stringIndex] = optionIndex;
+        CentralData.current.selectedStringIndex = index;
 
-        GameObject[] options = stringOptions[stringIndex];
-        for (int i = 0; i < options.Length; i++)
+      
+        for (int i = 0; i < stringOptions.Length; i++)
         {
-            options[i].SetActive(i == optionIndex);
+            stringOptions[i].SetActive(i == index);
         }
     }
 
