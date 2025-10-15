@@ -8,32 +8,26 @@ public class CarCustomizerManager : MonoBehaviour
     public List<GameObject> carPrefabs = new List<GameObject>();
 
     [Header("차 정보 UI 프리팹들(차 순서와 동일)")]
-    public List<GameObject> uiCardPrefabs = new List<GameObject>();  // ★ 추가
-    public Transform uiParent;                                        // ★ 추가 (Canvas/CarCardRoot 등)
+    public List<GameObject> uiCardPrefabs = new List<GameObject>();
+    public Transform uiParent; // Canvas 아래 카드가 붙을 부모
 
     [Header("생성 위치/회전 기준")]
     public Transform spawnPoint;
 
     int currentIndex = 0;
     GameObject currentCar;
-    GameObject currentCardUI;     // ★ 추가
+    GameObject currentCardUI;
     CarColor currentCarColor;
 
-    // 현재 선택된 색 (버튼이 이 값을 바꾸고, 매니저가 현 차에 적용)
+    // 현재 선택된 색
     Color savedColor = Color.red;
 
     void Start()
     {
-        // 저장 불러오기(선택)
-        currentIndex = PlayerPrefs.GetInt("car_index", 0);
-        if (PlayerPrefs.HasKey("car_color_r"))
-        {
-            float r = PlayerPrefs.GetFloat("car_color_r", 1f);
-            float g = PlayerPrefs.GetFloat("car_color_g", 0f);
-            float b = PlayerPrefs.GetFloat("car_color_b", 0f);
-            float a = PlayerPrefs.GetFloat("car_color_a", 1f);
-            savedColor = new Color(r, g, b, a);
-        }
+        // ✅ 중앙 데이터에서 값 읽기 (과제 요구사항)
+        //  - 앱 재실행까지 기억하고 싶으면 시작 전에 GameData.LoadFromPrefs() 호출 가능
+        currentIndex = GameData.selectedCarIndex;
+        savedColor = GameData.selectedColor;
 
         SpawnCar(currentIndex);
         ApplySavedColorToCurrent();
@@ -45,7 +39,9 @@ public class CarCustomizerManager : MonoBehaviour
         currentIndex = (currentIndex + 1) % carPrefabs.Count;
         SpawnCar(currentIndex);
         ApplySavedColorToCurrent();
-        SaveIndex();
+
+        // ✅ 중앙 데이터 갱신
+        GameData.SetSelection(currentIndex, savedColor);
     }
 
     public void PrevCar()
@@ -54,14 +50,16 @@ public class CarCustomizerManager : MonoBehaviour
         currentIndex = (currentIndex - 1 + carPrefabs.Count) % carPrefabs.Count;
         SpawnCar(currentIndex);
         ApplySavedColorToCurrent();
-        SaveIndex();
+
+        // ✅ 중앙 데이터 갱신
+        GameData.SetSelection(currentIndex, savedColor);
     }
 
     void SpawnCar(int index)
     {
         // 기존 차/카드 정리
         if (currentCar) Destroy(currentCar);
-        if (currentCardUI) Destroy(currentCardUI);   // ★ 추가
+        if (currentCardUI) Destroy(currentCardUI);
 
         // 차 스폰
         Vector3 pos = spawnPoint ? spawnPoint.position : Vector3.zero;
@@ -72,7 +70,7 @@ public class CarCustomizerManager : MonoBehaviour
         if (!currentCarColor)
             Debug.LogWarning("새 차 프리팹에 CarColor가 없습니다. Body Renderer 연결된 CarColor를 붙여주세요.");
 
-        // UI 카드 스폰 (차 순서와 동일한 인덱스의 UI 프리팹 사용) ★ 추가
+        // UI 카드 스폰 (차 순서와 동일 인덱스)
         if (uiParent && index < uiCardPrefabs.Count && uiCardPrefabs[index] != null)
         {
             currentCardUI = Instantiate(uiCardPrefabs[index], uiParent);
@@ -80,7 +78,6 @@ public class CarCustomizerManager : MonoBehaviour
         }
         else
         {
-            // 문제가 있으면 한 번만 로그로 확인
             if (!uiParent) Debug.LogWarning("[UI] uiParent가 비었습니다. Canvas 아래 빈 오브젝트를 연결하세요.");
             if (index >= uiCardPrefabs.Count) Debug.LogWarning("[UI] uiCardPrefabs 개수가 carPrefabs보다 적습니다.");
             if (index < uiCardPrefabs.Count && uiCardPrefabs[index] == null) Debug.LogWarning("[UI] 해당 인덱스의 UI 프리팹이 null입니다.");
@@ -92,37 +89,29 @@ public class CarCustomizerManager : MonoBehaviour
         if (currentCarColor) currentCarColor.ApplyColor(savedColor);
     }
 
-    public void SetColor(Color c)  // 색상 버튼이 이 함수를 호출
+    // 색상 버튼이 이 함수를 호출
+    public void SetColor(Color c)
     {
         savedColor = c;
         if (currentCarColor) currentCarColor.ApplyColor(savedColor);
-        SaveColor();
+
+        // ✅ 중앙 데이터 갱신
+        GameData.SetSelection(currentIndex, savedColor);
     }
 
-    void SaveIndex()
-    {
-        PlayerPrefs.SetInt("car_index", currentIndex);
-        PlayerPrefs.Save();
-    }
+    // (선택) PlayerPrefs를 계속 쓰고 싶다면 남겨도 되지만,
+    // 과제 요구상 중앙 데이터 사용이 핵심이므로 아래 두 함수는 제거해도 무방합니다.
+    void SaveIndex() { /* 사용 안 함: 중앙 데이터로 대체됨 */ }
+    void SaveColor() { /* 사용 안 함: 중앙 데이터로 대체됨 */ }
 
-    void SaveColor()
-    {
-        PlayerPrefs.SetFloat("car_color_r", savedColor.r);
-        PlayerPrefs.SetFloat("car_color_g", savedColor.g);
-        PlayerPrefs.SetFloat("car_color_b", savedColor.b);
-        PlayerPrefs.SetFloat("car_color_a", savedColor.a);
-        PlayerPrefs.Save();
-    }
-
+    // Submit 버튼에서 호출
     public void SubmitAndGoRace(string raceSceneName)
     {
-        // 선택 인덱스/색 저장
-        PlayerPrefs.SetInt("car_index", currentIndex);
-        PlayerPrefs.SetFloat("car_color_r", savedColor.r);
-        PlayerPrefs.SetFloat("car_color_g", savedColor.g);
-        PlayerPrefs.SetFloat("car_color_b", savedColor.b);
-        PlayerPrefs.SetFloat("car_color_a", savedColor.a);
-        PlayerPrefs.Save();
+        // ✅ 중앙 데이터에 최종 확정
+        GameData.SetSelection(currentIndex, savedColor);
+
+        // (선택) 앱 재실행까지 유지하려면 한 줄 추가:
+        // GameData.SaveToPrefs();
 
         // 다음 씬 로드
         SceneManager.LoadScene(raceSceneName);

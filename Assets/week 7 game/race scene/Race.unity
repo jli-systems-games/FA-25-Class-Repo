@@ -16825,6 +16825,7 @@ GameObject:
   - component: {fileID: 2498440397948795145}
   - component: {fileID: 404351442146315410}
   - component: {fileID: 6855357337324979978}
+  - component: {fileID: 6855357337324979979}
   m_Layer: 0
   m_Name: CarRoot
   m_TagString: Untagged
@@ -38583,6 +38584,30 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.7153924, y: 3.2457523, z: 8.640803}
   m_Center: {x: 1.766829, y: 25.160238, z: -14.347782}
+--- !u!114 &6855357337324979979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3051422365961843069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a22486c22fa04aef8bef9750de83d12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerTarget: {fileID: 404351442146315410}
+  specMode: 1
+  singleSpec: {fileID: 0}
+  carsSO:
+  - {fileID: 11400000, guid: f9d4b619349f34072aaa1dd36fca01dd, type: 2}
+  - {fileID: 11400000, guid: 1630ebbb67e2f4404bf9d27faab038c0, type: 2}
+  - {fileID: 11400000, guid: 8985226b7e3a44968b3f6409b750c5eb, type: 2}
+  - {fileID: 11400000, guid: 8ca51941bf33b454e95c054bdc3dc0e3, type: 2}
+  - {fileID: 11400000, guid: 22c2c111e0cd84982a1de46df7a0e9b8, type: 2}
+  indexKey: car_index
+  applyOnStart: 1
+  forceEnableController: 1
 --- !u!23 &6859061630148396369
 MeshRenderer:
   m_ObjectHideFlags: 0
