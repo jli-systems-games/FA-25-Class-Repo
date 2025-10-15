@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 
 public class CarCustomizerManager : MonoBehaviour
 {
@@ -99,6 +98,7 @@ public class CarCustomizerManager : MonoBehaviour
         GameData.SetSelection(currentIndex, savedColor);
     }
 
+<<<<<<< HEAD
     // (선택) PlayerPrefs를 계속 쓰고 싶다면 남겨도 되지만,
     // 과제 요구상 중앙 데이터 사용이 핵심이므로 아래 두 함수는 제거해도 무방합니다.
     void SaveIndex() { /* 사용 안 함: 중앙 데이터로 대체됨 */ }
@@ -115,5 +115,20 @@ public class CarCustomizerManager : MonoBehaviour
 
         // 다음 씬 로드
         SceneManager.LoadScene(raceSceneName);
+=======
+    void SaveIndex()
+    {
+        PlayerPrefs.SetInt("car_index", currentIndex);
+        PlayerPrefs.Save();
+    }
+
+    void SaveColor()
+    {
+        PlayerPrefs.SetFloat("car_color_r", savedColor.r);
+        PlayerPrefs.SetFloat("car_color_g", savedColor.g);
+        PlayerPrefs.SetFloat("car_color_b", savedColor.b);
+        PlayerPrefs.SetFloat("car_color_a", savedColor.a);
+        PlayerPrefs.Save();
+>>>>>>> parent of 5ec2ef95 (final racing input)
     }
 }
