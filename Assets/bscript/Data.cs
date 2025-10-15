@@ -14,9 +14,8 @@ public class Data
 
 public class GameData
 {
-    public int bodySpriteIndex;
-    public int[] stringSpriteIndices = new int[4];
-    public int[] stringSoundIndices = new int[4];
+    public int selectedBodyIndex;
+    public int[] selectedStringIndices = new int[4];
 }
 
 
@@ -24,6 +23,7 @@ public static class CentralData
 {
     public static GameData current = new GameData();
 }
+
 
 
 //public struct Character

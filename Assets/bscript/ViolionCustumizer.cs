@@ -3,39 +3,45 @@ using UnityEngine.SceneManagement;
 
 public class ViolinCustomizer : MonoBehaviour
 {
-    [Header("Sprite Options")]
-    public SpriteRenderer bodyRenderer;
-    public Sprite[] bodySprites;
+    [Header("Bodies")]
+    public GameObject[] bodyOptions;
 
-    public SpriteRenderer[] stringRenderers;
-    public Sprite[] stringSprites;
+    [Header("Strings")]
+    public GameObject[][] stringOptions = new GameObject[4][]; // optional if you have organized each string's options separately
+    public GameObject[] string1Options;
+    public GameObject[] string2Options;
+    public GameObject[] string3Options;
+    public GameObject[] string4Options;
 
-    [Header("Sound Options")]
-    public AudioClip[] stringAudioOptions;
-
-    // Player selections
-    private int selectedBodyIndex;
-    private int[] selectedStringSprite = new int[4];
-    private int[] selectedStringSound = new int[4];
+    private void Awake()
+    {
+        // Assign manually since Unity can’t serialize jagged arrays
+        stringOptions[0] = string1Options;
+        stringOptions[1] = string2Options;
+        stringOptions[2] = string3Options;
+        stringOptions[3] = string4Options;
+    }
 
     public void ChooseBody(int index)
     {
-        selectedBodyIndex = index;
-        bodyRenderer.sprite = bodySprites[index];
-        CentralData.current.bodySpriteIndex = index;
+        CentralData.current.selectedBodyIndex = index;
+
+        // Show chosen one, hide others
+        for (int i = 0; i < bodyOptions.Length; i++)
+        {
+            bodyOptions[i].SetActive(i == index);
+        }
     }
 
-    public void ChooseStringSprite(int stringIndex, int spriteIndex)
+    public void ChooseString(int stringIndex, int optionIndex)
     {
-        selectedStringSprite[stringIndex] = spriteIndex;
-        stringRenderers[stringIndex].sprite = stringSprites[spriteIndex];
-        CentralData.current.stringSpriteIndices[stringIndex] = spriteIndex;
-    }
+        CentralData.current.selectedStringIndices[stringIndex] = optionIndex;
 
-    public void ChooseStringSound(int stringIndex, int soundIndex)
-    {
-        selectedStringSound[stringIndex] = soundIndex;
-        CentralData.current.stringSoundIndices[stringIndex] = soundIndex;
+        GameObject[] options = stringOptions[stringIndex];
+        for (int i = 0; i < options.Length; i++)
+        {
+            options[i].SetActive(i == optionIndex);
+        }
     }
 
     public void GoToPlayScene()
