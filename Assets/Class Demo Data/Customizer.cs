@@ -14,23 +14,23 @@ public class Customizer : MonoBehaviour
     {
         #region Update Data Lists
 
-        Data.data_skinHat.Clear();
-        Data.data_skinDress.Clear();
-        Data.data_skinShoe.Clear();
+        Data1.data_skinHat.Clear();
+        Data1.data_skinDress.Clear();
+        Data1.data_skinShoe.Clear();
 
         foreach(Sprite sprite in customizerHat)
         {
-            Data.data_skinHat.Add(sprite);
+            Data1.data_skinHat.Add(sprite);
         }
 
         foreach (Sprite sprite in customizerDress)
         {
-            Data.data_skinDress.Add(sprite);
+            Data1.data_skinDress.Add(sprite);
         }
 
         foreach (Sprite sprite in customizerShoe)
         {
-            Data.data_skinShoe.Add(sprite);
+            Data1.data_skinShoe.Add(sprite);
         }
 
         #endregion

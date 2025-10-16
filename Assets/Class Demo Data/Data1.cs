@@ -2,7 +2,7 @@ using UnityEngine;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-public class Data
+public class Data1
 {
     //public static int data_playerLevel = 1;
 
