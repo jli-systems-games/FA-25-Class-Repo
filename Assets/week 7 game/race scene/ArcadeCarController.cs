@@ -6,7 +6,7 @@ public class ArcadeCarController : MonoBehaviour
     [Header("Move (No-Physics)")]
     public float moveSpeed = 20f;   // m/s, SO로 덮어씌워짐
     public float turnSpeed = 120f;  // deg/s, SO로 덮어씌워짐
-    public float damping = 5f;    // 감속, SO로 덮어씌워짐
+    public float damping = 5f;      // 감속, SO로 덮어씌워짐
 
     [Header("SO → 컨트롤러 매핑 스케일")]
     [Tooltip("topSpeed_kmh → m/s 변환 후 곱할 계수 (손맛 조정)")]
@@ -16,7 +16,16 @@ public class ArcadeCarController : MonoBehaviour
     public bool enableOnlyInSceneNamed = true;
     public string raceSceneName = "Race";    // 레이싱 씬 이름
 
-    float currentSpeed;
+    [Header("사운드 설정")]
+    public AudioSource engineAudio;           // Loop 켜기, Play On Awake 끄기
+    [Range(0f, 1f)] public float idleVolume = 0.15f;
+    [Range(0f, 1f)] public float maxVolume = 0.9f;
+    public float volumeFadePerSec = 2.5f;
+
+    public float minPitch = 0.95f;
+    public float maxPitch = 1.6f;
+
+    private float currentSpeed;
 
     void Awake()
     {
@@ -33,27 +42,50 @@ public class ArcadeCarController : MonoBehaviour
 
     void Update()
     {
-        // 간단 키 입력(새 Input System 안 써도 됨)
-        float steer = Input.GetAxisRaw("Horizontal"); // A/D, ←/→
-        float throttle = Input.GetAxisRaw("Vertical");   // W/S, ↑/↓
+        float steer = Input.GetAxisRaw("Horizontal");
+        float throttle = Input.GetAxisRaw("Vertical");
 
-        // 회전
+        // --- 이동 로직 ---
         transform.Rotate(0f, steer * turnSpeed * Time.deltaTime, 0f);
 
-        // 속도 업데이트
-        float target = throttle * moveSpeed; // m/s
+        float target = throttle * moveSpeed;
         currentSpeed = Mathf.MoveTowards(currentSpeed, target, damping * Time.deltaTime);
-
-        // 전진 이동
         transform.position += transform.forward * currentSpeed * Time.deltaTime;
+
+        // --- 엔진 사운드 ---
+        if (engineAudio)
+        {
+            // 사운드 시작 (한 번만 Play)
+            if (!engineAudio.isPlaying)
+                engineAudio.Play();
+
+            // 속도를 0~1 범위로 정규화
+            float speed01 = 0f;
+            if (moveSpeed > 0.01f)
+                speed01 = Mathf.Clamp01(Mathf.Abs(currentSpeed) / moveSpeed);
+
+            // 목표 볼륨 계산
+            float targetVol = Mathf.Lerp(idleVolume, maxVolume, speed01);
+
+            // 페달에서 발을 뗐을 때 살짝 줄어드는 효과
+            if (Mathf.Abs(throttle) < 0.1f)
+                targetVol *= 0.8f;
+
+            // 볼륨을 서서히 변경 (페이드 아웃/인)
+            engineAudio.volume = Mathf.MoveTowards(engineAudio.volume, targetVol, volumeFadePerSec * Time.deltaTime);
+
+            // 속도에 따라 피치 조절
+            engineAudio.pitch = Mathf.Lerp(minPitch, maxPitch, speed01);
+        }
     }
 
-    /// <summary>
-    /// 커스텀 SO 스펙을 컨트롤러 파라미터로 주입
-    /// </summary>
     public void ApplySpec(CarSpec spec)
     {
-        if (!spec) { Debug.LogWarning("[ArcadeCarController] Spec is null"); return; }
+        if (!spec)
+        {
+            Debug.LogWarning("[ArcadeCarController] Spec is null");
+            return;
+        }
 
         // 최고속도: km/h → m/s 변환 (/3.6) 후 스케일
         float ms = (spec.topSpeed_kmh / 3.6f) * Mathf.Max(0.05f, speedScaleFromSpec);
