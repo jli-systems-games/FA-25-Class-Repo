@@ -567,6 +567,7 @@ GameObject:
   - component: {fileID: 1875073539}
   - component: {fileID: 1875073538}
   - component: {fileID: 1875073537}
+  - component: {fileID: 1875073542}
   m_Layer: 0
   m_Name: CAR
   m_TagString: Untagged
@@ -663,7 +664,7 @@ MonoBehaviour:
   moveSpeed: 20
   turnSpeed: 120
   damping: 5
-  speedScaleFromSpec: 0.65
+  speedScaleFromSpec: 0.9
   enableOnlyInSceneNamed: 1
   raceSceneName: Race
 --- !u!4 &1875073541
@@ -684,6 +685,27 @@ Transform:
   - {fileID: 8173312641616481884}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &1875073542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875073536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c558a83f847e48a39d86ac3786b4b70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carParent: {fileID: 1875073541}
+  controller: {fileID: 1875073540}
+  carsSO:
+  - {fileID: 11400000, guid: f9d4b619349f34072aaa1dd36fca01dd, type: 2}
+  - {fileID: 11400000, guid: 1630ebbb67e2f4404bf9d27faab038c0, type: 2}
+  - {fileID: 11400000, guid: 8985226b7e3a44968b3f6409b750c5eb, type: 2}
+  - {fileID: 11400000, guid: 8ca51941bf33b454e95c054bdc3dc0e3, type: 2}
+  - {fileID: 11400000, guid: 22c2c111e0cd84982a1de46df7a0e9b8, type: 2}
+  applyOnStart: 1
 --- !u!1 &1908361935
 GameObject:
   m_ObjectHideFlags: 0
@@ -16348,7 +16370,7 @@ Transform:
   m_GameObject: {fileID: 2849507431878248685}
   serializedVersion: 2
   m_LocalRotation: {x: 0.18805999, y: -0, z: -0, w: 0.9821576}
-  m_LocalPosition: {x: -0.21011925, y: 2.7023983, z: -6.14}
+  m_LocalPosition: {x: -0.21011925, y: 3.2, z: -6.7}
   m_LocalScale: {x: 0.75251, y: 0.7525102, z: 0.7525102}
   m_ConstrainProportionsScale: 0
   m_Children: []
