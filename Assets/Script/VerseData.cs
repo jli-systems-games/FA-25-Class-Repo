@@ -1,9 +1,10 @@
-
+// PoemData.cs
 using UnityEngine;
+using System.Collections.Generic;
 
-[CreateAssetMenu(menuName = "Verse Data")]
-public class VerseData : ScriptableObject
+[CreateAssetMenu(menuName = "Poem Data")]
+public class PoemData : ScriptableObject
 {
-    public string verseText;  
-    public int index;        
+    public int totalLines;            
+    public List<PoemLine> lines = new();
 }
