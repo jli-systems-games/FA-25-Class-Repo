@@ -13,12 +13,18 @@ public class GarageRuntimeUI : MonoBehaviour
     [Range(0.10f, 0.5f)] public float rightWidth = 0.18f;
     [Range(-0.2f, 0.2f)] public float centerNudgeX = 0f;
     public int paletteColumns = 2;
-    public Vector2 paletteCell = new Vector2(180, 180);
+    public Vector2 paletteCell = new Vector2(160, 160);
     public Vector2 paletteSpacing = new Vector2(12, 12);
     public float wheelTargetDiameter = 1.2f;
     public float wheelMinScale = 0.25f;
     public float wheelMaxScale = 2.0f;
+
     public TMP_FontAsset boldFont;
+    public int paletteLabelFontSize = 18;
+    public int buttonFontSize = 38;
+    public int hintFontSize = 56;
+
+    public AudioClip resetClip;
 
     RectTransform canvasRT, leftPanel, rightPanel, centerArea;
     RectTransform scrollViewport, scrollContent;
@@ -40,6 +46,33 @@ public class GarageRuntimeUI : MonoBehaviour
         CreatePalette();
         CreateCenterWorld();
         AudioHub.Ensure();
+        RefreshFonts();
+    }
+
+    void OnValidate() { if (Application.isPlaying) RefreshFonts(); }
+
+    void RefreshFonts()
+    {
+        if (leftPanel)
+        {
+            var texts = leftPanel.GetComponentsInChildren<TMP_Text>(true);
+            foreach (var t in texts) ApplyFontSize(t, paletteLabelFontSize);
+        }
+        if (rightPanel)
+        {
+            if (infoRight) ApplyFontSize(infoRight, hintFontSize);
+            var texts = rightPanel.GetComponentsInChildren<TMP_Text>(true);
+            foreach (var t in texts) if (t != infoRight) ApplyFontSize(t, buttonFontSize);
+        }
+    }
+
+    void ApplyFontSize(TMP_Text t, int size)
+    {
+        if (!t) return;
+        if (boldFont) t.font = boldFont;
+        t.enableAutoSizing = false;
+        t.fontSize = Mathf.Max(1, size);
+        t.color = Color.black;
     }
 
     void LoadLibrary()
@@ -57,7 +90,9 @@ public class GarageRuntimeUI : MonoBehaviour
                 if (n.Contains("circle")) mode = WheelColliderMode.Circle;
                 else if (n.Contains("box")) mode = WheelColliderMode.Box;
                 AudioClip sel = null; AudioClip run = null;
-                if (audioMap) audioMap.TryGetClips(sp.name, out sel, out run);
+                if (audioMap) audioMap.TryGetClips(sp, out sel, out run);
+                if (!sel) sel = Resources.Load<AudioClip>("Audio/" + sp.name);
+                if (!run) run = sel;
                 WheelItemDef d = new WheelItemDef
                 {
                     sprite = sp,
@@ -75,17 +110,15 @@ public class GarageRuntimeUI : MonoBehaviour
                 Data.lib.wheelItems.Add(d);
             }
         }
-        else if (audioMap)
+        else
         {
             for (int i = 0; i < Data.lib.wheelItems.Count; i++)
             {
                 var wi = Data.lib.wheelItems[i];
-                if (wi.sprite && audioMap.TryGetClips(wi.sprite.name, out var sel, out var run))
-                {
-                    wi.selectClip = sel;
-                    wi.runClip = run;
-                    Data.lib.wheelItems[i] = wi;
-                }
+                if (audioMap && wi.sprite) audioMap.TryGetClips(wi.sprite, out wi.selectClip, out wi.runClip);
+                if (!wi.selectClip && wi.sprite) wi.selectClip = Resources.Load<AudioClip>("Audio/" + wi.sprite.name);
+                if (!wi.runClip) wi.runClip = wi.selectClip;
+                Data.lib.wheelItems[i] = wi;
             }
         }
     }
@@ -93,19 +126,51 @@ public class GarageRuntimeUI : MonoBehaviour
     void CreateCanvas()
     {
         var go = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        if (!FindFirstObjectByType<EventSystem>()) new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+        if (!Object.FindFirstObjectByType<EventSystem>()) new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
         var c = go.GetComponent<Canvas>(); c.renderMode = RenderMode.ScreenSpaceOverlay;
         var s = go.GetComponent<CanvasScaler>(); s.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; s.referenceResolution = new Vector2(1920, 1080); s.matchWidthOrHeight = 0.5f;
         canvasRT = go.GetComponent<RectTransform>(); canvasRT.anchorMin = Vector2.zero; canvasRT.anchorMax = Vector2.one; canvasRT.offsetMin = Vector2.zero; canvasRT.offsetMax = Vector2.zero;
     }
 
-    void ApplyTextStyle(TMP_Text t, int size, TextAlignmentOptions align)
+    TMP_Text CreateText(RectTransform parent, string txt, int size, Vector2 min, Vector2 max, TextAlignmentOptions align)
     {
-        t.font = boldFont ? boldFont : t.font;
+        var go = new GameObject("Text", typeof(TextMeshProUGUI));
+        go.transform.SetParent(parent, false);
+        var t = go.GetComponent<TextMeshProUGUI>(); t.text = txt;
+        if (boldFont) t.font = boldFont;
+        t.enableAutoSizing = false;
         t.fontSize = size;
-        t.enableAutoSizing = true;
         t.color = Color.black;
         t.alignment = align;
+        var rt = t.GetComponent<RectTransform>(); rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(0.5f, 1f); rt.offsetMin = min; rt.offsetMax = max;
+        return t;
+    }
+
+    RectTransform CreatePanel(RectTransform parent, Vector2 min, Vector2 max, Color bg)
+    {
+        var go = new GameObject("Panel", typeof(Image));
+        go.transform.SetParent(parent, false);
+        var rt = go.GetComponent<RectTransform>(); rt.anchorMin = min; rt.anchorMax = max; rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+        go.GetComponent<Image>().color = bg;
+        return rt;
+    }
+
+    Button CreateButton(RectTransform parent, string label, Vector2 min, Vector2 max, int fontSize)
+    {
+        var go = new GameObject(label, typeof(Image), typeof(Button));
+        go.transform.SetParent(parent, false);
+        var rt = go.GetComponent<RectTransform>(); rt.anchorMin = new Vector2(0, 0); rt.anchorMax = new Vector2(1, 0); rt.pivot = new Vector2(0.5f, 0.5f); rt.offsetMin = min; rt.offsetMax = max;
+        go.GetComponent<Image>().color = new Color(1, 1, 1, 0.22f);
+        var txtObj = new GameObject("Label", typeof(TextMeshProUGUI));
+        txtObj.transform.SetParent(go.transform, false);
+        var t = txtObj.GetComponent<TextMeshProUGUI>(); t.text = label;
+        if (boldFont) t.font = boldFont;
+        t.enableAutoSizing = false;
+        t.fontSize = fontSize;
+        t.color = Color.black;
+        t.alignment = TextAlignmentOptions.Center;
+        var trt = t.GetComponent<RectTransform>(); trt.anchorMin = new Vector2(0, 0); trt.anchorMax = new Vector2(1, 1); trt.pivot = new Vector2(0.5f, 0.5f); trt.offsetMin = Vector2.zero; trt.offsetMax = Vector2.zero;
+        return go.GetComponent<Button>();
     }
 
     void CreatePanels()
@@ -125,52 +190,18 @@ public class GarageRuntimeUI : MonoBehaviour
         rightPanel = CreatePanel(canvasRT, new Vector2(rMin, 0f), new Vector2(1f, 1f), new Color(0, 0, 0, 0f));
         centerArea = CreatePanel(canvasRT, new Vector2(cMin, 0f), new Vector2(cMax, 1f), new Color(0, 0, 0, 0f));
 
-        infoRight = CreateText(rightPanel, "Drag a frame into center, then drag wheels.\nRight click to delete.", 28, new Vector2(20, -20), new Vector2(-20, -180), TextAlignmentOptions.TopLeft);
-        var startBtn = CreateButton(rightPanel, "START", new Vector2(0.15f, 140), new Vector2(0.85f, 220));
+        infoRight = CreateText(rightPanel, "Drag a frame into center, then drag wheels.\nRight click to delete.", hintFontSize, new Vector2(20, -20), new Vector2(-20, -180), TextAlignmentOptions.TopLeft);
+        var startBtn = CreateButton(rightPanel, "START", new Vector2(0.15f, 140), new Vector2(0.85f, 220), buttonFontSize);
         startBtn.onClick.AddListener(OnStartRun);
-        var resetBtn = CreateButton(rightPanel, "RESET", new Vector2(0.15f, 40), new Vector2(0.85f, 120));
-        resetBtn.onClick.AddListener(ResetAssembly);
-    }
-
-    RectTransform CreatePanel(RectTransform parent, Vector2 min, Vector2 max, Color bg)
-    {
-        var go = new GameObject("Panel", typeof(Image));
-        go.transform.SetParent(parent, false);
-        var rt = go.GetComponent<RectTransform>(); rt.anchorMin = min; rt.anchorMax = max; rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
-        go.GetComponent<Image>().color = bg;
-        return rt;
-    }
-
-    TMP_Text CreateText(RectTransform parent, string txt, int size, Vector2 min, Vector2 max, TextAlignmentOptions align)
-    {
-        var go = new GameObject("Text", typeof(TextMeshProUGUI));
-        go.transform.SetParent(parent, false);
-        var t = go.GetComponent<TextMeshProUGUI>(); t.text = txt;
-        ApplyTextStyle(t, size, align);
-        var rt = t.GetComponent<RectTransform>(); rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(0.5f, 1f); rt.offsetMin = min; rt.offsetMax = max;
-        return t;
-    }
-
-    Button CreateButton(RectTransform parent, string label, Vector2 min, Vector2 max)
-    {
-        var go = new GameObject(label, typeof(Image), typeof(Button));
-        go.transform.SetParent(parent, false);
-        var rt = go.GetComponent<RectTransform>(); rt.anchorMin = new Vector2(0, 0); rt.anchorMax = new Vector2(1, 0); rt.pivot = new Vector2(0.5f, 0.5f); rt.offsetMin = min; rt.offsetMax = max;
-        go.GetComponent<Image>().color = new Color(1, 1, 1, 0.22f);
-        var btn = go.GetComponent<Button>();
-        var txtObj = new GameObject("Label", typeof(TextMeshProUGUI));
-        txtObj.transform.SetParent(go.transform, false);
-        var t = txtObj.GetComponent<TextMeshProUGUI>(); t.text = label;
-        ApplyTextStyle(t, 38, TextAlignmentOptions.Center);
-        var trt = t.GetComponent<RectTransform>(); trt.anchorMin = new Vector2(0, 0); trt.anchorMax = new Vector2(1, 1); trt.pivot = new Vector2(0.5f, 0.5f); trt.offsetMin = Vector2.zero; trt.offsetMax = Vector2.zero;
-        return btn;
+        var resetBtn = CreateButton(rightPanel, "RESET", new Vector2(0.15f, 40), new Vector2(0.85f, 120), buttonFontSize);
+        resetBtn.onClick.AddListener(() => { PlayResetSfx(); ResetAssembly(); });
     }
 
     void CreatePalette()
     {
         var scroll = new GameObject("ScrollView", typeof(Image), typeof(Mask), typeof(ScrollRect));
         scroll.transform.SetParent(leftPanel, false);
-        var srt = scroll.GetComponent<RectTransform>(); srt.anchorMin = new Vector2(0, 0); srt.anchorMax = new Vector2(1, 1); srt.offsetMin = new Vector2(10, 10); srt.offsetMax = new Vector2(-10, -20);
+        var srt = scroll.GetComponent<RectTransform>(); srt.anchorMin = new Vector2(0, 0.1f); srt.anchorMax = new Vector2(1, 0.9f); srt.offsetMin = new Vector2(10, 10); srt.offsetMax = new Vector2(-10, -20);
         scroll.GetComponent<Image>().color = new Color(1, 1, 1, 0.06f);
         scroll.GetComponent<Mask>().showMaskGraphic = true;
 
@@ -181,35 +212,19 @@ public class GarageRuntimeUI : MonoBehaviour
         var content = new GameObject("Content", typeof(RectTransform), typeof(GridLayoutGroup), typeof(ContentSizeFitter));
         content.transform.SetParent(viewport.transform, false);
         var crt = content.GetComponent<RectTransform>(); crt.anchorMin = new Vector2(0, 1); crt.anchorMax = new Vector2(1, 1); crt.pivot = new Vector2(0.5f, 1f); crt.offsetMin = new Vector2(8, 0); crt.offsetMax = new Vector2(-8, 0);
-
-        var gl = content.GetComponent<GridLayoutGroup>();
-        gl.cellSize = paletteCell; gl.spacing = paletteSpacing; gl.childAlignment = TextAnchor.UpperLeft; gl.constraint = GridLayoutGroup.Constraint.FixedColumnCount; gl.constraintCount = paletteColumns;
+        var gl = content.GetComponent<GridLayoutGroup>(); gl.cellSize = paletteCell; gl.spacing = paletteSpacing; gl.childAlignment = TextAnchor.UpperLeft; gl.constraint = GridLayoutGroup.Constraint.FixedColumnCount; gl.constraintCount = paletteColumns;
         var fitter = content.GetComponent<ContentSizeFitter>(); fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
         var sr = scroll.GetComponent<ScrollRect>(); sr.viewport = vp; sr.content = crt; sr.horizontal = false; sr.vertical = true; sr.movementType = ScrollRect.MovementType.Clamped;
 
         scrollViewport = vp; scrollContent = crt;
 
-        CreateFrameItem(scrollContent, "Car Frame", Data.lib.bodyCarSprite, FrameType.Car);
-        CreateFrameItem(scrollContent, "Bike Frame", Data.lib.bodyBikeSprite, FrameType.Bike);
+        CreateFrameItem(scrollContent, "CAR FRAME", Data.lib.bodyCarSprite, FrameType.Car);
+        CreateFrameItem(scrollContent, "BIKE FRAME", Data.lib.bodyBikeSprite, FrameType.Bike);
 
-        int added = 0;
         for (int i = 0; i < Data.lib.wheelItems.Count; i++)
         {
             var wi = Data.lib.wheelItems[i];
-            if (wi.sprite)
-            {
-                CreateWheelItem(scrollContent, "Wheel " + (i + 1).ToString(), wi.sprite, i);
-                added++;
-            }
-        }
-        if (added == 0)
-        {
-            var tip = new GameObject("Tip", typeof(TextMeshProUGUI));
-            tip.transform.SetParent(scrollContent, false);
-            var t = tip.GetComponent<TextMeshProUGUI>(); t.text = "No wheels found in Resources/Sprites/Wheels";
-            ApplyTextStyle(t, 28, TextAlignmentOptions.Left);
-            var rt = t.GetComponent<RectTransform>(); rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(0.5f, 1f); rt.offsetMin = new Vector2(8, -40); rt.offsetMax = new Vector2(-8, -8);
+            if (wi.sprite) CreateWheelItem(scrollContent, "WHEEL " + (i + 1), wi.sprite, i);
         }
     }
 
@@ -221,7 +236,7 @@ public class GarageRuntimeUI : MonoBehaviour
         var le = go.GetComponent<LayoutElement>(); le.preferredWidth = paletteCell.x; le.preferredHeight = paletteCell.y;
         var drag = go.GetComponent<PaletteItemDrag>(); drag.ui = this; drag.kind = PaletteKind.Frame; drag.frameType = ft;
         var txt = new GameObject("Label", typeof(TextMeshProUGUI)); txt.transform.SetParent(go.transform, false);
-        var t = txt.GetComponent<TextMeshProUGUI>(); t.text = label; ApplyTextStyle(t, 28, TextAlignmentOptions.Center);
+        var t = txt.GetComponent<TextMeshProUGUI>(); t.text = label; if (boldFont) t.font = boldFont; t.enableAutoSizing = false; t.fontSize = paletteLabelFontSize; t.color = Color.black; t.alignment = TextAlignmentOptions.Center;
         var rt = t.GetComponent<RectTransform>(); rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one; rt.pivot = new Vector2(0.5f, 0.5f); rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
     }
 
@@ -233,20 +248,18 @@ public class GarageRuntimeUI : MonoBehaviour
         var le = go.GetComponent<LayoutElement>(); le.preferredWidth = paletteCell.x; le.preferredHeight = paletteCell.y;
         var drag = go.GetComponent<PaletteItemDrag>(); drag.ui = this; drag.kind = PaletteKind.Wheel; drag.wheelItemIndex = index;
         var txt = new GameObject("Label", typeof(TextMeshProUGUI)); txt.transform.SetParent(go.transform, false);
-        var t = txt.GetComponent<TextMeshProUGUI>(); t.text = label; ApplyTextStyle(t, 28, TextAlignmentOptions.Center);
+        var t = txt.GetComponent<TextMeshProUGUI>(); t.text = label; if (boldFont) t.font = boldFont; t.enableAutoSizing = false; t.fontSize = paletteLabelFontSize; t.color = Color.black; t.alignment = TextAlignmentOptions.Center;
         var rt = t.GetComponent<RectTransform>(); rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one; rt.pivot = new Vector2(0.5f, 0.5f); rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
     }
-
-    float CamDistToPlane() { return Mathf.Abs(cam.transform.position.z - planeZ); }
 
     void UpdateBuildBoundsFromCenterArea()
     {
         var rect = RectTransformUtility.PixelAdjustRect(centerArea, centerArea.GetComponentInParent<Canvas>());
-        float d = CamDistToPlane();
+        float d = Mathf.Abs(cam.transform.position.z - 0f);
         var bl = cam.ScreenToWorldPoint(new Vector3(rect.x, rect.y, d));
         var tr = cam.ScreenToWorldPoint(new Vector3(rect.x + rect.width, rect.y + rect.height, d));
         Vector2 size = tr - bl;
-        buildBounds.transform.position = new Vector3(0f, 0f, planeZ);
+        buildBounds.transform.position = new Vector3(0f, 0f, 0f);
         buildBounds.size = size;
     }
 
@@ -258,10 +271,7 @@ public class GarageRuntimeUI : MonoBehaviour
         UpdateBuildBoundsFromCenterArea();
     }
 
-    public bool IsInBuildAreaScreen(Vector2 screenPos)
-    {
-        return RectTransformUtility.RectangleContainsScreenPoint(centerArea, screenPos);
-    }
+    public bool IsInBuildAreaScreen(Vector2 screenPos) { return RectTransformUtility.RectangleContainsScreenPoint(centerArea, screenPos); }
 
     Vector3 ClampToBounds(Vector3 worldPos)
     {
@@ -272,11 +282,7 @@ public class GarageRuntimeUI : MonoBehaviour
         return worldPos;
     }
 
-    void LateUpdate()
-    {
-        if (buildBounds == null) return;
-        UpdateBuildBoundsFromCenterArea();
-    }
+    void LateUpdate() { if (buildBounds) UpdateBuildBoundsFromCenterArea(); }
 
     public float GetWheelWorldScale(int wheelIndex)
     {
@@ -300,7 +306,7 @@ public class GarageRuntimeUI : MonoBehaviour
         var sr = currentBody.GetComponent<SpriteRenderer>(); sr.sprite = sp; sr.sortingOrder = 10;
         currentBody.transform.position = worldPos;
         var bc = currentBody.GetComponent<BoxCollider2D>(); var b = sr.bounds; bc.size = b.size; bc.isTrigger = true;
-        var pd = currentBody.GetComponent<PlacedDrag>(); pd.cam = cam; pd.bounds = buildBounds; pd.onDelete = null;
+        var pd = currentBody.GetComponent<PlacedDrag>(); pd.cam = cam; pd.bounds = buildBounds; pd.onDelete = () => { PlayResetSfx(); ResetAssembly(); };
         currentFrame = ft;
     }
 
@@ -317,10 +323,12 @@ public class GarageRuntimeUI : MonoBehaviour
         var bc = go.GetComponent<BoxCollider2D>(); var b = sr.bounds; bc.size = b.size; bc.isTrigger = true;
         go.GetComponent<WheelMeta>().itemIndex = wheelIndex;
         go.transform.SetParent(currentBody.transform, true);
-        var pd = go.GetComponent<PlacedDrag>(); pd.cam = cam; pd.bounds = buildBounds; pd.onDelete = () => { wheels.Remove(go); Destroy(go); };
+        var pd = go.GetComponent<PlacedDrag>(); pd.cam = cam; pd.bounds = buildBounds; pd.onDelete = () => { wheels.Remove(go); Destroy(go); PlayResetSfx(); };
         wheels.Add(go);
         if (item.selectClip) AudioHub.Play2D(item.selectClip, 1f);
     }
+
+    void PlayResetSfx() { if (resetClip) AudioHub.Play2D(resetClip, 1f); }
 
     void ResetAssembly()
     {

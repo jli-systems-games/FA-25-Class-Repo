@@ -119,6 +119,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &254707962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 254707964}
+  - component: {fileID: 254707963}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &254707963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254707962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28b5ec264eeefee4f8c94b2139998fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  font: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  fontSize: 48
+  hintText: Hold SPACE to accelerate  |  R = Restart
+--- !u!4 &254707964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254707962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.27229977, y: 0.085400105, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &516321414
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,6 +258,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &630629035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 630629037}
+  - component: {fileID: 630629038}
+  m_Layer: 0
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &630629037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630629035}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.27229977, y: 0.085400105, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &630629038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630629035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a816ab0307862478d38b49df805652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  driveKey: 32
+  sfxInterval: 0.7
 --- !u!1 &777733411
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,18 +499,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16ececb92439fe7488051a62972e99ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLimit: 10
   driveKey: 32
   cameraMargin: 0.6
   groundYPercent: -0.25
   vehicleScale: 0.5
   rightBounce: 0.65
   rightFriction: 0.05
-  minCWSpeed: 180
-  maxCWSpeed: 1200
+  minSpeed: 180
+  maxSpeed: 1200
   accelPerSecond: 800
   releaseDecayPerSecond: 1000
-  clockwise: 0
+  spawnDropHeight: 1.2
+  sfxInterval: 0.7
+  directionFlipPeriod: 5
 --- !u!4 &1598630914
 Transform:
   m_ObjectHideFlags: 0
@@ -576,3 +670,5 @@ SceneRoots:
   - {fileID: 873619739}
   - {fileID: 777733413}
   - {fileID: 2128777925}
+  - {fileID: 254707964}
+  - {fileID: 630629037}

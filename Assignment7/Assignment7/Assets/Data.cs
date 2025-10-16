@@ -1,15 +1,41 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
-public static class Data
+public class Data
 {
-    public static VehicleDef vehicle = new VehicleDef();
-    public static LibraryDef lib = new LibraryDef();
-    public static void ResetVehicle() { vehicle = new VehicleDef(); }
+    public static VehicleData vehicle;       
+    public static Library lib = new Library(); 
+
+    public static void ResetVehicle()
+    {
+        vehicle = new VehicleData();
+    }
 }
 
-public enum FrameType { Car, Bike }
-public enum WheelColliderMode { Polygon, Circle, Box }
+[System.Serializable]
+public struct VehicleData
+{
+    public FrameType frameType;
+    public float bodyMass;
+    public Vector2 centerOfMassOffset;
+    public List<WheelDef> wheels;
+}
+
+[System.Serializable]
+public struct WheelDef
+{
+    public Vector2 localPos;
+    public int itemIndex;
+    public float scale;
+}
+
+[System.Serializable]
+public class Library
+{
+    public Sprite bodyCarSprite;
+    public Sprite bodyBikeSprite;
+    public List<WheelItemDef> wheelItems = new List<WheelItemDef>();
+}
 
 [System.Serializable]
 public struct WheelItemDef
@@ -27,27 +53,5 @@ public struct WheelItemDef
     public AudioClip runClip;
 }
 
-[System.Serializable]
-public struct VehicleDef
-{
-    public FrameType frameType;
-    public float bodyMass;
-    public Vector2 centerOfMassOffset;
-    public List<WheelDef> wheels;
-}
-
-[System.Serializable]
-public struct WheelDef
-{
-    public Vector2 localPos;
-    public int itemIndex;
-    public float scale;
-}
-
-[System.Serializable]
-public struct LibraryDef
-{
-    public Sprite bodyCarSprite;
-    public Sprite bodyBikeSprite;
-    public List<WheelItemDef> wheelItems;
-}
+public enum FrameType { Car, Bike }
+public enum WheelColliderMode { Box, Circle, Polygon }

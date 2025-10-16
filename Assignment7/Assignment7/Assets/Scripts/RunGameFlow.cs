@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using TMPro;
 
 public class RunGameFlow : MonoBehaviour
 {
@@ -18,9 +16,7 @@ public class RunGameFlow : MonoBehaviour
     public float spawnDropHeight = 1.2f;
     public float sfxInterval = 0.7f;
     public float directionFlipPeriod = 5f;
-    public TMP_FontAsset boldFont;
 
-    TMP_Text distText, hintText;
     VehicleController2D vehicle;
     Rigidbody2D playerRb;
 
@@ -33,9 +29,7 @@ public class RunGameFlow : MonoBehaviour
 
     void Awake()
     {
-        AudioHub.Ensure();
         SetupWorldFromCamera();
-        BuildUI();
         BuildTrack();
         SpawnVehicle();
         startX = playerRb.position.x;
@@ -61,6 +55,7 @@ public class RunGameFlow : MonoBehaviour
         yMin = c.y - halfH + cameraMargin;
         yMax = c.y + halfH + cameraMargin;
         groundY = Mathf.Lerp(yMin, yMax, Mathf.Clamp01(0.5f + groundYPercent));
+
         var bg = GameObject.Find("Background");
         if (bg == null) bg = new GameObject("Background", typeof(SpriteRenderer));
         var sr = bg.GetComponent<SpriteRenderer>();
@@ -76,37 +71,10 @@ public class RunGameFlow : MonoBehaviour
         float s = Mathf.Max(w / sp.x, h / sp.y);
         bg.transform.localScale = new Vector3(s, s, 1f);
         sr.sortingOrder = -100;
+
         groundMat = new PhysicsMaterial2D("GroundMat");
         groundMat.friction = 0.6f;
         groundMat.bounciness = 0f;
-    }
-
-    void ApplyTextStyle(TMP_Text t, int size, TextAlignmentOptions align)
-    {
-        t.font = boldFont ? boldFont : t.font;
-        t.fontSize = size;
-        t.enableAutoSizing = true;
-        t.color = Color.black;
-        t.alignment = align;
-    }
-
-    void BuildUI()
-    {
-        var canvas = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        var c = canvas.GetComponent<Canvas>(); c.renderMode = RenderMode.ScreenSpaceOverlay;
-        var s = canvas.GetComponent<CanvasScaler>(); s.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; s.referenceResolution = new Vector2(1920, 1080); s.matchWidthOrHeight = 0.5f;
-        distText = MakeText(canvas.transform, new Vector2(0.5f, 1f), new Vector2(0f, -80), "0.0m", 36, TextAlignmentOptions.Center);
-        hintText = MakeText(canvas.transform, new Vector2(0.5f, 0f), new Vector2(0f, 30), "SPACE accelerate | R = Back to SampleScene | Auto flip 5s", 28, TextAlignmentOptions.Center);
-    }
-
-    TMP_Text MakeText(Transform parent, Vector2 anchor, Vector2 offset, string text, int size, TextAlignmentOptions align)
-    {
-        var go = new GameObject("Text", typeof(TextMeshProUGUI));
-        go.transform.SetParent(parent, false);
-        var rt = go.GetComponent<RectTransform>(); rt.anchorMin = anchor; rt.anchorMax = anchor; rt.pivot = anchor; rt.anchoredPosition = offset;
-        var t = go.GetComponent<TextMeshProUGUI>(); t.text = text;
-        ApplyTextStyle(t, size, align);
-        return t;
     }
 
     void BuildTrack()
@@ -179,17 +147,17 @@ public class RunGameFlow : MonoBehaviour
             flipTimer = 0f;
         }
 
-        if (clockwise) vehicle.SetMotorSpeedCW(currentSpeedMag); else vehicle.SetMotorSpeedCCW(currentSpeedMag);
+        if (clockwise) vehicle.SetMotorSpeedCW(currentSpeedMag);
+        else vehicle.SetMotorSpeedCCW(currentSpeedMag);
 
         if (holding) TickWheelSfx(Time.deltaTime);
-
-        float dist = Mathf.Max(0f, playerRb.position.x - startX);
-        
     }
 
     void TickWheelSfx(float dt)
     {
-        if (wheelSfxTimers == null || wheelSfxTimers.Length != vehicle.hinges.Count) wheelSfxTimers = new float[vehicle.hinges.Count];
+        if (wheelSfxTimers == null || wheelSfxTimers.Length != vehicle.hinges.Count)
+            wheelSfxTimers = new float[vehicle.hinges.Count];
+
         for (int i = 0; i < vehicle.hinges.Count; i++)
         {
             if (!vehicle.driveMask[i]) continue;
@@ -199,7 +167,7 @@ public class RunGameFlow : MonoBehaviour
                 wheelSfxTimers[i] = 0f;
                 int idx = Mathf.Clamp(vehicle.wheelItemIndices[i], 0, Data.lib.wheelItems.Count - 1);
                 var clip = Data.lib.wheelItems[idx].runClip ? Data.lib.wheelItems[idx].runClip : Data.lib.wheelItems[idx].selectClip;
-                if (clip) AudioHub.Play2D(clip, 0.9f);
+           
             }
         }
     }
