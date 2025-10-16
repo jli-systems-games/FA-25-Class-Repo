@@ -17,6 +17,9 @@ public class GameData
 {
     public int selectedBodyIndex;
     public int selectedStringIndex;
+    public int selectedString2Index;
+    public int selectedString3Index;
+    public int selectedString4Index;
 }
 
 
