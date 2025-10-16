@@ -6,7 +6,6 @@ public class GlobalRestart : MonoBehaviour
 {
     public static GlobalRestart Instance;
     
-    [Header("Settings")]
     public KeyCode restartKey = KeyCode.P;
     
     void Awake()
@@ -34,8 +33,6 @@ public class GlobalRestart : MonoBehaviour
     
     public void RestartGame()
     {
-        Debug.Log("Restarting game...");
-        
         if (DialogueManager.isConversationActive)
         {
             DialogueManager.StopConversation();
