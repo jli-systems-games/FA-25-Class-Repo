@@ -1,39 +1,22 @@
 using UnityEngine;
-using System.Collections.Generic;
-using System.Data;
 
 public class Customizer : MonoBehaviour
 {
-    #region Character Outfit Lists
-    public List<Sprite> customizerHats = new List<Sprite>();
-    public List<Sprite> customizerDress = new List<Sprite>();
-    public List<Sprite> customizerShoes = new List<Sprite>();
+    public GameObject[] availableBlocks;
 
-    #endregion 
-    private void Start()
+    private BuildManager build;
+
+    void Start()
     {
-        #region Update Data Lists
-        //clear lists
-        Data.data_skinHat.Clear();
-        Data.data_skinDress.Clear();
-        Data.data_skinShoes.Clear();
+        build = Object.FindFirstObjectByType<BuildManager>();
+    }
 
-        //populate lists
-        foreach(Sprite sprite in customizerHats)
-        {
-            Data.data_skinHat.Add(sprite);
-        }
+    public void SelectBlock(int index)
+    {
+        if (!build) return;
+        if (index < 0 || index >= availableBlocks.Length) return;
 
-        foreach(Sprite sprite in customizerDress)
-        {
-            Data.data_skinDress.Add(sprite);
-        }
-
-        foreach (Sprite sprite in customizerShoes)
-        {
-            Data.data_skinShoes.Add(sprite);
-        }
-
-        #endregion
+        var prefab = availableBlocks[index];
+        build.SelectPrefab(prefab);
     }
 }
