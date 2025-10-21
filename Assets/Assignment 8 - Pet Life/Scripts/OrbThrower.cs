@@ -12,6 +12,11 @@ public class OrbThrower : MonoBehaviour
     private Vector3 angle;
     public LayerMask interactableLayer;
 
+    public float movementRange = 1.85f;
+    public float movementSpeed = 1.5f;
+
+    private bool isThrown = false;
+
     private void Start()
     {
         SetUpOrb();
@@ -24,14 +29,16 @@ public class OrbThrower : MonoBehaviour
         ResetOrb();
     }
 
-    void ResetOrb()
+    public void ResetOrb()
     {
         if (orb != null)
         {
             angle = Vector3.zero;
+            orbRB.linearVelocity = Vector3.zero;
             orbRB.angularVelocity = Vector3.zero;
             orbRB.useGravity = false;
             orb.transform.position = transform.position;
+            isThrown = false;
         }
     }
 
@@ -46,12 +53,28 @@ public class OrbThrower : MonoBehaviour
             {
                 if (hit.transform == orb.transform)
                 {
+                    isThrown = true;
+
                     angle = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
 
                     orbRB.AddForce(new Vector3(0, 90, -angle.z * orbSpeed));
                     orbRB.useGravity = true;
                 }
             }
+        }
+        //Got code for ball throw from https://www.youtube.com/watch?v=fljP8zJ75Lk
+
+        MoveOrbSideToSide();
+    }
+    void MoveOrbSideToSide()
+    {
+        if (!isThrown)
+        {
+            float pingPongValue = Mathf.PingPong(Time.time * movementSpeed, movementRange * 2f);
+            float newX = pingPongValue - movementRange;
+
+            Vector3 newPosition = new Vector3(newX, orb.transform.position.y, orb.transform.position.z);
+            orb.transform.position = newPosition;
         }
     }
 }
