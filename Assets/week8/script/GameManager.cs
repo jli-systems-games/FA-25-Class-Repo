@@ -6,12 +6,11 @@ public class GameManager : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private GrandpaController grandpa;
-    [SerializeField] private Slider progressBar;  // 0~1
+    [SerializeField] private Slider progressBar;  // 0~1 (Life/100 표시)
     [SerializeField] private Text timerText;      // 옵션
     [SerializeField] private Text debugText;      // 옵션
 
-    [Header("Win/Lose")]
-    [SerializeField] private float targetGoodCareSeconds = 150f; // 2~3분
+    [Header("Scenes")]
     [SerializeField] private string successSceneName = "Success";
     [SerializeField] private string gameOverSceneName = "GameOver";
 
@@ -20,9 +19,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float rampEverySec = 30f;          // 30초마다 램프
     [SerializeField] private float minNeglectLimitScale = 0.5f; // 방치 한계 최소 50%
     [SerializeField] private float minSpawnIntervalScale = 0.4f;// 스폰 간격 최소 40%
-    [SerializeField] private int maxMaxConcurrentNeeds = 3;   // 최종 동시 3개
+    [SerializeField] private int maxMaxConcurrentNeeds = 3;     // 최종 동시 3개
 
-    private float goodCareTimer = 0f;
     private float elapsed = 0f;
     private float nextRampTime = 0f;
 
@@ -30,8 +28,9 @@ public class GameManager : MonoBehaviour
     {
         if (grandpa != null)
         {
-            grandpa.OnNeglectExceeded += HandleNeglectExceeded;
-            grandpa.OnSleeping += HandleSleeping;
+            grandpa.OnNeglectExceeded += HandleNeglectExceeded; // (옵션) 방치 실패 유지
+            grandpa.OnLifeZero += HandleLifeZero;
+            grandpa.OnLifeFull += HandleLifeFull;
         }
     }
 
@@ -40,15 +39,16 @@ public class GameManager : MonoBehaviour
         if (grandpa != null)
         {
             grandpa.OnNeglectExceeded -= HandleNeglectExceeded;
-            grandpa.OnSleeping -= HandleSleeping;
+            grandpa.OnLifeZero -= HandleLifeZero;
+            grandpa.OnLifeFull -= HandleLifeFull;
         }
     }
 
     private void Start()
     {
-        // 초기 난이도
         if (grandpa != null)
         {
+            // 초기 난이도
             grandpa.neglectLimitScale = 1f;
             grandpa.spawnIntervalScale = 1f;
             grandpa.maxConcurrentNeeds = 1; // 초반엔 단일 요구
@@ -58,22 +58,15 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         elapsed += Time.deltaTime;
-        goodCareTimer += Time.deltaTime;
 
-        float p = Mathf.Clamp01(goodCareTimer / targetGoodCareSeconds);
-        if (progressBar) progressBar.value = p;
+        if (progressBar && grandpa != null)
+            progressBar.value = Mathf.Clamp01(grandpa.GetLife() / 100f);
 
         if (timerText) timerText.text = $"{Mathf.FloorToInt(elapsed)}s";
         if (debugText && grandpa != null)
         {
             debugText.text =
-                $"Fatigue:{grandpa.GetFatigue():0} | NegScale:{grandpa.neglectLimitScale:0.00} | SpawnScale:{grandpa.spawnIntervalScale:0.00} | MaxNeeds:{grandpa.maxConcurrentNeeds}";
-        }
-
-        if (p >= 1f)
-        {
-            SceneManager.LoadScene(successSceneName);
-            return;
+                $"Life:{grandpa.GetLife():0} | Fatigue:{grandpa.GetFatigue():0} | NegScale:{grandpa.neglectLimitScale:0.00} | SpawnScale:{grandpa.spawnIntervalScale:0.00} | MaxNeeds:{grandpa.maxConcurrentNeeds}";
         }
 
         if (enableDifficultyCurve && elapsed >= nextRampTime && grandpa != null)
@@ -97,15 +90,13 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(gameOverSceneName);
     }
 
-    private void HandleSleeping(bool sleeping)
+    private void HandleLifeZero()
     {
-        // 필요 시 수면 중 진행도 증가율 조정 가능
-        // (현재는 단순화를 위해 변화 없음)
+        SceneManager.LoadScene(gameOverSceneName);
     }
 
-    // 잘못된 입력 등 패널티를 줄 때 호출(옵션)
-    public void Penalty(float seconds = 5f)
+    private void HandleLifeFull()
     {
-        goodCareTimer = Mathf.Max(0f, goodCareTimer - seconds);
+        SceneManager.LoadScene(successSceneName);
     }
 }
