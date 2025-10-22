@@ -38,39 +38,36 @@ public class GrandpaController : MonoBehaviour
         new NeedConfig{ state=GrandpaState.Bored,  neglectLimitSeconds=25f, spritePriority=3, spawnWeight=1f },
     };
 
-    // --- Spawning ---
+
     public float baseMinSpawnInterval = 6f;
     public float baseMaxSpawnInterval = 10f;
 
-    // --- Fatigue / Sleep (원하면 끄거나 수치만 조절) ---
-    public float fatigue = 0f;            // 0~100
+
+    public float fatigue = 0f;            
     public float fatigueIncreasePerSec = 5f;
     public float fatigueDecreasePerSec = 20f;
     public float fatigueSleepThreshold = 70f;
     public float fatigueWakeThreshold = 20f;
 
-    // --- LIFE (승패 결정 게이지 0~100) ---
+
     public float life = 60f;
     public float baseLifeDecayPerSec = 2f;
     public float perNeedPenaltyPerSec = 1.2f;
     public float sleepDecayMultiplier = 0.5f;
 
-    // 버튼 회복(짧은 버스트)
+
     public float careHealDuration = 1.5f;
     public float careHealPerSec = 6f;
     public float healWhileNeedsMultiplier = 0.6f;
     public float midZoneMin = 40f, midZoneMax = 70f;
     public float healEffLow = 1.0f, healEffMid = 0.65f, healEffHigh = 0.35f;
 
-    // 난이도(게임 중 변경 가능)
-    public float neglectLimitScale = 1f;   // 0.25~1 추천
-    public float spawnIntervalScale = 1f;  // 0.25 이상
-    public int maxConcurrentNeeds = 1;   // 1+
+    public float neglectLimitScale = 1f;   
+    public float spawnIntervalScale = 1f; 
+    public int maxConcurrentNeeds = 1;
 
-    // GameManager가 읽는 플래그(방치로 즉시 실패)
     public bool neglectFailed { get; private set; }
 
-    // 내부 상태
     readonly HashSet<GrandpaState> activeNeeds = new HashSet<GrandpaState>();
     readonly Dictionary<GrandpaState, float> needTimers = new Dictionary<GrandpaState, float>();
     Dictionary<GrandpaState, Sprite> spriteMap;
@@ -117,7 +114,7 @@ public class GrandpaController : MonoBehaviour
             if (fatigue >= fatigueSleepThreshold) { GoToSleep(); return; }
         }
 
-        // 개별 방치 타이머
+        // 개별 타이
         if (activeNeeds.Count > 0)
         {
             var list = new List<GrandpaState>(activeNeeds);
@@ -141,7 +138,7 @@ public class GrandpaController : MonoBehaviour
         UpdateSprite();
     }
 
-    // --- Sleep ---
+
     void GoToSleep()
     {
         isSleeping = true;
@@ -265,7 +262,7 @@ public class GrandpaController : MonoBehaviour
         {
             var cfg = GetCfg(st);
             float limit = Mathf.Max(0.1f, cfg.neglectLimitSeconds * neglectLimitScale);
-            float score = needTimers[st] / limit; // 높을수록 위급
+            float score = needTimers[st] / limit;
             if (!set || score > best || (Mathf.Approximately(score, best) && cfg.spritePriority < bestPrio))
             {
                 chosen = st; set = true; best = score; bestPrio = cfg.spritePriority;

@@ -4,26 +4,21 @@ using UnityEngine.SceneManagement;
 
 public class FatigueUI : MonoBehaviour
 {
-    [Header("Refs")]
     public GrandpaController grandpa;
     public Slider slider;
 
-    [Header("UI 옵션")]
     public bool smooth = true;
-    public float smoothSpeed = 10f;
+    public float smoothSpeed = 50f; // 1초당 이동량(게이지 단위: 0~100)
 
-    [Header("Scene Handling (이 스크립트에서 승패 처리할지 여부)")]
     public bool manageScenesHere = true;
     public string successSceneName = "Success";
     public string gameOverSceneName = "GameOver";
-
-    // 0/100 판정 민감도(슬라이더 보간시 99.9/0.1 등으로 머무는 경우 대비)
     [Range(0f, 5f)] public float winLoseThreshold = 0.01f;
 
     float currentValue;
-    bool ended = false; // 씬 중복 로드 방지
+    bool ended = false;
 
-    private void Start()
+    void Start()
     {
         if (slider != null)
         {
@@ -31,7 +26,6 @@ public class FatigueUI : MonoBehaviour
             slider.maxValue = 100f;
             slider.wholeNumbers = false;
         }
-
         if (grandpa != null)
         {
             currentValue = Mathf.Clamp(grandpa.GetLife(), 0f, 100f);
@@ -39,32 +33,34 @@ public class FatigueUI : MonoBehaviour
         }
     }
 
-    private void Update()
+    void Update()
     {
-        if (grandpa == null || slider == null) return;
-        if (ended) return;
+        if (grandpa == null || slider == null || ended) return;
 
-        float target = Mathf.Clamp(grandpa.GetLife(), 0f, 100f);
-        currentValue = smooth
-            ? Mathf.Lerp(currentValue, target, Time.deltaTime * smoothSpeed)
-            : target;
+        // 1) 씬 전환은 '원시 Life 값'으로 즉시 판정 (보간과 무관)
+        float raw = Mathf.Clamp(grandpa.GetLife(), 0f, 100f);
+        if (manageScenesHere)
+        {
+            if (raw <= winLoseThreshold)
+            {
+                ended = true;
+                SceneManager.LoadScene(gameOverSceneName);
+                return;
+            }
+            if (raw >= 100f - winLoseThreshold)
+            {
+                ended = true;
+                SceneManager.LoadScene(successSceneName);
+                return;
+            }
+        }
+
+        // 2) UI 값은 MoveTowards로 부드럽게, 그리고 '정확히' 도달
+        if (smooth)
+            currentValue = Mathf.MoveTowards(currentValue, raw, smoothSpeed * Time.deltaTime);
+        else
+            currentValue = raw;
 
         slider.value = currentValue;
-
-        if (!manageScenesHere) return;
-
-        // 승패 판정 (보간/부동소수 오차 대비 임계값 사용)
-        if (currentValue <= winLoseThreshold)
-        {
-            ended = true;
-            SceneManager.LoadScene(gameOverSceneName);
-            return;
-        }
-        if (currentValue >= 100f - winLoseThreshold)
-        {
-            ended = true;
-            SceneManager.LoadScene(successSceneName);
-            return;
-        }
     }
 }
