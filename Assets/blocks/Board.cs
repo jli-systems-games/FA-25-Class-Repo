@@ -1,3 +1,4 @@
+using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using static UnityEngine.Rendering.DebugUI.Table;
@@ -9,6 +10,8 @@ using static UnityEngine.Rendering.DebugUI.Table;
 
 public class Board : MonoBehaviour
 {
+    public GameManager gameManager;
+
     public Tilemap tilemap {  get; private set; }
     public Piece activePiece { get; private set; }
     public TetrominoData[] tetrominoes;
@@ -145,6 +148,10 @@ public class Board : MonoBehaviour
                 this.tilemap.SetTile(position,above);
             }
             row++;
+        }
+        if (gameManager != null)
+        {
+            gameManager.AddPoints();
         }
     }
 }
