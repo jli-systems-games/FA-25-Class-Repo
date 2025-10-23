@@ -1,7 +1,9 @@
 using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI.Table;
+using System.Collections;
 
 
 /// <summary>
@@ -16,7 +18,16 @@ public class Board : MonoBehaviour
     public Piece activePiece { get; private set; }
     public TetrominoData[] tetrominoes;
     public Vector3Int spawnPosition;
+    public AudioSource audioSource;
+    public AudioClip lineClearSFX;
     public Vector2Int boardSize = new Vector2Int(10, 20);
+
+    [Header("Random Texts While Wating")]
+    public GameObject[] rushTexts;
+    private float timer = 0f;
+    private float maxWaitTime = 30f;
+    private bool isCoroutineRunning = false;
+
     public RectInt Bounds
     {
         get
@@ -42,6 +53,16 @@ public class Board : MonoBehaviour
         SpawnPiece();
     }
 
+    private void Update()
+    {
+        timer += Time.deltaTime;
+        if (timer >= maxWaitTime && !isCoroutineRunning)
+        {
+            StartCoroutine(ActivateRandomObject());
+            timer = 0f;
+        }
+    }
+
     public void SpawnPiece()
     {
         int random = Random.Range(0, this.tetrominoes.Length);
@@ -60,7 +81,7 @@ public class Board : MonoBehaviour
     }
     private void GameOver()
     {
-        this.tilemap.ClearAllTiles();
+        SceneManager.LoadScene("LoseScene");
     }
 
     public void Set(Piece piece)
@@ -99,21 +120,41 @@ public class Board : MonoBehaviour
 
     public void ClearLines()
     {
-
         RectInt bounds = this.Bounds;
         int row = bounds.yMin;
+        bool lineCleared = false;
 
         while (row < bounds.yMax)
         {
             if (IsLineFull(row)){
+                audioSource.PlayOneShot(lineClearSFX);
                 LineClear(row);
+                lineCleared = true;
             }
             else
             {
                 row++;
             }
+            if (lineCleared)
+                timer = 0f;
         }
     }
+
+    IEnumerator ActivateRandomObject()
+    {
+        isCoroutineRunning = true;
+
+        if (rushTexts.Length > 0)
+        {
+            int index = Random.Range(0, rushTexts.Length);
+            rushTexts[index].SetActive(true);
+            yield return new WaitForSeconds(3f);
+            rushTexts[index].SetActive(false);
+        }
+
+        isCoroutineRunning = false;
+    }
+
     private bool IsLineFull(int row)
     {
 
@@ -153,5 +194,9 @@ public class Board : MonoBehaviour
         {
             gameManager.AddPoints();
         }
+    }
+    public void ClearAllTiles()
+    {
+        this.tilemap.ClearAllTiles();
     }
 }
