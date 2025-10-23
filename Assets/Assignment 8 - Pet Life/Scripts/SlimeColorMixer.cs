@@ -27,6 +27,21 @@ public class SlimeColorMixer : MonoBehaviour
 
     void MixColor(Color newOrbColor)
     {
+        consumedColors.Add(newOrbColor);
 
+        int totalOrbs = consumedColors.Count;
+
+        Color mixedColor = new Color(0, 0, 0, 0);
+
+        foreach (Color color in consumedColors)
+        {
+            mixedColor += color;
+        }
+
+        Color finalColor = mixedColor / totalOrbs;
+
+        finalColor.a = 0.5f;
+
+        slimeRenderer.material.color = finalColor;
     }
 }
