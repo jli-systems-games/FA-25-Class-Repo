@@ -73,8 +73,11 @@ public class OrbThrower : MonoBehaviour
             float pingPongValue = Mathf.PingPong(Time.time * movementSpeed, movementRange * 2f);
             float newX = pingPongValue - movementRange;
 
-            Vector3 newPosition = new Vector3(newX, orb.transform.position.y, orb.transform.position.z);
-            orb.transform.position = newPosition;
+            if (orb != null)
+            {
+                Vector3 newPosition = new Vector3(newX, orb.transform.position.y, orb.transform.position.z);
+                orb.transform.position = newPosition;
+            }
         }
     }
 }
