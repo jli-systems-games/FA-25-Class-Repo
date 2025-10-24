@@ -6,10 +6,13 @@ public class CleanSlime : MonoBehaviour
     public Material dirtMaterial;
 
     public LayerMask slimeDirtLayer;
+    public float cleaningAmount = 0.1f;
 
     private Vector2 currentPos;
     private Vector2 lastPos;
     private bool isMouseMoving = false;
+
+    public GameStat statAsset;
 
     private void Start()
     {
@@ -48,9 +51,9 @@ public class CleanSlime : MonoBehaviour
                     lastPos = currentPos;
                 }
             }
-
-            UpdateDirtinessVisual();
         }
+
+        UpdateDirtinessVisual();
     }
 
     private bool RaycastHitSlime()
@@ -67,21 +70,21 @@ public class CleanSlime : MonoBehaviour
 
     private void CleanSlimeFlick()
     {
-        Data.dirtStat += 0.1f;
+        statAsset.dirtStat += cleaningAmount;
 
-        if (Data.dirtStat > 100)
+        if (statAsset.dirtStat > 100)
         {
-            Data.dirtStat = 100;
+            statAsset.dirtStat = 100;
         }
 
-        Debug.Log(Data.dirtStat);
+        Debug.Log(statAsset.dirtStat);
     }
 
     private void UpdateDirtinessVisual()
     {
         Color dirtColor = dirtMaterial.color;
 
-        dirtColor.a = 1 - Data.dirtStat / 100f;
+        dirtColor.a = 1 - statAsset.dirtStat / 100f;
 
         dirtMaterial.color = dirtColor;
     }
