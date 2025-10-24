@@ -7,7 +7,7 @@ public enum StatType
 {
     Dirt,
     Hunger,
-    Play
+    Growth
 }
 
 public class StatManager : MonoBehaviour
@@ -17,7 +17,11 @@ public class StatManager : MonoBehaviour
     public GameStat statAsset;
     public StatType statToTrack;
     public float decreaseRate;
+    public float growthAmount = 2f;
 
+    public Canvas growingCanvas;
+    public Canvas gameOverCanvas;
+    public Canvas winCanvas;
     private void Start()
     {
         slider = GetComponent<Slider>();
@@ -26,18 +30,47 @@ public class StatManager : MonoBehaviour
     void Update()
     {
         float currentValue = GetStatValue();
+
         float decreaseAmount = decreaseRate * Time.deltaTime;
 
         float newValue = currentValue - decreaseAmount;
+
+        if (newValue <= 0)
+        {
+            newValue = 0;
+        }
+        else if (newValue > 100)
+        {
+            newValue = 100;
+        }
 
         SetStatValue(newValue);
 
         slider.value = newValue;
 
-        if (slider.value <= 1 )
+        if (statAsset.dirtStat <= 1 || statAsset.hungerStat <= 1)
         {
-            slider.value = 0;
-            //SceneManager.LoadScene("Game Over Scene");
+            gameOverCanvas.gameObject.SetActive(true);
+            Data.isFinished = true;
+        }
+
+        //Check for growth condition
+        if (statAsset.dirtStat > 70 && statAsset.hungerStat > 70)
+        {
+            growingCanvas.gameObject.SetActive(true);
+            statAsset.growthStat += growthAmount;
+
+            if (statAsset.growthStat >= 99)
+            {
+                growingCanvas.gameObject.SetActive(false);
+                winCanvas.gameObject.SetActive(true);
+                Data.isFinished = true;
+            }
+        }
+        else
+        {
+            statAsset.growthStat = 0;
+            growingCanvas.gameObject.SetActive(false);
         }
     }
 
@@ -49,8 +82,8 @@ public class StatManager : MonoBehaviour
                 return statAsset.dirtStat;
             case StatType.Hunger:
                 return statAsset.hungerStat;
-            case StatType.Play:
-                return statAsset.playStat;
+            case StatType.Growth:
+                return statAsset.growthStat;
             default:
                 return 0f;
         }
@@ -66,8 +99,8 @@ public class StatManager : MonoBehaviour
             case StatType.Hunger:
                 statAsset.hungerStat = value;
                 break;
-            case StatType.Play:
-                statAsset.playStat = value;
+            case StatType.Growth:
+                statAsset.growthStat = value;
                 break;
         }
     }

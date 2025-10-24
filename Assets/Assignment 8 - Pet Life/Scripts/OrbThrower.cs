@@ -13,7 +13,6 @@ public class OrbThrower : MonoBehaviour
     public LayerMask interactableLayer;
 
     public float movementRange = 1.85f;
-    public float movementSpeed = 1.5f;
 
     private bool isThrown = false;
 
@@ -70,7 +69,7 @@ public class OrbThrower : MonoBehaviour
     {
         if (!isThrown)
         {
-            float pingPongValue = Mathf.PingPong(Time.time * movementSpeed, movementRange * 2f);
+            float pingPongValue = Mathf.PingPong(Time.time * Data.movementSpeed, movementRange * 2f);
             float newX = pingPongValue - movementRange;
 
             if (orb != null)

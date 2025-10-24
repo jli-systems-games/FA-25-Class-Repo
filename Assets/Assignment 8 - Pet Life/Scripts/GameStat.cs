@@ -3,18 +3,25 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GameStat", menuName = "Scriptable Objects/GameStat")]
 public class GameStat : ScriptableObject
 {
-    public float defaultDirt = 100f;
+    public float defaultDirt = 70f;
     public float defaultHunger = 50f;
-    public float defaultPlay = 50f;
+    public float defaultGrowth = 0f;
 
     public float dirtStat;
     public float hungerStat;
-    public float playStat;
+    public float growthStat;
 
     public void ResetStats()
     {
         dirtStat = defaultDirt;
         hungerStat = defaultHunger;
-        playStat = defaultPlay;
+        growthStat = defaultGrowth;
+    }
+
+    public void EndStats()
+    {
+        dirtStat = 100;
+        hungerStat = 100;
+        growthStat = 100;
     }
 }
