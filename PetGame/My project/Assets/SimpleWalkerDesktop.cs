@@ -1,108 +1,120 @@
+using System.Collections;
 using UnityEngine;
 
-public class SimpleWalkerDesktop : MonoBehaviour
+public enum PetMode { Free, Dance, Attack }
+
+[System.Serializable]
+public struct Vitals
 {
-    public PetController pet;
-    public float moveSpeed = 2f;
-    public float turnSpeed = 360f;
-    public bool GoToClosestCorner = false;
+    public int hp, mood, energy;
+    public void Clamp() { hp = Mathf.Clamp(hp, 0, 100); mood = Mathf.Clamp(mood, 0, 100); energy = Mathf.Clamp(energy, 0, 100); }
+}
 
-    Bounds groundBounds;
-    Vector3 target;
-    float baseY;
+public class PetController : MonoBehaviour
+{
+    public Animator anim;
+    public Anchors anchors;
+    public PetMode mode = PetMode.Free;
+    public Vitals vitals = new Vitals { hp = 100, mood = 100, energy = 100 };
+    public int clickDamage = 50;
+    public float sleepSeconds = 5f;
 
-    void Awake() { if (!pet) pet = GetComponent<PetController>(); }
+    bool sad, injured, drunk, sleeping;
 
-    void Start()
-    {
-        baseY = transform.position.y;
-        groundBounds = ComputeGroundBounds();
-        target = transform.position;
-    }
-
+    void Awake() { if (!anim) anim = GetComponentInChildren<Animator>(); }
     void Update()
     {
-        if (pet.petMode == PetMode.Stage) target = EdgePointTowardsMouse();
-        else if (GoToClosestCorner) target = CornerPoint(ClosestCornerIndex(transform.position));
-        else target = MouseWorldOnGround();
-
-        Vector3 to = target - transform.position; to.y = 0;
-        if (to.sqrMagnitude > 0.001f)
-        {
-            Quaternion q = Quaternion.LookRotation(to.normalized, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, q, turnSpeed * Time.deltaTime);
-            transform.position += transform.forward * moveSpeed * Time.deltaTime;
-        }
-
-        transform.position = ClampToBounds(transform.position, groundBounds);
-        transform.position = new Vector3(transform.position.x, baseY, transform.position.z);
-        pet.SetWorldSpeed(to.magnitude / Time.deltaTime);
-
-        if (GoToClosestCorner && Vector3.Distance(transform.position, target) < 0.3f) GoToClosestCorner = false;
+        if (Input.GetMouseButtonDown(0) && RayHitMe()) Hurt(clickDamage);
+        if (Input.GetKeyDown(KeyCode.Backslash)) ResetPet();
     }
 
-    public void TeleportToCorner(int idx) { transform.position = CornerPoint(idx); }
-
-    Bounds ComputeGroundBounds()
+    bool RayHitMe()
     {
         var cam = Camera.main;
-        Vector3[] c = {
-            WorldOnPlane(cam, new Vector2(0,0)),
-            WorldOnPlane(cam, new Vector2(Screen.width,0)),
-            WorldOnPlane(cam, new Vector2(0,Screen.height)),
-            WorldOnPlane(cam, new Vector2(Screen.width,Screen.height))
-        };
-        var b = new Bounds(c[0], Vector3.zero);
-        for (int i = 1; i < 4; i++) b.Encapsulate(c[i]);
-        return b;
+        Ray r = cam.ScreenPointToRay(Input.mousePosition);
+        return Physics.Raycast(r, out RaycastHit h, 200f) && h.collider && h.collider.transform.IsChildOf(transform);
     }
 
-    Vector3 WorldOnPlane(Camera cam, Vector2 screen)
+    public void SetSpeed(float worldSpeed, float toRun)
     {
-        Ray r = cam.ScreenPointToRay(screen);
-        new Plane(Vector3.up, Vector3.zero).Raycast(r, out float d);
-        return r.GetPoint(d);
+        float s = worldSpeed < 0.05f ? 0f : Mathf.InverseLerp(0f, toRun, worldSpeed);
+        anim.SetFloat("Speed", s);
     }
 
-    Vector3 ClampToBounds(Vector3 p, Bounds b)
+    public void SetMode(PetMode m)
     {
-        return new Vector3(Mathf.Clamp(p.x, b.min.x, b.max.x), p.y, Mathf.Clamp(p.z, b.min.z, b.max.z));
+        mode = m;
+        anim.SetBool("StageMode", m == PetMode.Dance);
+        if (m != PetMode.Dance) anim.SetInteger("DanceInd", -1);
     }
 
-    int ClosestCornerIndex(Vector3 pos)
+    public void DanceIndex(int i) { anim.SetInteger("DanceInd", i); }
+    public void Trigger(string t) { anim.SetTrigger(t); }
+
+    public void Hurt(int d)
     {
-        int best = 0; float bd = float.MaxValue;
-        for (int i = 0; i < 4; i++)
-        {
-            float d = (CornerPoint(i) - pos).sqrMagnitude;
-            if (d < bd) { bd = d; best = i; }
-        }
-        return best;
+        vitals.hp -= d; vitals.Clamp();
+        injured = vitals.hp < 100 && vitals.hp > 0;
+        anim.SetBool("IsInjured", injured);
+        sad = true; anim.SetBool("Sad", true);
+        if (vitals.hp <= 0) Die();
     }
 
-    Vector3 CornerPoint(int idx)
+    public void Die()
     {
-        return idx switch
-        {
-            0 => new Vector3(groundBounds.min.x, baseY, groundBounds.min.z),
-            1 => new Vector3(groundBounds.max.x, baseY, groundBounds.min.z),
-            2 => new Vector3(groundBounds.min.x, baseY, groundBounds.max.z),
-            _ => new Vector3(groundBounds.max.x, baseY, groundBounds.max.z),
-        };
+        anim.SetTrigger("Die");
+        StartCoroutine(CoDie());
     }
 
-    Vector3 EdgePointTowardsMouse()
+    IEnumerator CoDie()
     {
-        var m = MouseWorldOnGround();
-        float fx = (m.x > groundBounds.center.x) ? groundBounds.max.x : groundBounds.min.x;
-        return new Vector3(fx, baseY, m.z);
+        yield return new WaitForSeconds(2f);
+        gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+        Revive();
     }
 
-    Vector3 MouseWorldOnGround()
+    public void Revive()
     {
-        var cam = Camera.main;
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        new Plane(Vector3.up, Vector3.zero).Raycast(ray, out float d);
-        return ClampToBounds(ray.GetPoint(d), groundBounds);
+        gameObject.SetActive(true);
+        if (anchors && anchors.respawnPoint) transform.position = anchors.respawnPoint.position;
+        sad = false; injured = false; sleeping = false; drunk = false;
+        vitals.hp = Mathf.Max(vitals.hp, 50);
+        vitals.mood = Mathf.Max(vitals.mood, 50);
+        vitals.energy = Mathf.Max(vitals.energy, 50);
+        anim.SetBool("Sad", false);
+        anim.SetBool("IsInjured", false);
+        anim.SetBool("Sleep", false);
+        anim.SetBool("IsDrunk", false);
+        anim.SetTrigger("Revive");
+        SetMode(PetMode.Free);
+    }
+
+    public void Sleep()
+    {
+        if (sleeping) return;
+        StartCoroutine(CoSleep());
+    }
+
+    IEnumerator CoSleep()
+    {
+        sleeping = true; anim.SetBool("Sleep", true);
+        yield return new WaitForSeconds(sleepSeconds);
+        vitals.hp = vitals.mood = vitals.energy = 100;
+        sleeping = false; anim.SetBool("Sleep", false);
+        anim.SetTrigger("Revive");
+    }
+
+    public void ResetPet()
+    {
+        vitals.hp = vitals.mood = vitals.energy = 100; vitals.Clamp();
+        sad = injured = drunk = sleeping = false;
+        anim.SetBool("Sad", false);
+        anim.SetBool("IsInjured", false);
+        anim.SetBool("Sleep", false);
+        anim.SetBool("IsDrunk", false);
+        SetMode(PetMode.Free);
+        if (anchors && anchors.respawnPoint) transform.position = anchors.respawnPoint.position;
+        anim.SetTrigger("Revive");
     }
 }
