@@ -1,16 +1,47 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.InputSystem;
 
 public class PlayerShoot : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private GameObject _bulletPrefeb;
 
-    // Update is called once per frame
+    [SerializeField]
+    private float _bulletSpeed;
+
+    [SerializeField]
+    private Transform _gunOffset;
+
+    [SerializeField]
+    private float _timeBetweenShots;
+
+    private bool _fireContinuously;
+    private float _lastFireTime;
+
     void Update()
     {
-        
+        if (_fireContinuously)
+        {
+            float timeSinceLastFire = Time.time - _lastFireTime;
+
+            if(timeSinceLastFire>=_timeBetweenShots)
+            FireBullet();
+
+            _lastFireTime = Time.time;
+        }
+    }
+    private void FireBullet()
+    {
+        GameObject bullet = Instantiate(_bulletPrefeb, _gunOffset.position, transform.rotation);
+        Rigidbody2D rigidbody = bullet.GetComponent<Rigidbody2D>();
+
+        rigidbody.linearVelocity = _bulletSpeed * transform.up;
+     }
+
+    private void OnFire(InputValue inputValue)
+    {
+        _fireContinuously = inputValue.isPressed;
     }
 }
