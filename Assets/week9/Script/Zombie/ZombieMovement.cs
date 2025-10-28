@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ZombieMovement : MonoBehaviour
 {
@@ -11,39 +11,54 @@ public class ZombieMovement : MonoBehaviour
     private float _rotationSpeed;
 
     private Rigidbody2D _rigidbody;
-    private PlayerAwareController _playerAwareController;
+    private PlayerAwareController _playerAwarenessController;
     private Vector2 _targetDirection;
+    private float _changeDirectionCooldown;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _playerAwareController = GetComponent<PlayerAwareController>();
+        _playerAwarenessController = GetComponent<PlayerAwareController>();
+        _targetDirection = transform.up;
     }
 
     private void FixedUpdate()
     {
-        UpgradeTargetDirection();
+        UpdateTargetDirection();
         RotateTowardsTarget();
         SetVelocity();
     }
 
-    private void UpgradeTargetDirection()
+    private void UpdateTargetDirection()
     {
-        if(_playerAwareController.AwareOfPlayer)
+        HandleRandomDirectionChange();
+        HandlePlayerTargeting();
+    }
+
+    private void HandleRandomDirectionChange()
+    {
+        _changeDirectionCooldown -= Time.deltaTime;
+
+        if (_changeDirectionCooldown <= 0)
         {
-            _targetDirection = _playerAwareController.DirectionToPlayer;
+            float angleChange = Random.Range(-90f, 90f);
+            Quaternion rotation = Quaternion.AngleAxis(angleChange, transform.forward);
+            _targetDirection = rotation * _targetDirection;
+
+            _changeDirectionCooldown = Random.Range(1f, 5f);
         }
-        else
+    }
+
+    private void HandlePlayerTargeting()
+    {
+        if (_playerAwarenessController.AwareOfPlayer)
         {
-            _targetDirection = Vector2.zero;
+            _targetDirection = _playerAwarenessController.DirectionToPlayer;
         }
     }
 
     private void RotateTowardsTarget()
     {
-        if (_targetDirection == Vector2.zero)
-        { return; }
-
         Quaternion targetRotation = Quaternion.LookRotation(transform.forward, _targetDirection);
         Quaternion rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
 
@@ -52,9 +67,6 @@ public class ZombieMovement : MonoBehaviour
 
     private void SetVelocity()
     {
-        if(_targetDirection==Vector2.zero)
-        {
-            _rigidbody.linearVelocity = transform.up * _speed;
-        }
+        _rigidbody.linearVelocity = transform.up * _speed;
     }
 }

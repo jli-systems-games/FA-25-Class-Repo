@@ -1,12 +1,12 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerShoot : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _bulletPrefeb;
+    private GameObject _bulletPrefab;
 
     [SerializeField]
     private float _bulletSpeed;
@@ -18,30 +18,40 @@ public class PlayerShoot : MonoBehaviour
     private float _timeBetweenShots;
 
     private bool _fireContinuously;
+    private bool _fireSingle;
     private float _lastFireTime;
 
     void Update()
     {
-        if (_fireContinuously)
+        if (_fireContinuously || _fireSingle)
         {
             float timeSinceLastFire = Time.time - _lastFireTime;
 
-            if(timeSinceLastFire>=_timeBetweenShots)
-            FireBullet();
+            if (timeSinceLastFire >= _timeBetweenShots)
+            {
+                FireBullet();
 
-            _lastFireTime = Time.time;
+                _lastFireTime = Time.time;
+                _fireSingle = false;
+            }
         }
     }
+
     private void FireBullet()
     {
-        GameObject bullet = Instantiate(_bulletPrefeb, _gunOffset.position, transform.rotation);
+        GameObject bullet = Instantiate(_bulletPrefab, _gunOffset.position, transform.rotation);
         Rigidbody2D rigidbody = bullet.GetComponent<Rigidbody2D>();
 
         rigidbody.linearVelocity = _bulletSpeed * transform.up;
-     }
+    }
 
     private void OnFire(InputValue inputValue)
     {
         _fireContinuously = inputValue.isPressed;
+
+        if (inputValue.isPressed)
+        {
+            _fireSingle = true;
+        }
     }
 }
