@@ -30,7 +30,7 @@ public class PlayerAwareController : MonoBehaviour
         }
         else
         {
-            AwareOfPlayer = false;
+            AwareOfPlayer=false;
         }
     }
 }
