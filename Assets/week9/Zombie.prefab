@@ -97,6 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7684864767308236146}
   - component: {fileID: 3097659574957116695}
+  - component: {fileID: 5803954459829571058}
   - component: {fileID: 4331610846545222014}
   - component: {fileID: 3426254474275711452}
   - component: {fileID: 5387500296823901110}
@@ -139,6 +140,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07722e6c8b4544a059897cc444259e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5803954459829571058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3662694801485941964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4a45a27ee23f4e9681b70bb3611d823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _killScore: 10
 --- !u!50 &4331610846545222014
 Rigidbody2D:
   serializedVersion: 5
@@ -332,6 +346,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: EnemyDestroyController, Assembly-CSharp
         m_MethodName: DestroyEnemy
         m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: OnDied
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5803954459829571058}
+        m_TargetAssemblyTypeName: EnemyScoreAllocator, Assembly-CSharp
+        m_MethodName: AllocateScore
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
