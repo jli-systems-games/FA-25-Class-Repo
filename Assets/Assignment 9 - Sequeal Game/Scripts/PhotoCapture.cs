@@ -4,39 +4,42 @@ using UnityEngine.UI;
 
 public class PhotoCapture : MonoBehaviour
 {
-    private Texture2D screenCapture;
+    public Texture2D screenCapture;
     public Image photoDisplayArea;
     public GameObject photoFrame;
-    private bool viewingPhoto;
 
     public GameObject cameraFlash;
     public float flashTime;
+    public float imageDisappearTime = 3f;
 
     public Animator fadingAnimation;
+
+    private PhotoPlaceOnResearch photoPlaceOnReasearch;
 
     void Start()
     {
         screenCapture = new Texture2D(Screen.width,Screen.height, TextureFormat.RGB24, false);
+        photoPlaceOnReasearch = GetComponent<PhotoPlaceOnResearch>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (!viewingPhoto)
+            if (!Data.viewingPhoto)
             {
                 StartCoroutine(CapturePhoto());
             }
             else
             {
-                RemovePhoto();
+                return;
             }
         }
     }
 
     IEnumerator CapturePhoto()
     {
-        viewingPhoto = true;
+        Data.viewingPhoto = true;
 
         yield return new WaitForEndOfFrame();
 
@@ -49,25 +52,36 @@ public class PhotoCapture : MonoBehaviour
 
     void ShowPhoto()
     {
-        Sprite photoSprite = Sprite.Create(screenCapture, new Rect(0.0f, 0.0f, screenCapture.width, screenCapture.height), new Vector2(0.5f, 0.5f), 100f);
-        photoDisplayArea.sprite = photoSprite;
+        Data.photoSprite = Sprite.Create(screenCapture, new Rect(0.0f, 0.0f, screenCapture.width, screenCapture.height), new Vector2(0.5f, 0.5f), 100f);
+        photoDisplayArea.sprite = Data.photoSprite;
+
+        Data.newPhotoTaken = true;
 
         photoFrame.SetActive(true);
 
-        StartCoroutine(CameraFlashEffect());
+        StartCoroutine(CameraFlashEffect(flashTime));
         fadingAnimation.Play("PhotoFade");
+
+        StartCoroutine(ImageDisappear(imageDisappearTime));
     }
 
-    IEnumerator CameraFlashEffect()
+    IEnumerator CameraFlashEffect(float delay)
     {
         cameraFlash.SetActive(true);
-        yield return new WaitForSeconds(flashTime);
+        yield return new WaitForSeconds(delay);
         cameraFlash.SetActive(false);
+    }
+
+    IEnumerator ImageDisappear(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        RemovePhoto();
     }
 
     void RemovePhoto()
     {
-        viewingPhoto = false;
+        Data.viewingPhoto = false;
         photoFrame.SetActive(false);
     }
 }
