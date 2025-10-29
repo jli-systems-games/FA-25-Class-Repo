@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -7,9 +9,10 @@ public class GameManager : MonoBehaviour
     public float rangeX = 10f;
     public float rangeY = 7f;
     public TMP_Text movementText;
+    public Button nextButton;
 
-    public TMP_Text[] unlockTexts;
-    private int score = 0;
+    public GameObject[] stories;
+    public int score = 0;
     private int patternLength = 4;
 
     private GameObject currentItem;
@@ -37,12 +40,28 @@ public class GameManager : MonoBehaviour
     public void AddScore()
     {
         score++;
-        patternLength++;
-        if (score == 3 && unlockTexts.Length > 0)
-            unlockTexts[0].gameObject.SetActive(true);
-        else if (score == 6 && unlockTexts.Length > 1)
-            unlockTexts[1].gameObject.SetActive(true);
-        else if (score == 9 && unlockTexts.Length > 2)
-            unlockTexts[2].gameObject.SetActive(true);
+        if (score == 3 && stories.Length > 0)
+        {
+            stories[0].gameObject.SetActive(true);
+            patternLength++;
+        }
+
+        else if (score == 6 && stories.Length > 1)
+        {
+            stories[1].gameObject.SetActive(true);
+            patternLength++;
+        }
+        else if (score == 9 && stories.Length > 2)
+        {
+            stories[2].gameObject.SetActive(true);
+            patternLength++;
+            StartCoroutine(ShowButton());
+        }
+    }
+
+    private IEnumerator ShowButton()
+    {
+        yield return new WaitForSeconds(4f);
+        nextButton.gameObject.SetActive(true);
     }
 }

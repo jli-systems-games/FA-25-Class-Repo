@@ -11,12 +11,24 @@ public class ItemController : MonoBehaviour
     private bool isActivated = false;
     private float timer = 7f;
     public int patternLength = 4;
+    public AudioClip[] keyPressedSFX;
+    public AudioSource audioSource;
+    public AudioClip succeedSFX;
+    public AudioClip failedSFX;
+
+
+    private void Awake()
+    {
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+    }
 
     private void Start()
     {
         GenerateMovementPattern();
         StartCoroutine(SelfDestruct());
     }
+
 
     private void GenerateMovementPattern()
     {
@@ -36,6 +48,8 @@ public class ItemController : MonoBehaviour
         if (movementTextUI != null)
             movementTextUI.text = "";
 
+        audioSource.PlayOneShot(failedSFX);
+        yield return new WaitForSeconds(failedSFX.length);
         Destroy(gameObject);
         manager.SpawnNextItem();
     }
@@ -68,10 +82,26 @@ public class ItemController : MonoBehaviour
             bool correct = false;
             while (!correct)
             {
-                if (dir == '<' && Input.GetKeyDown(KeyCode.LeftArrow)) correct = true;
-                else if (dir == '>' && Input.GetKeyDown(KeyCode.RightArrow)) correct = true;
-                else if (dir == '^' && Input.GetKeyDown(KeyCode.UpArrow)) correct = true;
-                else if (dir == '_' && Input.GetKeyDown(KeyCode.DownArrow)) correct = true;
+                if (dir == '<' && Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    audioSource.PlayOneShot(keyPressedSFX[0]);
+                    correct = true;
+                }
+                else if (dir == '>' && Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    audioSource.PlayOneShot(keyPressedSFX[1]);
+                    correct = true;
+                }
+                else if (dir == '^' && Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    audioSource.PlayOneShot(keyPressedSFX[2]);
+                    correct = true;
+                }
+                else if (dir == '_' && Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    audioSource.PlayOneShot(keyPressedSFX[3]);
+                    correct = true;
+                }
                 yield return null;
             }
         }
@@ -79,6 +109,8 @@ public class ItemController : MonoBehaviour
         if (movementTextUI != null)
             movementTextUI.text = "";
 
+        audioSource.PlayOneShot(succeedSFX);
+        yield return new WaitForSeconds(succeedSFX.length);
         manager.AddScore();
         Destroy(gameObject);
         manager.SpawnNextItem();
