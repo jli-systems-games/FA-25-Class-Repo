@@ -96,12 +96,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7684864767308236146}
+  - component: {fileID: 3097659574957116695}
   - component: {fileID: 4331610846545222014}
   - component: {fileID: 3426254474275711452}
   - component: {fileID: 5387500296823901110}
   - component: {fileID: 691100204835808115}
   - component: {fileID: 3420717516621584092}
   - component: {fileID: 8066505846402093524}
+  - component: {fileID: 6533851942964159011}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -125,6 +127,18 @@ Transform:
   - {fileID: 4957733942825001600}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3097659574957116695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3662694801485941964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07722e6c8b4544a059897cc444259e67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &4331610846545222014
 Rigidbody2D:
   serializedVersion: 5
@@ -261,3 +275,74 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6533851942964159011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3662694801485941964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40612caac18b54079b6d742f246e2436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentHealth: 10
+  _maximumHealth: 10
+  OnDied:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8066505846402093524}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: OnDied
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3420717516621584092}
+        m_TargetAssemblyTypeName: UnityEngine.BoxCollider2D, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: OnDied
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5387500296823901110}
+        m_TargetAssemblyTypeName: ZombieMovement, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: OnDied
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3097659574957116695}
+        m_TargetAssemblyTypeName: EnemyDestroyController, Assembly-CSharp
+        m_MethodName: DestroyEnemy
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: OnDied
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
