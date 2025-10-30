@@ -87,4 +87,6 @@ public class PhotoCapture : MonoBehaviour
         Data.viewingPhoto = false;
         photoFrame.SetActive(false);
     }
+
+    //Overall photo capture code from https://www.youtube.com/watch?v=8LrTtfZedOk
 }
