@@ -34,6 +34,30 @@ public class RaycastLogic : MonoBehaviour
                     ResetFoundBool();
                     Data.isMushroomFound = true;
                 }
+                else if (hit.collider.CompareTag("Nibu"))
+                {
+                    Debug.Log("Nibu found!");
+                    ResetFoundBool();
+                    Data.isNibuFound = true;
+                }
+                else if (hit.collider.CompareTag("Egg"))
+                {
+                    Debug.Log("Egg found!");
+                    ResetFoundBool();
+                    Data.isEggFound = true;
+                }
+                else if (hit.collider.CompareTag("Baby"))
+                {
+                    Debug.Log("Baby found!");
+                    ResetFoundBool();
+                    Data.isBabyFound = true;
+                }
+                else if (hit.collider.CompareTag("House"))
+                {
+                    Debug.Log("House found!");
+                    ResetFoundBool();
+                    Data.isHouseFound = true;
+                }
                 else
                 {
                     ResetFoundBool();
@@ -54,6 +78,10 @@ public class RaycastLogic : MonoBehaviour
     {
         Data.isPlantFound = false;
         Data.isMushroomFound = false;
+        Data.isNibuFound = false;
+        Data.isEggFound = false;
+        Data.isBabyFound = false;
+        Data.isHouseFound = false;
 
         Debug.Log("reset bool");
     }

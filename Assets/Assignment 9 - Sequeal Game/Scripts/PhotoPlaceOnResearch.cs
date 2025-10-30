@@ -5,12 +5,24 @@ public class PhotoPlaceOnResearch : MonoBehaviour
 {
     public Image plantDisplayArea;
     public Image mushroomDisplayArea;
+    public Image nibuDisplayArea;
+    public Image eggDisplayArea;
+    public Image babyDisplayArea;
+    public Image houseDisplayArea;
 
     public Sprite plantSprite;
     public Sprite mushroomSprite;
+    public Sprite nibuSprite;
+    public Sprite eggSprite;
+    public Sprite babySprite;
+    public Sprite houseSprite;
 
     private bool picturedPlant = false;
     private bool picturedMushroom = false;
+    private bool picturedNibu = false;
+    private bool picturedEgg = false;
+    private bool picturedBaby = false;
+    private bool picturedHouse = false;
 
 
     public void Update()
@@ -19,7 +31,6 @@ public class PhotoPlaceOnResearch : MonoBehaviour
         {
             if (Data.isPlantFound)
             {
-                Debug.Log(picturedPlant);
 
                 if (!picturedPlant)
                 {
@@ -33,7 +44,6 @@ public class PhotoPlaceOnResearch : MonoBehaviour
             
             if (Data.isMushroomFound)
             {
-                Debug.Log(picturedMushroom);
 
                 if (!picturedMushroom)
                 {
@@ -45,6 +55,58 @@ public class PhotoPlaceOnResearch : MonoBehaviour
                 }
             }
 
+            if (Data.isNibuFound)
+            {
+
+                if (!picturedNibu)
+                {
+                    nibuSprite = CreatePersistentSprite(Data.photoSprite);
+
+                    nibuDisplayArea.sprite = nibuSprite;
+                    Debug.Log("Updated nibu image");
+                    picturedNibu = true;
+                }
+            }
+
+            if (Data.isEggFound)
+            {
+
+                if (!picturedEgg)
+                {
+                    eggSprite = CreatePersistentSprite(Data.photoSprite);
+
+                    eggDisplayArea.sprite = eggSprite;
+                    Debug.Log("Updated egg image");
+                    picturedEgg = true;
+                }
+            }
+
+            if (Data.isBabyFound)
+            {
+
+                if (!picturedBaby)
+                {
+                    babySprite = CreatePersistentSprite(Data.photoSprite);
+
+                    babyDisplayArea.sprite = babySprite;
+                    Debug.Log("Updated Baby image");
+                    picturedBaby = true;
+                }
+            }
+
+            if (Data.isHouseFound)
+            {
+
+                if (!picturedHouse)
+                {
+                    houseSprite = CreatePersistentSprite(Data.photoSprite);
+
+                    houseDisplayArea.sprite = houseSprite;
+                    Debug.Log("Updated House image");
+                    picturedHouse = true;
+                }
+            }
+
             Data.newPhotoTaken = false;
         }
     }
@@ -53,7 +115,7 @@ public class PhotoPlaceOnResearch : MonoBehaviour
     {
         if (sourceSprite == null || sourceSprite.texture == null)
         {
-            Debug.LogError("Source Sprite or Texture is null! Cannot create persistent copy.");
+            Debug.LogError("source sprite or texture is null");
             return null;
         }
 
