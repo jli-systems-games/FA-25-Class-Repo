@@ -9,6 +9,7 @@ public class Data
 
     public static bool viewingPhoto = false;
     public static bool newPhotoTaken = false;
+    public static bool capturePhoto = false;
 
     public static bool isPlantFound;
     public static bool isMushroomFound;

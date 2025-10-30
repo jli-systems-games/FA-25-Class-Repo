@@ -28,6 +28,7 @@ public class PhotoCapture : MonoBehaviour
         {
             if (!Data.viewingPhoto)
             {
+                Data.capturePhoto = true;
                 StartCoroutine(CapturePhoto());
             }
             else
@@ -61,6 +62,8 @@ public class PhotoCapture : MonoBehaviour
 
         StartCoroutine(CameraFlashEffect(flashTime));
         fadingAnimation.Play("PhotoFade");
+
+        Data.capturePhoto = false;
 
         StartCoroutine(ImageDisappear(imageDisappearTime));
     }

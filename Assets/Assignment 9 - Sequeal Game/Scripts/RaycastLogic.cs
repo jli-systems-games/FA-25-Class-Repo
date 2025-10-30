@@ -18,19 +18,26 @@ public class RaycastLogic : MonoBehaviour
 
         Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.red);
 
-        if (Physics.Raycast(ray, out hit, interactionDistance, interactableLayer))
+        if (Data.capturePhoto) //make raycast only happen when you capture photo, so that camera snapping doesn't happen
         {
-            if (hit.collider.CompareTag("Plant"))
+            if (Physics.Raycast(ray, out hit, interactionDistance, interactableLayer))
             {
-                Debug.Log("Plant found!");
-                ResetFoundBool();
-                Data.isPlantFound = true;
-            }
-            else if (hit.collider.CompareTag("Mushroom"))
-            {
-                Debug.Log("mushroom found!");
-                ResetFoundBool();
-                Data.isMushroomFound = true;
+                if (hit.collider.CompareTag("Plant"))
+                {
+                    Debug.Log("Plant found!");
+                    ResetFoundBool();
+                    Data.isPlantFound = true;
+                }
+                else if (hit.collider.CompareTag("Mushroom"))
+                {
+                    Debug.Log("mushroom found!");
+                    ResetFoundBool();
+                    Data.isMushroomFound = true;
+                }
+                else
+                {
+                    ResetFoundBool();
+                }
             }
             else
             {
@@ -39,7 +46,7 @@ public class RaycastLogic : MonoBehaviour
         }
         else
         {
-            ResetFoundBool();
+            return;
         }
     }
 
