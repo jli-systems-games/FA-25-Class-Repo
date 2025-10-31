@@ -4,11 +4,11 @@ using UnityEngine.Events;
 
 public class NoteJudge : MonoBehaviour
 {
-    [Header("判定设置")]
+    
     public KeyCode targetKey = KeyCode.F;
     public float judgeWindow = 0.3f;
 
-    [Header("可选UI")]
+ 
     public GameObject successUI;
     public GameObject failUI;
 
@@ -53,7 +53,7 @@ public class NoteJudge : MonoBehaviour
             onFail?.Invoke();
         }
 
-        // 延迟销毁
+      
         Destroy(gameObject, 0.3f);
     }
 }

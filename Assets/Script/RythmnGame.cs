@@ -14,22 +14,22 @@ public class SignalJudgment : MonoBehaviour
         public UnityEvent onSuccess;
     }
 
-    [Header("判定参数")]
+    
     public float judgeWindow = 0.3f;
     public bool useUnscaledTime = true;
 
-    [Header("左右轨道配置")]
+    
     public LaneConfig leftLane = new LaneConfig { key = KeyCode.F, spawnPosition = new Vector3(-200, 0, 0) };
     public LaneConfig rightLane = new LaneConfig { key = KeyCode.J, spawnPosition = new Vector3(200, 0, 0) };
     public Transform spawnParent;
     public bool alternateSpawnPoints = true;
 
-    [Header("全局失败反馈")]
+    
     public GameObject failUI;
     public float uiAutoHideTime = 0.3f;
     public UnityEvent onFail;
 
-    [Header("销毁选项")]
+  
     public bool destroySpawnedOnResult = true;
 
     private bool _useLeftNext = true;
