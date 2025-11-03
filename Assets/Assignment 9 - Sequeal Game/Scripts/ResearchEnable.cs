@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ResearchEnable : MonoBehaviour
 {
@@ -25,6 +26,17 @@ public class ResearchEnable : MonoBehaviour
                 researchCanvas.gameObject.SetActive(false);
                 Time.timeScale = 1;
                 isResearchOpen = false;
+            }
+        }
+
+        if (isResearchOpen)
+        {
+            if (Input.GetKeyUp(KeyCode.U))
+            {
+                if (Data.completedResearch)
+                {
+                    SceneManager.LoadScene("End Scene");
+                }
             }
         }
     }

@@ -109,6 +109,11 @@ public class PhotoPlaceOnResearch : MonoBehaviour
 
             Data.newPhotoTaken = false;
         }
+
+        if (picturedPlant && picturedMushroom && picturedEgg && picturedBaby && picturedHouse && picturedNibu)
+        {
+            Data.completedResearch = true;
+        }
     }
 
     private Sprite CreatePersistentSprite(Sprite sourceSprite)
