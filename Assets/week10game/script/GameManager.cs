@@ -1,19 +1,25 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [Header("Refs")]
     public RoomGenerator roomGenerator;
     public ItemSpawner itemSpawner;
     public TargetItemManager targetItemManager;
     public TimerController timerController;
 
-
+    [Header("Round Settings")]
     public int targetsPerRound = 3;
     public float roundTimeSeconds = 60f;
     public float nextRoundDelay = 2f;
+
+    [Header("Scene Transition")]
+    public bool manageScenesHere = true;          // 성공/실패 시 씬 전환을 여기서 처리할지
+    public string successSceneName = "Success";   // 성공 씬 이름 (Build Settings에 추가 필수)
+    public string gameOverSceneName = "Fail";
 
     bool roundRunning = false;
 
@@ -54,29 +60,43 @@ public class GameManager : MonoBehaviour
         roundRunning = false;
 
         timerController.StopTimer();
-        // TODO: 성공 UI 띄우기
 
-        // 다음 라운드로
+        if (manageScenesHere && !string.IsNullOrEmpty(successSceneName))
+        {
+            // 성공 씬으로 이동
+            SceneManager.LoadScene(successSceneName);
+            return;
+        }
+
+        // 씬 전환을 안 쓰는 경우: 다음 라운드로 루프
         Invoke(nameof(GoNextRound), nextRoundDelay);
     }
-
     public void OnTimeOver()
     {
         if (!roundRunning) return;
         roundRunning = false;
 
-        // TODO: 실패 UI 띄우기
-        // 그래도 새 라운드
+        if (manageScenesHere && !string.IsNullOrEmpty(gameOverSceneName))
+        {
+            // 실패 씬으로 이동
+            SceneManager.LoadScene(gameOverSceneName);
+            return;
+        }
+
+        // 씬 전환을 안 쓰는 경우: 다음 라운드로 루프
         Invoke(nameof(GoNextRound), nextRoundDelay);
     }
 
     void GoNextRound()
     {
-        // 방/아이템 싹 정리
+        // 방/아이템 정리
         roomGenerator.ClearRoom();
         itemSpawner.ClearItems();
         targetItemManager.ClearTargets();
 
         StartRound();
     }
+
+
+
 }

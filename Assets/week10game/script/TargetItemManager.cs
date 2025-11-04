@@ -15,6 +15,9 @@ public class TargetItemManager : MonoBehaviour
         // TODO: UI 갱신
         // for (int i = 0; i < targetTexts.Length; i++)
         //     targetTexts[i].text = i < targets.Count ? targets[i].GetName() : "";
+
+        currentTargets = targets;
+        FindFirstObjectByType<TargetListUI > ()?.RefreshList();
     }
 
     public void ClearTargets()
@@ -30,6 +33,11 @@ public class TargetItemManager : MonoBehaviour
             currentTargets.Remove(foundItem);
             // TODO: UI에서 체크 표시
             // 만약 다 찾았으면 GameManager에 알리기
+
+            // ...기존 로직
+            FindFirstObjectByType<TargetListUI>()?.MarkFound(foundItem);   // 체크 표시
+
+
             if (currentTargets.Count == 0)
             {
                 GameManager.Instance.OnTargetAllFound();
@@ -56,4 +64,5 @@ public class TargetItemManager : MonoBehaviour
     {
         return currentTargets;
     }
+
 }

@@ -8,7 +8,14 @@ public class InteractableItem : MonoBehaviour
 
     bool isTarget = false;
 
-    public string GetName() => itemName;
+    public string GetName()
+    {
+        if (!string.IsNullOrWhiteSpace(itemName)) return itemName;
+        var n = gameObject.name;
+        var i = n.IndexOf("(Clone)");
+        return i >= 0 ? n.Substring(0, i).Trim() : n;
+    }
+
 
     public void SetAsTarget(bool value)
     {
@@ -22,4 +29,5 @@ public class InteractableItem : MonoBehaviour
     {
         return isTarget;
     }
+
 }
