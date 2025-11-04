@@ -47,6 +47,7 @@ public class TargetListUI : MonoBehaviour
             if (idx >= 0 && idx < targetTexts.Length)
             {
                 targetTexts[idx].text = $"✓ {item.GetName()}";
+                targetTexts[idx].color = Color.red;
                 targetTexts[idx].alpha = 0.5f;
             }
         }
