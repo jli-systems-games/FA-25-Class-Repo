@@ -7,6 +7,10 @@ public class RoomGenerator : MonoBehaviour
     [System.Serializable]
     public class RoomVariant
     {
+
+        [Header("Minimums")]
+        public int minFurniturePerRound = 3;   // ← 매판 가구 최소 개수
+
         [Header("Room Shell (프리팹)")]
         public string variantName = "RoomA";
         public GameObject roomShellPrefab;
@@ -51,7 +55,10 @@ public class RoomGenerator : MonoBehaviour
     {
         ClearRoom();
 
-        // 유효한 두 변수를 배열로 정리(Null 제외)
+        // 난수 초기화 먼저
+        Random.InitState(seed);
+
+        // 유효한 후보 채우기
         var candidates = new List<RoomVariant>();
         if (variantA != null && variantA.roomShellPrefab != null) candidates.Add(variantA);
         if (variantB != null && variantB.roomShellPrefab != null) candidates.Add(variantB);
@@ -62,13 +69,23 @@ public class RoomGenerator : MonoBehaviour
             return;
         }
 
-        Random.InitState(seed);
-
-        // 1) A/B 중 선택
+        // A/B 선택 (정확한 50:50 보장; 후보가 2개일 때)
         if (pickRandomVariant)
-            currentVariant = candidates[Random.Range(0, candidates.Count)];
+        {
+            if (candidates.Count == 2)
+            {
+                currentVariant = (Random.value < 0.5f) ? candidates[0] : candidates[1];
+            }
+            else
+            {
+                // 후보가 1개뿐이면 그걸 사용
+                currentVariant = candidates[0];
+            }
+        }
         else
+        {
             currentVariant = candidates[Mathf.Clamp(fixedVariantIndex, 0, candidates.Count - 1)];
+        }
 
         // 2) 방 셸 생성
         spawnedShell = Instantiate(currentVariant.roomShellPrefab, roomRoot != null ? roomRoot : transform);
@@ -160,8 +177,9 @@ public class RoomGenerator : MonoBehaviour
             return;
         }
 
-        int useCount = Mathf.RoundToInt(points.Count * Mathf.Clamp01(variant.furnitureUseRate));
-        useCount = Mathf.Clamp(useCount, 0, points.Count);
+        int baseCount = Mathf.CeilToInt(points.Count * Mathf.Clamp01(variant.furnitureUseRate));
+        int useCount = Mathf.Clamp(Mathf.Max(variant.minFurniturePerRound, baseCount), 0, points.Count);
+
 
         for (int i = 0; i < useCount; i++)
         {
