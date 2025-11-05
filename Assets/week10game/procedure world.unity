@@ -1006,38 +1006,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 994941027}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &366164807
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 366164808}
-  m_Layer: 0
-  m_Name: Room3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &366164808
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 366164807}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 628478672}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &430949015 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7199352653107960966, guid: 5aca000fc5a27475ba1b9076e0dde67b, type: 3}
@@ -1522,115 +1490,6 @@ RectTransform:
   m_AnchoredPosition: {x: 213, y: -652}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &628478671
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 628478672}
-  - component: {fileID: 628478675}
-  - component: {fileID: 628478674}
-  - component: {fileID: 628478673}
-  m_Layer: 0
-  m_Name: Plane
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &628478672
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628478671}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 366164808}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &628478673
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628478671}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &628478674
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628478671}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &628478675
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628478671}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &646182046 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6329030776507642985, guid: df699a3bb05ce44f8b0b9e95a52e10c9, type: 3}
@@ -2554,7 +2413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 5d1ab9ed41045450086bf7087495a20d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4027,8 +3886,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d42f4cd91df0442598c8ca7cd56e11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  variants:
-  - variantName: Room1
+  variantA:
+    variantName: RoomA
+    roomShellPrefab: {fileID: 5398095870990762790, guid: 70c02fe91614c473c8b13b04dd69bb46, type: 3}
+    furniturePrefabs:
+    - {fileID: 7369880201949924841, guid: 4d43031c93bcc403b8609a16b669734a, type: 3}
+    - {fileID: 1519790716079246544, guid: 6d892e694fcb04985ae215ce6ba955bb, type: 3}
+    - {fileID: 8236647435301110591, guid: 80ba6593b8abf447c89fa4ef0987bfb0, type: 3}
+    - {fileID: 3105395076606391600, guid: eb411b87125ca4d689d350c3b1b1f3ef, type: 3}
+    - {fileID: 7090844246458327943, guid: 3bdc663f2569843558c0c20a02608e7a, type: 3}
+    - {fileID: 1234578964311838330, guid: 4b60bc835955d46d28a9c0a536f7e6e8, type: 3}
+    - {fileID: 4706740365015559535, guid: f2946d2315a294721b54c660f4272153, type: 3}
+    - {fileID: 3385465477653679372, guid: 3f441df2ecbc74e9aa7f0cf63f98a0e6, type: 3}
+    - {fileID: 4278423588951299070, guid: 7bb98181f182f4c6ba3c9e6485e343cc, type: 3}
+    - {fileID: 2736395588998693169, guid: ec6da59cb75e1407c8054d57e659d184, type: 3}
+    - {fileID: 4236814888566043515, guid: 6c61788f78cd942a6a697c237e88d679, type: 3}
+    - {fileID: 6318539866306218912, guid: f6a548c24d51848cb90dda3fa76d810b, type: 3}
+    - {fileID: 4519865806612919160, guid: 6f6976cad7f364f6881fc8501176727d, type: 3}
+    - {fileID: 8193283898233636693, guid: be19e58a403674b45abd2aebab283c77, type: 3}
+    furnitureUseRate: 0.6
+    randomizeFurnitureRotation: 1
+  variantB:
+    variantName: RoomA
     roomShellPrefab: {fileID: 4115184044182678981, guid: 23a073fbaf95a4ac58b7f485d68c25ad, type: 3}
     furniturePrefabs:
     - {fileID: 7425118749676344180, guid: df63a59b418a544d0b3c358112a4a180, type: 3}
@@ -4046,32 +3925,8 @@ MonoBehaviour:
     - {fileID: 3260270978328661100, guid: d4eacef27d801487fbd85795dbfc29eb, type: 3}
     - {fileID: 1424231003021263684, guid: 413fc1fe182d14e6c98715659cad1720, type: 3}
     - {fileID: 6580627173199490445, guid: 947feb078f3bd4ba6a09c31ae18a982c, type: 3}
-    furnitureUseRate: 0.89
-    randomizeFurnitureRotation: 0
-  - variantName: Room2
-    roomShellPrefab: {fileID: 5398095870990762790, guid: 70c02fe91614c473c8b13b04dd69bb46, type: 3}
-    furniturePrefabs:
-    - {fileID: 7369880201949924841, guid: 4d43031c93bcc403b8609a16b669734a, type: 3}
-    - {fileID: 1519790716079246544, guid: 6d892e694fcb04985ae215ce6ba955bb, type: 3}
-    - {fileID: 8236647435301110591, guid: 80ba6593b8abf447c89fa4ef0987bfb0, type: 3}
-    - {fileID: 3105395076606391600, guid: eb411b87125ca4d689d350c3b1b1f3ef, type: 3}
-    - {fileID: 7090844246458327943, guid: 3bdc663f2569843558c0c20a02608e7a, type: 3}
-    - {fileID: 1234578964311838330, guid: 4b60bc835955d46d28a9c0a536f7e6e8, type: 3}
-    - {fileID: 4706740365015559535, guid: f2946d2315a294721b54c660f4272153, type: 3}
-    - {fileID: 3385465477653679372, guid: 3f441df2ecbc74e9aa7f0cf63f98a0e6, type: 3}
-    - {fileID: 4278423588951299070, guid: 7bb98181f182f4c6ba3c9e6485e343cc, type: 3}
-    - {fileID: 2736395588998693169, guid: ec6da59cb75e1407c8054d57e659d184, type: 3}
-    - {fileID: 4236814888566043515, guid: 6c61788f78cd942a6a697c237e88d679, type: 3}
-    - {fileID: 6318539866306218912, guid: f6a548c24d51848cb90dda3fa76d810b, type: 3}
-    - {fileID: 4519865806612919160, guid: 6f6976cad7f364f6881fc8501176727d, type: 3}
-    - {fileID: 8193283898233636693, guid: be19e58a403674b45abd2aebab283c77, type: 3}
-    furnitureUseRate: 0.852
-    randomizeFurnitureRotation: 0
-  - variantName: Room3
-    roomShellPrefab: {fileID: 0}
-    furniturePrefabs: []
-    furnitureUseRate: 0
-    randomizeFurnitureRotation: 0
+    furnitureUseRate: 0.6
+    randomizeFurnitureRotation: 1
   pickRandomVariant: 1
   fixedVariantIndex: 0
   roomRoot: {fileID: 1082735407}
@@ -7644,4 +7499,3 @@ SceneRoots:
   - {fileID: 825034739}
   - {fileID: 287315376}
   - {fileID: 8449290416795697625}
-  - {fileID: 366164808}
