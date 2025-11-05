@@ -1675,7 +1675,7 @@ GameObject:
   - component: {fileID: 807478876}
   - component: {fileID: 807478875}
   m_Layer: 5
-  m_Name: Image
+  m_Name: RAY POINT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1690,7 +1690,7 @@ RectTransform:
   m_GameObject: {fileID: 807478873}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1821328382}
@@ -1713,7 +1713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2951,7 +2951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   variantA:
-    minFurniturePerRound: 4
+    minFurniturePerRound: 5
     maxFurniturePerRound: 8
     variantName: RoomA
     roomShellPrefab: {fileID: 5398095870990762790, guid: 70c02fe91614c473c8b13b04dd69bb46, type: 3}
@@ -3716,6 +3716,7 @@ GameObject:
   - component: {fileID: 2102546298}
   - component: {fileID: 2102546300}
   - component: {fileID: 2102546299}
+  - component: {fileID: 2102546301}
   m_Layer: 5
   m_Name: rabbit
   m_TagString: Untagged
@@ -3780,6 +3781,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2102546297}
   m_CullTransparentMesh: 1
+--- !u!95 &2102546301
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102546297}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 10ac2f8d093094eebbb6a4193a5e57f9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &383830893967226660
 PrefabInstance:
   m_ObjectHideFlags: 0
