@@ -7,9 +7,11 @@ public class RoomGenerator : MonoBehaviour
     [System.Serializable]
     public class RoomVariant
     {
-
         [Header("Minimums")]
-        public int minFurniturePerRound = 3;   // ← 매판 가구 최소 개수
+        public int minFurniturePerRound = 3;
+
+        [Header("Maximums")]
+        public int maxFurniturePerRound = 5;   // ★ 추가: 방별 최대 가구 수
 
         [Header("Room Shell (프리팹)")]
         public string variantName = "RoomA";
@@ -17,10 +19,9 @@ public class RoomGenerator : MonoBehaviour
 
         [Header("Furniture Set (이 방 전용 가구 후보)")]
         public List<GameObject> furniturePrefabs;
-        [Range(0f, 1f)] public float furnitureUseRate = 0.6f; // 포인트 중 몇 % 사용
-        public bool randomizeFurnitureRotation = true;        // 90도 단위 Y회전 랜덤
+        [Range(0f, 1f)] public float furnitureUseRate = 0.6f;
+        public bool randomizeFurnitureRotation = true;
     }
-
     [Header("Variants (딱 2개만 사용)")]
     public RoomVariant variantA;
     public RoomVariant variantB;
@@ -178,7 +179,11 @@ public class RoomGenerator : MonoBehaviour
         }
 
         int baseCount = Mathf.CeilToInt(points.Count * Mathf.Clamp01(variant.furnitureUseRate));
-        int useCount = Mathf.Clamp(Mathf.Max(variant.minFurniturePerRound, baseCount), 0, points.Count);
+        int useCount = Mathf.Clamp(
+            Mathf.Max(variant.minFurniturePerRound, baseCount),
+            0,
+            Mathf.Min(points.Count, Mathf.Max(1, variant.maxFurniturePerRound)) // ★ 상한 적용
+        );
 
 
         for (int i = 0; i < useCount; i++)
