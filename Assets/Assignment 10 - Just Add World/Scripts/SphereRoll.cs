@@ -15,11 +15,20 @@ public class SphereRoll : MonoBehaviour
         transform.Rotate(Vector3.right, rollSpeed * Time.deltaTime, Space.World);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Game Over");
+        }
+    }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Hallway"))
         {
-            Destroy(other.gameObject);
+            GameObject currentHallway = other.gameObject;
+            Destroy(currentHallway);
         }
     }
 }
