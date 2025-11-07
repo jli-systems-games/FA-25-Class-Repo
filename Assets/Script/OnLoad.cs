@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MazeGenerator : MonoBehaviour
+public class OnLoad : MonoBehaviour
 {
     [SerializeField]
     private MazeCell _mazeCellPrefab;
@@ -16,7 +16,7 @@ public class MazeGenerator : MonoBehaviour
 
     private MazeCell[,] _mazeGrid;
 
-    void Start()
+    IEnumerator Start()
     {
         _mazeGrid = new MazeCell[_mazeWidth, _mazeDepth];
 
@@ -28,13 +28,36 @@ public class MazeGenerator : MonoBehaviour
             }
         }
 
-        GenerateMaze(null, _mazeGrid[0, 0]);
+        while (true)
+        {
+            yield return GenerateMaze(null, _mazeGrid[0, 0]);
+            yield return new WaitForSeconds(1f);
+            ResetMaze();
+        }
     }
 
-    private void GenerateMaze(MazeCell previousCell, MazeCell currentCell)
+    private void ResetMaze()
+    {
+        foreach (var cell in _mazeGrid)
+        {
+            Destroy(cell.gameObject);
+        }
+
+        for (int x = 0; x < _mazeWidth; x++)
+        {
+            for (int z = 0; z < _mazeDepth; z++)
+            {
+                _mazeGrid[x, z] = Instantiate(_mazeCellPrefab, new Vector3(x, 0, z), Quaternion.identity);
+            }
+        }
+    }
+
+    private IEnumerator GenerateMaze(MazeCell previousCell, MazeCell currentCell)
     {
         currentCell.Visit();
         ClearWalls(previousCell, currentCell);
+
+        yield return new WaitForSeconds(0.05f);
 
         MazeCell nextCell;
 
@@ -44,7 +67,7 @@ public class MazeGenerator : MonoBehaviour
 
             if (nextCell != null)
             {
-                GenerateMaze(currentCell, nextCell);
+                yield return GenerateMaze(currentCell, nextCell);
             }
         } while (nextCell != null);
     }

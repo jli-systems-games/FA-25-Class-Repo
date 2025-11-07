@@ -46,4 +46,19 @@ public class MazeCell : MonoBehaviour
     {
         _backWall.SetActive(false);
     }
+    public bool IsOpenLeft  => _leftWall  == null || !_leftWall.activeSelf;
+    public bool IsOpenRight => _rightWall == null || !_rightWall.activeSelf;
+    public bool IsOpenFront => _frontWall == null || !_frontWall.activeSelf;
+    public bool IsOpenBack  => _backWall  == null || !_backWall.activeSelf;
+
+    public Vector2Int GridPos
+    {
+        get
+        {
+            return new Vector2Int(
+                Mathf.RoundToInt(transform.position.x),
+                Mathf.RoundToInt(transform.position.z)
+            );
+        }
+    }
 }
