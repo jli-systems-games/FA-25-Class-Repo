@@ -14,21 +14,19 @@ public class PerlinTerrain : MonoBehaviour
     public GameObject crystalPrefab;
     public GameObject bushPrefab;
 
-    private int biomeType; // 0 = Forest, 1 = Desert, 2 = Snow, 3 = Hills
+    private int biomeType; 
     private Transform environmentParent;
 
     void Start()
     {
-        biomeType = RandomizeBiome();      // Decide biome first
+        biomeType = RandomizeBiome();      
         GenerateTerrain();
         environmentParent = new GameObject("EnvironmentRoot").transform;
         SpawnEnvironment();
         RandomizeLighting();
     }
 
-    // ------------------------------
-    // 1️⃣ TERRAIN GENERATION
-    // ------------------------------
+   
     void GenerateTerrain()
     {
         if (terrain == null)
@@ -62,9 +60,7 @@ public class PerlinTerrain : MonoBehaviour
         td.SetHeights(0, 0, heights);
     }
 
-    // ------------------------------
-    // 2️⃣ BIOME RANDOMIZATION
-    // ------------------------------
+   
     int RandomizeBiome()
     {
         int biome = Random.Range(0, 4);
@@ -72,25 +68,25 @@ public class PerlinTerrain : MonoBehaviour
 
         switch (biome)
         {
-            case 0: // 🌲 Forest
+            case 0: 
                 mat.color = new Color(0.25f, 0.5f, 0.25f);
                 RenderSettings.fogColor = new Color(0.3f, 0.5f, 0.3f);
                 RenderSettings.fogDensity = 0.004f;
                 break;
 
-            case 1: // 🏜️ Desert
+            case 1: 
                 mat.color = new Color(0.9f, 0.8f, 0.5f);
                 RenderSettings.fogColor = new Color(0.8f, 0.7f, 0.5f);
                 RenderSettings.fogDensity = 0.002f;
                 break;
 
-            case 2: // ❄️ Snow
+            case 2: 
                 mat.color = new Color(0.9f, 0.9f, 1f);
                 RenderSettings.fogColor = new Color(0.7f, 0.8f, 0.9f);
                 RenderSettings.fogDensity = 0.005f;
                 break;
 
-            case 3: // ⛰️ Hills
+            case 3: 
                 mat.color = new Color(0.45f, 0.45f, 0.45f);
                 RenderSettings.fogColor = new Color(0.4f, 0.4f, 0.45f);
                 RenderSettings.fogDensity = 0.006f;
@@ -109,7 +105,7 @@ public class PerlinTerrain : MonoBehaviour
         if (terrain == null) return;
 
         TerrainData td = terrain.terrainData;
-        int objectCount = Random.Range(30, 60); // more = denser environment
+        int objectCount = Random.Range(30, 60); 
 
         for (int i = 0; i < objectCount; i++)
         {
@@ -117,7 +113,7 @@ public class PerlinTerrain : MonoBehaviour
             float z = Random.Range(0f, td.size.z);
             Vector3 pos = new Vector3(x, 0, z);
 
-            // Check for slope, don’t place on steep slopes
+            
             Vector3 normal = td.GetInterpolatedNormal(x / td.size.x, z / td.size.z);
             if (Vector3.Angle(normal, Vector3.up) > 30f) continue;
 
@@ -127,28 +123,28 @@ public class PerlinTerrain : MonoBehaviour
 
             switch (biomeType)
             {
-                case 0: // Forest
+                case 0: 
                     if (Random.value < 0.7f && treePrefab != null)
                         Instantiate(treePrefab, position, rotation, environmentParent);
                     else if (bushPrefab != null)
                         Instantiate(bushPrefab, position, rotation, environmentParent);
                     break;
 
-                case 1: // Desert
+                case 1:
                     if (Random.value < 0.7f && cactusPrefab != null)
                         Instantiate(cactusPrefab, position, rotation, environmentParent);
                     else if (rockPrefab != null)
                         Instantiate(rockPrefab, position, rotation, environmentParent);
                     break;
 
-                case 2: // Snow
+                case 2: 
                     if (Random.value < 0.6f && crystalPrefab != null)
                         Instantiate(crystalPrefab, position, rotation, environmentParent);
                     else if (rockPrefab != null)
                         Instantiate(rockPrefab, position, rotation, environmentParent);
                     break;
 
-                case 3: // Hills
+                case 3: 
                     if (Random.value < 0.5f && rockPrefab != null)
                         Instantiate(rockPrefab, position, rotation, environmentParent);
                     else if (treePrefab != null)
@@ -158,9 +154,9 @@ public class PerlinTerrain : MonoBehaviour
         }
     }
 
-    // ------------------------------
-    // 4️⃣ LIGHTING VARIATION
-    // ------------------------------
+   
+    // LIGHTING VARIATION
+   
     void RandomizeLighting()
     {
         Light sun = RenderSettings.sun ?? FindObjectOfType<Light>();

@@ -24,7 +24,7 @@ public class CatAudioController : MonoBehaviour
         audioSource.volume = volume;
     }
 
-    // Allows dynamic assignment of the player at runtime
+    
     public void SetPlayer(Transform playerTransform)
     {
         player = playerTransform;

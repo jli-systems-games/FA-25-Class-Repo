@@ -8,10 +8,10 @@ public class OrbSpawner : MonoBehaviour
     public float minDistance = 3f;
     public float maxDistance = 15f;
 
-    // Call this after assigning cat, to respawn orbs at the cat's position
+   
     public void SpawnOrbs()
     {
-        // Cleanup previous orbs if needed (recommended)
+       
         foreach (GameObject orb in GameObject.FindGameObjectsWithTag("Orb"))
             Destroy(orb);
 
@@ -26,7 +26,7 @@ public class OrbSpawner : MonoBehaviour
         }
     }
 
-    // Lets you change the cat at runtime!
+    
     public void SetCat(GameObject newCat)
     {
         cat = newCat;

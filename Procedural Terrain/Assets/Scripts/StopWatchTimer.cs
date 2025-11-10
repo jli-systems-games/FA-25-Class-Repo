@@ -4,7 +4,7 @@ using TMPro;
 public class StopwatchTimer : MonoBehaviour
 {
     [Header("UI Reference")]
-    public TMP_Text timerText;      // Assign your UI TextMeshPro object
+    public TMP_Text timerText;      
     public bool isRunning = true;
 
     private float elapsedTime = 0f;
@@ -27,13 +27,13 @@ public class StopwatchTimer : MonoBehaviour
         timerText.text = $"{minutes:00}:{seconds:00}:{milliseconds:00}";
     }
 
-    // Call this when player wins
+   
     public void StopTimer()
     {
         isRunning = false;
     }
 
-    // Call this if you want to restart
+    
     public void ResetTimer()
     {
         elapsedTime = 0f;

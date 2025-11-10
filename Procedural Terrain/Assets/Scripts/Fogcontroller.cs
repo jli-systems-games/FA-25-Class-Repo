@@ -3,24 +3,24 @@ using UnityEngine;
 public class FogController : MonoBehaviour
 {
     [Header("Fog Settings")]
-    public bool enableFog = true;                // Toggle fog on/off
-    public FogMode fogMode = FogMode.Exponential;// Linear or Exponential
+    public bool enableFog = true;               
+    public FogMode fogMode = FogMode.Exponential;
     [ColorUsage(true, true)]
-    public Color fogColor = new Color(0.3f, 0.25f, 0.4f); // Soft purple-gray
+    public Color fogColor = new Color(0.3f, 0.25f, 0.4f); 
     [Range(0.001f, 0.1f)]
-    public float fogDensity = 0.02f;             // Exponential mode only
-    public float linearStart = 30f;              // Linear start distance
-    public float linearEnd = 120f;               // Linear end distance
+    public float fogDensity = 0.02f;             
+    public float linearStart = 30f;            
+    public float linearEnd = 120f;               
 
     [Header("Dynamic Fade Settings (optional)")]
-    public bool fadeFog = false;                 // Enable gradual fade
-    public float fadeSpeed = 0.5f;               // How fast fog fades in/out
-    public float targetDensity = 0.05f;          // Target density for fade
+    public bool fadeFog = false;                 
+    public float fadeSpeed = 0.5f;               
+    public float targetDensity = 0.05f;          
     private float initialDensity;
 
     void Start()
     {
-        // Initialize fog settings
+       
         RenderSettings.fog = enableFog;
         RenderSettings.fogMode = fogMode;
         RenderSettings.fogColor = fogColor;
@@ -42,7 +42,7 @@ public class FogController : MonoBehaviour
     {
         if (!enableFog) return;
 
-        // Optional dynamic fade in/out
+       
         if (fadeFog)
         {
             fogDensity = Mathf.Lerp(fogDensity, targetDensity, Time.deltaTime * fadeSpeed);
@@ -50,7 +50,7 @@ public class FogController : MonoBehaviour
         }
     }
 
-    // Example public method to trigger a fog fade (e.g. when entering an area)
+    
     public void SetFogDensity(float newDensity)
     {
         targetDensity = Mathf.Clamp(newDensity, 0f, 0.2f);

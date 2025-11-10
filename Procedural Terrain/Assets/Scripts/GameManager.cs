@@ -47,15 +47,15 @@ public class GameManager : MonoBehaviour
         if (replayButton != null)
             replayButton.SetActive(true);
 
-        // Stop the timer if one exists
+      
         StopwatchTimer timer = FindObjectOfType<StopwatchTimer>();
         if (timer != null)
             timer.StopTimer();
 
-        Debug.Log("🏆 WIN triggered! Cat found.");
+        Debug.Log(" Win triggered! Cat found.");
     }
 
-    // 🔁 This is the replay button function
+   
     public void ReplayGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

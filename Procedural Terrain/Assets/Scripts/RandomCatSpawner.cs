@@ -22,7 +22,7 @@ public class RandomCatSpawner : MonoBehaviour
     {
         if (terrain == null || catPrefab == null)
         {
-            Debug.LogWarning("❌ Missing Terrain or Cat Prefab reference!");
+            Debug.LogWarning(" Missing Terrain or Cat Prefab reference!");
             return;
         }
 
@@ -86,11 +86,11 @@ public class RandomCatSpawner : MonoBehaviour
                     audioCtrl.SetPlayer(playerObj.transform);
             }
 
-            Debug.Log($"🐈 Cat spawned at {cat.transform.position} after {attempt + 1} attempts");
+            Debug.Log($"Cat spawned at {cat.transform.position} after {attempt + 1} attempts");
             return;
         }
 
-        Debug.LogWarning("⚠️ Failed to find valid spawn spot for cat after max attempts!");
+        Debug.LogWarning(" Failed to find valid spawn spot for cat after max attempts!");
     }
 
 #if UNITY_EDITOR
