@@ -1,14 +1,14 @@
+// AnimalController.cs
 using UnityEngine;
-using System;                       // Action 델리게이트용
-using Random = UnityEngine.Random;  // 모호성 방지
+using System;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class AnimalController : MonoBehaviour
 {
     public AnimalStats stats;
     public int HP { get; private set; }
-
-    public Action<string> OnLog;    // 전투 로그 콜백(선택)
+    public Action<string> OnLog;
 
     Rigidbody2D rb;
     float nextImpulse;
@@ -16,32 +16,35 @@ public class AnimalController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0f;
-        rb.freezeRotation = true;
+        rb.gravityScale = 0f;          // ✅ 떨어지지 않게
+        rb.freezeRotation = true;      // ✅ Z 회전 고정(원형 아이콘이면 권장)
     }
 
-    void Start()
+    // ✅ 외부에서 확실히 스탯을 넣은 뒤 호출
+    public void Setup(AnimalStats s)
     {
-        HP = stats.maxHP;
+        stats = s;
+        HP = Mathf.Max(1, stats.maxHP);                 // 혹시 0이면 최소 1
         Kick();
-        nextImpulse = Time.time + stats.impulseInterval;
+        nextImpulse = Time.time + Mathf.Max(0.1f, stats.impulseInterval);
     }
 
     void Update()
     {
+        if (stats == null) return; // 안전장치
         if (Time.time >= nextImpulse)
         {
             Kick();
             nextImpulse = Time.time + stats.impulseInterval;
         }
-
         if (HP <= 0) Destroy(gameObject);
     }
 
     void Kick()
     {
+        if (stats == null) return;
         Vector2 dir = Random.insideUnitCircle.normalized;
-        rb.AddForce(dir * stats.moveImpulse, ForceMode2D.Impulse);
+        GetComponent<Rigidbody2D>().AddForce(dir * Mathf.Max(0.1f, stats.moveImpulse), ForceMode2D.Impulse);
     }
 
     static bool Roll(float p) => Random.value < Mathf.Clamp01(p);
@@ -49,7 +52,7 @@ public class AnimalController : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col)
     {
         var other = col.collider.GetComponent<AnimalController>();
-        if (!other) return;
+        if (!other || stats == null || other.stats == null) return;
 
         TryAttack(this, other);
         TryAttack(other, this);
@@ -59,16 +62,8 @@ public class AnimalController : MonoBehaviour
     {
         if (!Roll(atk.stats.attackChance)) return;
 
-        if (Roll(def.stats.evadeChance))
-        {
-            OnLog?.Invoke($"{def.stats.displayName} 회피 성공!");
-            return;
-        }
-        if (Roll(def.stats.blockChance))
-        {
-            OnLog?.Invoke($"{def.stats.displayName} 방어 성공!");
-            return;
-        }
+        if (Roll(def.stats.evadeChance)) { OnLog?.Invoke($"{def.stats.displayName} 회피 성공!"); return; }
+        if (Roll(def.stats.blockChance)) { OnLog?.Invoke($"{def.stats.displayName} 방어 성공!"); return; }
 
         int dmg = atk.stats.baseDamage * (Roll(atk.stats.critChance) ? 2 : 1);
         def.HP -= dmg;

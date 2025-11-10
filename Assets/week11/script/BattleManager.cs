@@ -86,39 +86,35 @@ public class BattleManager : MonoBehaviour
     }
 
     // --- Start Battle 버튼에서 호출 ---
+    // BattleManager.cs (StartBattle 부분만)
     public void StartBattle()
     {
-        if (p1Pick == null || p2Pick == null)
-        {
-            Log("양쪽 캐릭터를 먼저 선택하세요.");
-            return;
-        }
+        if (p1Pick == null || p2Pick == null) { Log("양쪽 캐릭터를 먼저 선택하세요."); return; }
 
-        // 이전 객체 정리
         if (p1) Destroy(p1.gameObject);
         if (p2) Destroy(p2.gameObject);
 
-        // UI 초기화
         if (resultText) resultText.text = "";
         if (logText) logText.text = "";
 
         battling = true;
         t = roundTime;
 
-        // 선택된 SO가 들고있는 프리팹으로 스폰
+        // ✅ Instantiate → 곧바로 Setup으로 초기화 보장
         p1 = Instantiate(p1Pick.prefab, p1Spawn.position, Quaternion.identity);
-        p1.stats = p1Pick;
+        p1.Setup(p1Pick);
         p1.OnLog += AddLog;
 
         p2 = Instantiate(p2Pick.prefab, p2Spawn.position, Quaternion.identity);
-        p2.stats = p2Pick;
+        p2.Setup(p2Pick);
         p2.OnLog += AddLog;
 
-        // 초반 충돌 유도 킥오프
-        p1.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 4f, ForceMode2D.Impulse);
-        p2.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 4f, ForceMode2D.Impulse);
+        // 킥오프 힘 (가볍게 밀어줌)
+        var rb1 = p1.GetComponent<Rigidbody2D>();
+        var rb2 = p2.GetComponent<Rigidbody2D>();
+        rb1.AddForce(Vector2.right * 4f, ForceMode2D.Impulse);
+        rb2.AddForce(Vector2.left * 4f, ForceMode2D.Impulse);
 
-        // HP바 초기화(안전)
         UpdateHPBars();
         UpdateTimerUI();
     }
