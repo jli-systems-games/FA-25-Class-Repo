@@ -1,18 +1,18 @@
-// BattleManager.cs
+
 using UnityEngine;
-using UnityEngine.UI;          // Image, etc.
-using TMPro;                   // TMP_Text
-using Quaternion = UnityEngine.Quaternion; // 모호성 방지
-using Random = UnityEngine.Random;       // 모호성 방지
+using UnityEngine.UI;          
+using TMPro;                  
+using Quaternion = UnityEngine.Quaternion;
+using Random = UnityEngine.Random;     
 
 public class BattleManager : MonoBehaviour
 {
     [Header("Roster (drag SOs)")]
-    public AnimalStats panda;   // Panda SO
-    public AnimalStats chick;   // Chick SO
-    public AnimalStats rabbit;  // Rabbit SO
-    public AnimalStats turtle;  // Turtle SO
-    public AnimalStats cat;     // Cat SO
+    public AnimalStats panda;  
+    public AnimalStats chick;  
+    public AnimalStats rabbit;  
+    public AnimalStats turtle;  
+    public AnimalStats cat;    
 
     [Header("Spawns")]
     public Transform p1Spawn;
@@ -34,13 +34,13 @@ public class BattleManager : MonoBehaviour
     [Header("Round")]
     public float roundTime = 20f;
 
-    // 내부 상태
+
     AnimalStats p1Pick, p2Pick;
     AnimalController p1, p2;
     float t;
     bool battling;
 
-    // --- (선택) 같은 씬에서 선택 UI를 쓸 때 버튼에서 호출 ---
+ 
     public void PickP1(string name)
     {
         p1Pick = NameToStats(name);
@@ -68,7 +68,7 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        // 선택 씬에서 넘어온 값이 있으면 자동 세팅
+        
         if (SelectionData.P1 != null)
         {
             p1Pick = SelectionData.P1;
