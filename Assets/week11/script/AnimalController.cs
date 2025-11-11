@@ -62,17 +62,19 @@ public class AnimalController : MonoBehaviour
     {
         if (!Roll(atk.stats.attackChance)) return;
 
-        if (Roll(def.stats.evadeChance)) { OnLog?.Invoke($"{def.stats.displayName} 회피 성공!"); return; }
-        if (Roll(def.stats.blockChance)) { OnLog?.Invoke($"{def.stats.displayName} 방어 성공!"); return; }
+        
+        if (Roll(def.stats.evadeChance)) { OnLog?.Invoke($"{def.stats.displayName} evaded!"); return; }
+        if (Roll(def.stats.blockChance)) { OnLog?.Invoke($"{def.stats.displayName} blocked!"); return; }
 
         int dmg = atk.stats.baseDamage * (Roll(atk.stats.critChance) ? 2 : 1);
         def.HP -= dmg;
-        OnLog?.Invoke($"{atk.stats.displayName} 공격 성공! {def.stats.displayName} 체력 -{dmg}");
+        OnLog?.Invoke($"{atk.stats.displayName} hit! {def.stats.displayName} -{dmg} HP");
 
         if (def.HP > 0 && Roll(def.stats.counterChance))
         {
             atk.HP -= 5;
-            OnLog?.Invoke($"{def.stats.displayName} 반격 성공!! {atk.stats.displayName} 체력 -5");
+            OnLog?.Invoke($"{def.stats.displayName} countered! {atk.stats.displayName} -5 HP");
         }
+
     }
 }

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7738236141423252362}
   - component: {fileID: 1824637460322718787}
   - component: {fileID: 2637718908860042053}
-  - component: {fileID: 6478350652744365291}
   m_Layer: 0
   m_Name: Bunny
   m_TagString: Untagged
@@ -117,7 +116,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!70 &1824637460322718787
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -168,18 +167,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: eb8be1c36153f40fbb616a4a41f697b4, type: 2}
---- !u!114 &6478350652744365291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 249213969288817285}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7447bfbca64034973952d3e2923e1eda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  padding: 0.1
-  bounciness: 0.9

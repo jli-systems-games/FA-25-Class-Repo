@@ -7,6 +7,12 @@ using Random = UnityEngine.Random;
 
 public class BattleManager : MonoBehaviour
 {
+
+    Coroutine _logCo;
+    [SerializeField] float logShowTime = 0.9f;  // 글자 유지 시간
+    [SerializeField] float logFadeTime = 0.6f;  // 서서히 사라지는 시간
+
+
     [Header("Roster (drag SOs)")]
     public AnimalStats panda;  
     public AnimalStats chick;  
@@ -184,12 +190,44 @@ public class BattleManager : MonoBehaviour
             resultText.text = $"(Time up)\nWinner: {winner}\nLoser: {loser}";
     }
 
+    // 기존 AddLog 그대로 둬도 되고, 이렇게 둡니다.
     void AddLog(string m) => Log(m);
 
+    // ✅ 누적 대신 "한 줄만" 보여주고 자동으로 사라짐
     void Log(string m)
     {
         if (!logText) return;
-        // 새 메시지를 위로 쌓기
-        logText.text = m + "\n" + logText.text;
+
+        // 이전 표시 코루틴이 돌고 있으면 정지
+        if (_logCo != null) StopCoroutine(_logCo);
+        _logCo = StartCoroutine(CoShowLogOnce(m));
     }
+
+    System.Collections.IEnumerator CoShowLogOnce(string m)
+    {
+        // 내용/불투명도 초기화
+        logText.text = m;
+        var c = logText.color;
+        c.a = 1f;
+        logText.color = c;
+
+        // 잠깐 유지
+        yield return new WaitForSeconds(logShowTime);
+
+        // 페이드 아웃
+        float t = 0f;
+        while (t < logFadeTime)
+        {
+            t += Time.deltaTime;
+            float a = Mathf.Lerp(1f, 0f, t / logFadeTime);
+            c.a = a;
+            logText.color = c;
+            yield return null;
+        }
+
+        // 깔끔히 비우기
+        logText.text = "";
+        _logCo = null;
+    }
+
 }
