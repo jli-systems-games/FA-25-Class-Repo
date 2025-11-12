@@ -1,24 +1,21 @@
-
 using UnityEngine;
-using UnityEngine.UI;          
-using TMPro;                  
+using UnityEngine.UI;
+using TMPro;
 using Quaternion = UnityEngine.Quaternion;
-using Random = UnityEngine.Random;     
+using Random = UnityEngine.Random;
 
 public class BattleManager : MonoBehaviour
 {
-
     Coroutine _logCo;
-    [SerializeField] float logShowTime = 0.9f;  // 글자 유지 시간
-    [SerializeField] float logFadeTime = 0.6f;  // 서서히 사라지는 시간
-
+    [SerializeField] float logShowTime = 0.9f;
+    [SerializeField] float logFadeTime = 0.6f;
 
     [Header("Roster (drag SOs)")]
-    public AnimalStats panda;  
-    public AnimalStats chick;  
-    public AnimalStats rabbit;  
-    public AnimalStats turtle;  
-    public AnimalStats cat;    
+    public AnimalStats panda;
+    public AnimalStats chick;
+    public AnimalStats rabbit;
+    public AnimalStats turtle;
+    public AnimalStats cat;
 
     [Header("Spawns")]
     public Transform p1Spawn;
@@ -40,13 +37,11 @@ public class BattleManager : MonoBehaviour
     [Header("Round")]
     public float roundTime = 20f;
 
-
     AnimalStats p1Pick, p2Pick;
     AnimalController p1, p2;
     float t;
     bool battling;
 
- 
     public void PickP1(string name)
     {
         p1Pick = NameToStats(name);
@@ -74,7 +69,6 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        
         if (SelectionData.P1 != null)
         {
             p1Pick = SelectionData.P1;
@@ -85,14 +79,10 @@ public class BattleManager : MonoBehaviour
             p2Pick = SelectionData.P2;
             if (p2Portrait && p2Pick) p2Portrait.sprite = p2Pick.sprite;
         }
-
-        // 선택값이 준비돼 있으면 즉시 전투 시작
         if (p1Pick != null && p2Pick != null)
             StartBattle();
     }
 
-    // --- Start Battle 버튼에서 호출 ---
-    // BattleManager.cs (StartBattle 부분만)
     public void StartBattle()
     {
         if (p1Pick == null || p2Pick == null) { Log("양쪽 캐릭터를 먼저 선택하세요."); return; }
@@ -106,7 +96,6 @@ public class BattleManager : MonoBehaviour
         battling = true;
         t = roundTime;
 
-        // ✅ Instantiate → 곧바로 Setup으로 초기화 보장
         p1 = Instantiate(p1Pick.prefab, p1Spawn.position, Quaternion.identity);
         p1.Setup(p1Pick);
         p1.OnLog += AddLog;
@@ -115,11 +104,10 @@ public class BattleManager : MonoBehaviour
         p2.Setup(p2Pick);
         p2.OnLog += AddLog;
 
-        // 킥오프 힘 (가볍게 밀어줌)
         var rb1 = p1.GetComponent<Rigidbody2D>();
         var rb2 = p2.GetComponent<Rigidbody2D>();
-        rb1.AddForce(Vector2.right * 4f, ForceMode2D.Impulse);
-        rb2.AddForce(Vector2.left * 4f, ForceMode2D.Impulse);
+        if (rb1) rb1.AddForce(Vector2.right * 4f, ForceMode2D.Impulse);
+        if (rb2) rb2.AddForce(Vector2.left * 4f, ForceMode2D.Impulse);
 
         UpdateHPBars();
         UpdateTimerUI();
@@ -129,14 +117,10 @@ public class BattleManager : MonoBehaviour
     {
         if (!battling || !p1 || !p2) return;
 
-        // 타이머
         t -= Time.deltaTime;
         UpdateTimerUI();
-
-        // HP바
         UpdateHPBars();
 
-        // 즉시 승패
         if (p1.HP <= 0 || p2.HP <= 0)
         {
             battling = false;
@@ -144,7 +128,6 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        // 타임업 승패
         if (t <= 0f)
         {
             battling = false;
@@ -167,54 +150,77 @@ public class BattleManager : MonoBehaviour
             timerText.text = Mathf.CeilToInt(Mathf.Max(0, t)).ToString();
     }
 
+    void FreezeWinner(AnimalController a)
+    {
+        if (!a) return;
+        var rb = a.GetComponent<Rigidbody2D>();
+        if (rb)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.isKinematic = true;
+        }
+        a.enabled = false;
+    }
+
+    void DespawnLoser(AnimalController winner, AnimalController loser)
+    {
+        FreezeWinner(winner);
+        if (loser)
+        {
+            if (loser == p1 && p1HPBar) p1HPBar.fillAmount = 0f;
+            if (loser == p2 && p2HPBar) p2HPBar.fillAmount = 0f;
+            Destroy(loser.gameObject);
+        }
+    }
+
     void EndImmediate()
     {
-        string winner = p1.HP > 0 ? p1.stats.displayName : p2.stats.displayName;
-        string loser = (winner == p1.stats.displayName) ? p2.stats.displayName : p1.stats.displayName;
+        string winnerName = p1.HP > 0 ? p1.stats.displayName : p2.stats.displayName;
+        string loserName = (winnerName == p1.stats.displayName) ? p2.stats.displayName : p1.stats.displayName;
 
         if (resultText)
-            resultText.text = $"Winner: {winner}\nLoser: {loser}";
+            resultText.text = $"Winner: {winnerName}\nLoser: {loserName}";
+
+        var winnerCtrl = (winnerName == p1.stats.displayName) ? p1 : p2;
+        var loserCtrl = (winnerCtrl == p1) ? p2 : p1;
+        DespawnLoser(winnerCtrl, loserCtrl);
     }
 
     void EndByHP()
     {
-        string winner;
+        string winnerName;
         if (p1.HP == p2.HP)
-            winner = (Random.value < .5f) ? p1.stats.displayName : p2.stats.displayName;
+            winnerName = (Random.value < .5f) ? p1.stats.displayName : p2.stats.displayName;
         else
-            winner = (p1.HP > p2.HP) ? p1.stats.displayName : p2.stats.displayName;
+            winnerName = (p1.HP > p2.HP) ? p1.stats.displayName : p2.stats.displayName;
 
-        string loser = (winner == p1.stats.displayName) ? p2.stats.displayName : p1.stats.displayName;
+        string loserName = (winnerName == p1.stats.displayName) ? p2.stats.displayName : p1.stats.displayName;
 
         if (resultText)
-            resultText.text = $"(Time up)\nWinner: {winner}\nLoser: {loser}";
+            resultText.text = $"(Time up)\nWinner: {winnerName}\nLoser: {loserName}";
+
+        var winnerCtrl = (winnerName == p1.stats.displayName) ? p1 : p2;
+        var loserCtrl = (winnerCtrl == p1) ? p2 : p1;
+        DespawnLoser(winnerCtrl, loserCtrl);
     }
 
-    // 기존 AddLog 그대로 둬도 되고, 이렇게 둡니다.
     void AddLog(string m) => Log(m);
 
-    // ✅ 누적 대신 "한 줄만" 보여주고 자동으로 사라짐
     void Log(string m)
     {
         if (!logText) return;
-
-        // 이전 표시 코루틴이 돌고 있으면 정지
         if (_logCo != null) StopCoroutine(_logCo);
         _logCo = StartCoroutine(CoShowLogOnce(m));
     }
 
     System.Collections.IEnumerator CoShowLogOnce(string m)
     {
-        // 내용/불투명도 초기화
         logText.text = m;
         var c = logText.color;
         c.a = 1f;
         logText.color = c;
-
-        // 잠깐 유지
         yield return new WaitForSeconds(logShowTime);
-
-        // 페이드 아웃
         float t = 0f;
         while (t < logFadeTime)
         {
@@ -224,10 +230,7 @@ public class BattleManager : MonoBehaviour
             logText.color = c;
             yield return null;
         }
-
-        // 깔끔히 비우기
         logText.text = "";
         _logCo = null;
     }
-
 }
