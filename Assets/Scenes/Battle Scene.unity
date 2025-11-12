@@ -783,7 +783,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -134}
+  m_AnchoredPosition: {x: 0, y: -131}
   m_SizeDelta: {x: 200, y: 61.3834}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1097237478
@@ -1008,6 +1008,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1550280565}
   - component: {fileID: 1550280566}
+  - component: {fileID: 1550280567}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -1048,6 +1049,21 @@ MonoBehaviour:
   player2HeadDisplay: {fileID: 891631927}
   player2BodyDisplay: {fileID: 1650974593}
   player2LegDisplay: {fileID: 780922211}
+--- !u!114 &1550280567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1550280564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c3a22d8b9fcd849841123126f955e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waitTime: 2
+  player1Text: {fileID: 1695815305}
+  player2Text: {fileID: 1097237478}
 --- !u!1 &1650974591
 GameObject:
   m_ObjectHideFlags: 0
