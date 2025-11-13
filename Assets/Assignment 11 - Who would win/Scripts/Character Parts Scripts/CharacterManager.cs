@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using UnityEditor.SearchService;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class CharacterManager : MonoBehaviour
 {
     [Header("Player 1")]
+    public TMP_InputField player1NameInput;
     public Image player1HeadDisplay;
     public Image player1BodyDisplay;
     public Image player1LegDisplay;
@@ -15,6 +17,7 @@ public class CharacterManager : MonoBehaviour
     private int player1LegIndex = 0;
 
     [Header("Player 2")]
+    public TMP_InputField player2NameInput;
     public Image player2HeadDisplay;
     public Image player2BodyDisplay;
     public Image player2LegDisplay;
@@ -27,6 +30,11 @@ public class CharacterManager : MonoBehaviour
     public List<PartBase> bodyParts;
     public List<PartBase> legParts;
 
+    private int maxCharacters = 20;
+
+    public GameObject inputTextNeeded;
+    public float textTime;
+
     void Start()
     {
         player1HeadDisplay.sprite = headParts[player1HeadIndex].image;
@@ -36,6 +44,17 @@ public class CharacterManager : MonoBehaviour
         player2HeadDisplay.sprite = headParts[player2HeadIndex].image;
         player2BodyDisplay.sprite = bodyParts[player2BodyIndex].image;
         player2LegDisplay.sprite = legParts[player2LegIndex].image;
+
+        player1NameInput.onValueChanged.AddListener((text) => OnInputChanged(player1NameInput, text));
+        player2NameInput.onValueChanged.AddListener((text) => OnInputChanged(player2NameInput, text));
+    }
+
+    void OnInputChanged(TMP_InputField inputField, string text)
+    {
+        if (text.Length > maxCharacters)
+        {
+            inputField.text = text.Substring(0, maxCharacters);
+        }
     }
 
     #region Player Change Parts
@@ -126,14 +145,33 @@ public class CharacterManager : MonoBehaviour
 
     public void BattleStart()
     {
-        SetHeadDataValues(headParts, player1HeadIndex, ref Data.player1BeautyLevel, ref Data.player1SmartLevel, ref Data.player1Head);
-        SetHeadDataValues(headParts, player2HeadIndex, ref Data.player2BeautyLevel, ref Data.player2SmartLevel, ref Data.player2Head);
-        SetBodyDataValues(bodyParts, player1BodyIndex, ref Data.player1HealthLevel, ref Data.player1ArmLevel, ref Data.player1Body);
-        SetBodyDataValues(bodyParts, player2BodyIndex, ref Data.player2HealthLevel, ref Data.player2ArmLevel, ref Data.player2Body);
-        SetLegDataValues(legParts, player1LegIndex, ref Data.player1SpeedLevel, ref Data.player1LegLevel, ref Data.player1Leg);
-        SetLegDataValues(legParts, player2LegIndex, ref Data.player2SpeedLevel, ref Data.player2LegLevel, ref Data.player2Leg);
+        if (player1NameInput.text == "" || player2NameInput.text == "")
+        {
+            inputTextNeeded.SetActive(true);
 
-        SceneManager.LoadScene("Battle Scene");
+            StartCoroutine(WaitBeforeTextDisappears(textTime));
+        }
+        else
+        {
+            SetHeadDataValues(headParts, player1HeadIndex, ref Data.player1BeautyLevel, ref Data.player1SmartLevel, ref Data.player1Head);
+            SetHeadDataValues(headParts, player2HeadIndex, ref Data.player2BeautyLevel, ref Data.player2SmartLevel, ref Data.player2Head);
+            SetBodyDataValues(bodyParts, player1BodyIndex, ref Data.player1HealthLevel, ref Data.player1ArmLevel, ref Data.player1Body);
+            SetBodyDataValues(bodyParts, player2BodyIndex, ref Data.player2HealthLevel, ref Data.player2ArmLevel, ref Data.player2Body);
+            SetLegDataValues(legParts, player1LegIndex, ref Data.player1SpeedLevel, ref Data.player1LegLevel, ref Data.player1Leg);
+            SetLegDataValues(legParts, player2LegIndex, ref Data.player2SpeedLevel, ref Data.player2LegLevel, ref Data.player2Leg);
+
+            Data.player1Name = player1NameInput.text;
+            Data.player2Name = player2NameInput.text;
+
+            SceneManager.LoadScene("Battle Scene");
+        }
+    }
+
+    private IEnumerator WaitBeforeTextDisappears(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        inputTextNeeded.SetActive(false);
     }
 
     public void SetHeadDataValues(List<PartBase> parts, int playerIndex, ref int beautyLevel, ref int smartLevel, ref Sprite partImage)

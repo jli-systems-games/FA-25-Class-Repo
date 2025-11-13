@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,9 @@ public class Data
     public static Sprite player2Head;
     public static Sprite player2Body;
     public static Sprite player2Leg;
+
+    public static string player1Name = "";
+    public static string player2Name = "";
 
     public static int player1BeautyLevel;
     public static int player1SmartLevel;
