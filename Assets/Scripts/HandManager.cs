@@ -7,9 +7,12 @@ using TMPro;
 using UnityEngine.UI;
 using System.Linq;
 
+/// <summary>
+/// referencing: https://www.youtube.com/watch?v=hmIS2iBe-iQ
+/// </summary>
+
 public class HandManager : MonoBehaviour
 {
-    [Header("UI")]
     public TMP_Text potText;
     public TMP_Text player1ChipText;
     public TMP_Text player2ChipText;
@@ -17,8 +20,14 @@ public class HandManager : MonoBehaviour
     public Button revealButton;
     public Button player1BetButton;
     public Button player2BetButton;
+    public Button player1WinButton;
+    public Button player2WinButton;
+    public Button continueButton;
+    public Button resetButton;
+    public GameObject WinnerRing;
+    public GameObject TruckAvatar;
+    public GameObject MagicianAvatar;
 
-    [Header("Card Setup")]
     public List<GameObject> allCardPrefabs;
     public Transform[] communitySlots;
     public GameObject deckArea;
@@ -44,6 +53,18 @@ public class HandManager : MonoBehaviour
 
     void Start()
     {
+        continueButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+
+        continueButton.onClick.AddListener(OnContinueGame);
+        resetButton.onClick.AddListener(OnResetGame);
+
+        player1WinButton.gameObject.SetActive(false);
+        player2WinButton.gameObject.SetActive(false);
+
+        player1WinButton.onClick.AddListener(() => ManualWin(1));
+        player2WinButton.onClick.AddListener(() => ManualWin(2));
+
         revealButton.onClick.AddListener(OnRevealButtonClicked);
         player1BetButton.onClick.AddListener(Player1Raise);
         player2BetButton.onClick.AddListener(Player2Raise);
@@ -131,7 +152,7 @@ public class HandManager : MonoBehaviour
 
     public void Player1Draw()
     {
-        if (!canPlayersAct) return;
+        if (!canPlayersAct || p1Action != PlayerAction.None) return;
         DealCardToPlayer(1);
         p1Action = PlayerAction.Draw;
         CheckRoundProgress();
@@ -139,7 +160,7 @@ public class HandManager : MonoBehaviour
 
     public void Player2Draw()
     {
-        if (!canPlayersAct) return;
+        if (!canPlayersAct || p2Action != PlayerAction.None) return;
         DealCardToPlayer(2);
         p2Action = PlayerAction.Draw;
         CheckRoundProgress();
@@ -147,7 +168,7 @@ public class HandManager : MonoBehaviour
 
     public void Player1Raise()
     {
-        if (!canPlayersAct || player1Chips <= 0) return;
+        if (!canPlayersAct || p1Action != PlayerAction.None || player1Chips <= 0) return;
 
         int bet = (round < 6) ? 2 : 1;
         int actualBet = Mathf.Min(bet, player1Chips);
@@ -161,7 +182,7 @@ public class HandManager : MonoBehaviour
 
     public void Player2Raise()
     {
-        if (!canPlayersAct || player2Chips <= 0) return;
+        if (!canPlayersAct || p2Action != PlayerAction.None || player2Chips <= 0) return;
 
         int bet = (round < 6) ? 2 : 1;
         int actualBet = Mathf.Min(bet, player2Chips);
@@ -172,6 +193,7 @@ public class HandManager : MonoBehaviour
         p2Action = PlayerAction.Raise;
         CheckRoundProgress();
     }
+
 
     void CheckRoundProgress()
     {
@@ -208,7 +230,6 @@ public class HandManager : MonoBehaviour
         card.SetActive(true);
 
         var info = card.GetComponent<CardInfo>();
-        Debug.Log($"P{player} drew {info.rank} of {info.suit}");
 
         if (player == 1)
         {
@@ -232,7 +253,8 @@ public class HandManager : MonoBehaviour
         }
         else if (round >= 6)
         {
-            EvaluateWinner();
+            player1WinButton.gameObject.SetActive(true);
+            player2WinButton.gameObject.SetActive(true);
             return;
         }
 
@@ -243,6 +265,73 @@ public class HandManager : MonoBehaviour
         p1Action = PlayerAction.None;
         p2Action = PlayerAction.None;
     }
+
+    void ManualWin(int winner)
+    {
+        player1WinButton.gameObject.SetActive(false);
+        player2WinButton.gameObject.SetActive(false);
+        WinnerRing.SetActive(true);
+
+        if (winner == 1)
+        {
+            player1Chips += pot;
+            TruckAvatar.SetActive(true);
+        }
+        else
+        {
+            player2Chips += pot;
+            MagicianAvatar.SetActive(true);
+        }
+
+        if ((player1Chips <= 0 && winner != 1) ||
+            (player2Chips <= 0 && winner != 2))
+        {
+            ShowResetOnly();
+            return;
+        }
+
+        ShowContinueAndResetButtons();
+    }
+    void DeactivateWinVisuals()
+    {
+        WinnerRing.SetActive(false);
+        TruckAvatar.SetActive(false);
+        MagicianAvatar.SetActive(false);
+    }
+
+    void ShowResetOnly()
+    {
+        continueButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(true);
+    }
+
+    void ShowContinueAndResetButtons()
+    {
+        continueButton.gameObject.SetActive(true);
+        resetButton.gameObject.SetActive(true);
+    }
+
+    void OnContinueGame()
+    {
+        continueButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+        DeactivateWinVisuals();
+
+        StartNewRound();
+    }
+
+    void OnResetGame()
+    {
+        continueButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+        DeactivateWinVisuals();
+
+        player1Chips = 5;
+        player2Chips = 5;
+
+        StartNewRound();
+    }
+
 
     void RevealCommunityCard()
     {
@@ -261,74 +350,6 @@ public class HandManager : MonoBehaviour
         revealedCards++;
 
         var info = card.GetComponent<CardInfo>();
-        Debug.Log($"Community reveals {info.rank} of {info.suit}");
-    }
-
-    // --- Poker Evaluation ---
-    void EvaluateWinner()
-    {
-        List<CardInfo> p1Cards = player1Hand.Select(c => c.GetComponent<CardInfo>()).ToList();
-        List<CardInfo> p2Cards = player2Hand.Select(c => c.GetComponent<CardInfo>()).ToList();
-        List<CardInfo> communityCards = community.Select(c => c.GetComponent<CardInfo>()).ToList();
-
-        var p1Best = EvaluateBestHand(p1Cards, communityCards);
-        var p2Best = EvaluateBestHand(p2Cards, communityCards);
-
-        if (p1Best > p2Best)
-        {
-            player1Chips += pot;
-            Debug.Log("Player 1 wins pot!");
-        }
-        else if (p2Best > p1Best)
-        {
-            player2Chips += pot;
-            Debug.Log("Player 2 wins pot!");
-        }
-        else
-        {
-            int split = pot / 2;
-            player1Chips += split;
-            player2Chips += pot - split;
-            Debug.Log("Tie. Pot split.");
-        }
-
-        StartNewRound();
-    }
-
-    int EvaluateBestHand(List<CardInfo> playerCards, List<CardInfo> community)
-    {
-        List<CardInfo> all = new(playerCards);
-        all.AddRange(community);
-
-        // Simplified rank conversion for J, Q, K, A
-        int RankValue(string r) => r switch
-        {
-            "J" => 11,
-            "Q" => 12,
-            "K" => 13,
-            "A" => 14,
-            _ => 0
-        };
-
-        var ranks = all.Select(c => RankValue(c.rank)).OrderByDescending(v => v).ToList();
-        var suits = all.Select(c => c.suit).ToList();
-
-        bool flush = suits.GroupBy(s => s).Any(g => g.Count() >= 5);
-        bool straight = ranks.Distinct().Count() >= 4 &&
-                        (ranks.Contains(11) && ranks.Contains(12) && ranks.Contains(13) && ranks.Contains(14));
-
-        var groups = ranks.GroupBy(r => r).OrderByDescending(g => g.Count()).ThenByDescending(g => g.Key).ToList();
-        int maxCount = groups.First().Count();
-
-        if (flush && straight) return 900 + groups.First().Key;   // Straight Flush
-        if (maxCount == 4) return 800 + groups.First().Key;       // Four of a Kind
-        if (maxCount == 3 && groups.Any(g => g.Count() == 2)) return 700 + groups.First().Key; // Full House
-        if (flush) return 600 + ranks.Max();                      // Flush
-        if (straight) return 500 + ranks.Max();                   // Straight
-        if (maxCount == 3) return 400 + groups.First().Key;       // Three of a Kind
-        if (groups.Count(g => g.Count() == 2) >= 2) return 300 + groups.First().Key; // Two Pair
-        if (maxCount == 2) return 200 + groups.First().Key;       // One Pair
-        return 100 + ranks.Max();                                 // High Card
     }
 
     void UpdateUI()
