@@ -68,17 +68,17 @@ public class LightManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 100f))
-            {
-                if (hit.collider.gameObject == currentHiddenItem)
-                {
-                    GameManager.Instance.isReturningFromTransition = true;
-                    SceneManager.LoadScene("TransitionScene");
-                }
-            }
+            //if (Physics.Raycast(ray, out hit, 100f))
+            //{
+            //    if (hit.collider.gameObject == currentHiddenItem)
+            //    {
+            //        GameManager.Instance.isReturningFromTransition = true;
+            //        SceneManager.LoadScene("TransitionScene");
+            //    }
+            //}
         }
     }
 }
