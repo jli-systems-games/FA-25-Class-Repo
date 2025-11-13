@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
     private float player1AttackProbability;
     private float player1DodgeProbability;
     private float player1StunProbability;
+    private float player1GoodChoiceProbability;
     private float player1ArmStrength;
     private float player1LegStrength;
 
@@ -25,6 +26,7 @@ public class BattleManager : MonoBehaviour
     private float player2AttackProbability;
     private float player2DodgeProbability;
     private float player2StunProbability;
+    private float player2GoodChoiceProbability;
     private float player2ArmStrength;
     private float player2LegStrength;
 
@@ -36,36 +38,24 @@ public class BattleManager : MonoBehaviour
         player1Text.text = "";
         player2Text.text = "";
 
-        //    //Set Data stats to float
-        //    Data.player1BeautyLevel /= 10;
-        //    Data.player1SmartLevel /= 10;
-        //    Data.player1HealthLevel /= 10;
-        //    Data.player1ArmLevel /= 10;
-        //    Data.player1SpeedLevel /= 10;
-        //    Data.player1LegLevel /= 10;
-
-        //    Data.player2BeautyLevel /= 10;
-        //    Data.player2SmartLevel /= 10;
-        //    Data.player2HealthLevel /= 10;
-        //    Data.player2ArmLevel /= 10;
-        //    Data.player2SpeedLevel /= 10;
-        //    Data.player2LegLevel /= 10;
-
         //Set players stats depending on their levels
         player1DodgeProbability = Data.player1SpeedLevel / 100f;
         player1StunProbability = Data.player1BeautyLevel / 100f;
+        player1GoodChoiceProbability = Data.player1SmartLevel / 100f;
+
         player2DodgeProbability = Data.player2SpeedLevel / 100f;
         player2StunProbability = Data.player2BeautyLevel / 100f;
+        player2GoodChoiceProbability = Data.player2SmartLevel / 100f;
 
-        StartCoroutine(PlayerOffense(player1Text, player2Text, Data.player1ArmLevel, Data.player1LegLevel, player2DodgeProbability, player2StunProbability));
+        StartCoroutine(PlayerOffense(player1Text, player2Text, Data.player1ArmLevel, Data.player1LegLevel, player2DodgeProbability, player2StunProbability, player1GoodChoiceProbability));
     }
 
-    private IEnumerator PlayerOffense(TextMeshProUGUI offensePlayerText, TextMeshProUGUI defensePlayerText, int offensePlayerArmLevel, int offensePlayerLegLevel, float defensePlayerDodgeProbability, float defensePlayerStunProbability)
+    private IEnumerator PlayerOffense(TextMeshProUGUI offensePlayerText, TextMeshProUGUI defensePlayerText, int offensePlayerArmLevel, int offensePlayerLegLevel, float defensePlayerDodgeProbability, float defensePlayerStunProbability, float offensePlayerGoodChoiceProbability)
     {
-        yield return StartCoroutine(Attack(offensePlayerText, defensePlayerText, offensePlayerArmLevel, offensePlayerLegLevel, defensePlayerDodgeProbability, defensePlayerStunProbability));
+        yield return StartCoroutine(Attack(offensePlayerText, defensePlayerText, offensePlayerArmLevel, offensePlayerLegLevel, defensePlayerDodgeProbability, defensePlayerStunProbability, offensePlayerGoodChoiceProbability));
     }
 
-    private IEnumerator Attack(TextMeshProUGUI offensePlayerText, TextMeshProUGUI defensePlayerText, int offensePlayerArmLevel, int offensePlayerLegLevel, float defensePlayerDodgeProbability, float defensePlayerStunProbability)
+    private IEnumerator Attack(TextMeshProUGUI offensePlayerText, TextMeshProUGUI defensePlayerText, int offensePlayerArmLevel, int offensePlayerLegLevel, float defensePlayerDodgeProbability, float defensePlayerStunProbability, float offensePlayerGoodChoiceProbability)
     {
         if (isPlayer1Start)
         {
@@ -91,15 +81,40 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            float attackRandom = Random.Range(0f, 2f);
+            bool isArmStronger;
 
-            if (attackRandom > 1)
+            if (offensePlayerArmLevel > offensePlayerLegLevel)
             {
-                yield return StartCoroutine(ArmAttack(offensePlayerText, defensePlayerText, offensePlayerArmLevel, defensePlayerDodgeProbability));
+                isArmStronger = true;
             }
             else
             {
-                yield return StartCoroutine(LegAttack(offensePlayerText, defensePlayerText, offensePlayerLegLevel, defensePlayerDodgeProbability));
+                isArmStronger = false;
+            }
+
+            float attackRandom = Random.Range(0f, 1f);
+
+            if (attackRandom < offensePlayerGoodChoiceProbability)
+            {
+                if (isArmStronger)
+                {
+                    yield return StartCoroutine(ArmAttack(offensePlayerText, defensePlayerText, offensePlayerArmLevel, defensePlayerDodgeProbability));
+                }
+                else
+                {
+                    yield return StartCoroutine(LegAttack(offensePlayerText, defensePlayerText, offensePlayerLegLevel, defensePlayerDodgeProbability));
+                }
+            }
+            else
+            {
+                if (!isArmStronger)
+                {
+                    yield return StartCoroutine(ArmAttack(offensePlayerText, defensePlayerText, offensePlayerArmLevel, defensePlayerDodgeProbability));
+                }
+                else
+                {
+                    yield return StartCoroutine(LegAttack(offensePlayerText, defensePlayerText, offensePlayerLegLevel, defensePlayerDodgeProbability));
+                }
             }
         }
     }
@@ -176,12 +191,12 @@ public class BattleManager : MonoBehaviour
             if (isPlayer1Start)
             {
                 isPlayer1Start = false;
-                StartCoroutine(PlayerOffense(player2Text, player1Text, Data.player2ArmLevel, Data.player2LegLevel, player1DodgeProbability, player1StunProbability));
+                StartCoroutine(PlayerOffense(player2Text, player1Text, Data.player2ArmLevel, Data.player2LegLevel, player1DodgeProbability, player1StunProbability, player2GoodChoiceProbability));
             }
             else
             {
                 isPlayer1Start = true;
-                StartCoroutine(PlayerOffense(player1Text, player2Text, Data.player1ArmLevel, Data.player1LegLevel, player2DodgeProbability, player2StunProbability));
+                StartCoroutine(PlayerOffense(player1Text, player2Text, Data.player1ArmLevel, Data.player1LegLevel, player2DodgeProbability, player2StunProbability, player1GoodChoiceProbability));
             }
         }
         else
