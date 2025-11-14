@@ -3,10 +3,7 @@ using TMPro;
 
 public class AutoDisableAfterTime : MonoBehaviour
 {
-    [Header("自动关闭的延迟时间（秒）")]
     public float disableDelay = 2f;
-
-    [Header("是否在启用时重新计时")]
     public bool restartOnEnable = true;
 
     private float timer = 0f;
@@ -33,7 +30,6 @@ public class AutoDisableAfterTime : MonoBehaviour
         }
     }
 
-    // ✅ 如果你想从别的脚本触发延时关闭，可以调用这个
     public void StartCountdown(float time)
     {
         disableDelay = time;
