@@ -1,0 +1,52 @@
+=======================================
+Mirror 导入错误修复说明
+=======================================
+
+问题：
+------
+Mirror 包含了基于 Unity 已废弃 UNET API 的 LLAPITransport 组件，
+导致编译错误：
+- UnityEngine.Networking.Types 命名空间不存在
+- ConnectionConfig、GlobalConfig 等类型找不到
+
+解决方案：
+----------
+已禁用过时的 LLAPITransport.cs 文件（改名为 .deprecated）
+
+原因：
+------
+1. Unity 的 UNET（UnityEngine.Networking）已在 2018 年废弃
+2. LLAPITransport 是基于 UNET 的旧传输层
+3. 现代 Mirror 项目使用其他传输方式，不需要它
+
+Mirror 推荐的传输组件：
+----------------------
+✓ Telepathy (默认，TCP)
+✓ KCP (UDP，低延迟)
+✓ SimpleWebTransport (WebGL支持)
+✓ Ignorance (ENET，高性能)
+
+如何使用 Mirror：
+-----------------
+1. 在游戏对象上添加 NetworkManager 组件
+2. 选择传输方式（默认 Telepathy 即可）
+3. 不要使用 LLAPITransport
+
+项目独立性保证：
+----------------
+✓ Mirror 组件只在 Assets/Mirror 文件夹内
+✓ 你的游戏脚本在 Assets/Scripts 文件夹
+✓ 两者完全独立，不会互相影响
+✓ 如果不使用网络功能，可以删除整个 Mirror 文件夹
+
+恢复文件（如果需要）：
+--------------------
+如果真的需要 LLAPITransport（不推荐）：
+1. 将 LLAPITransport.cs.deprecated 改回 .cs
+2. 需要安装 Unity 的 Multiplayer HLAPI 包（已过时）
+
+=======================================
+修复完成！编译错误已解决。
+=======================================
+
+
