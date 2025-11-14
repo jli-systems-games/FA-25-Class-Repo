@@ -29,13 +29,13 @@ public class UnitPlacement : MonoBehaviour
                     if (moneyManager.SpendMoney(unitCost))
                     {
                         Instantiate(unitPrefab, ghostUnit.transform.position, Quaternion.identity);
-                        Destroy(ghostUnit);  // 👈 remove ghost after placing
-                        ghostUnit = null;    // 👈 clear reference
+                        Destroy(ghostUnit);  
+                        ghostUnit = null;    
                     }
                 }
             }
 
-            // Right-click to cancel placement
+            // Right-click to cancel 
             if (Input.GetMouseButtonDown(1))
             {
                 Destroy(ghostUnit);
@@ -48,6 +48,6 @@ public class UnitPlacement : MonoBehaviour
     {
         if (ghostUnit != null) Destroy(ghostUnit);
         ghostUnit = Instantiate(unitPrefab);
-        ghostUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f); // ghost look
+        ghostUnit.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f); 
     }
 }
