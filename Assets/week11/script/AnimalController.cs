@@ -16,11 +16,11 @@ public class AnimalController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0f;          // ✅ 떨어지지 않게
-        rb.freezeRotation = true;      // ✅ Z 회전 고정(원형 아이콘이면 권장)
+        rb.gravityScale = 0f;         
+        rb.freezeRotation = true;    
     }
 
-    // ✅ 외부에서 확실히 스탯을 넣은 뒤 호출
+
     public void Setup(AnimalStats s)
     {
         stats = s;
