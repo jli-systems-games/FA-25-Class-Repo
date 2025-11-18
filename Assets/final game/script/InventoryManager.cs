@@ -14,7 +14,7 @@ public class InventoryManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // 씬 바껴도 인벤토리 유지
+
         }
         else
         {

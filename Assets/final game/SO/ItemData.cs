@@ -6,5 +6,6 @@ public class ItemData : ScriptableObject
     public string itemId;       
     public string displayName;
     public Sprite icon;
-    public string description;   
+    public string description;
+    public GameObject worldPrefab;
 }
