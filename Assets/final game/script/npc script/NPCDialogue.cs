@@ -22,6 +22,9 @@ public class NPCDialogue : MonoBehaviour
     [Header("UI 매니저")]
     public DialogueUI dialogueUI;
 
+    [Header("E 키 안내 텍스트 (TMP 들어있는 오브젝트)")]
+    public GameObject pressEHint;   // ← 여기에 TextMeshPro가 들어있는 오브젝트 연결
+
     bool _isTalking = false;
     int _currentGroupIndex = -1;
     int _currentLineIndex = 0;
@@ -38,6 +41,10 @@ public class NPCDialogue : MonoBehaviour
         {
             dialogueUI = FindFirstObjectByType<DialogueUI>();
         }
+
+        // 시작할 때 E 텍스트는 꺼둠
+        if (pressEHint != null)
+            pressEHint.SetActive(false);
     }
 
     void Update()
@@ -47,11 +54,24 @@ public class NPCDialogue : MonoBehaviour
         float dist = Vector3.Distance(transform.position, player.position);
         bool canInteract = dist <= interactDistance;
 
+        // 대화 중이 아니면, 거리 안에 있을 때만 E 텍스트 보이기
+        if (pressEHint != null)
+        {
+            if (!_isTalking && canInteract)
+                pressEHint.SetActive(true);
+            else
+                pressEHint.SetActive(false);
+        }
+
         // 플레이어가 가까이 있고, E를 눌렀을 때
         if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
-            // 이미 대화 중이면 그냥 무시 (원하면 여기서 다음으로 넘기게 해도 됨)
+            // 이미 대화 중이면 무시
             if (_isTalking) return;
+
+            // 대화를 시작하니까 E 텍스트는 숨기기
+            if (pressEHint != null)
+                pressEHint.SetActive(false);
 
             StartNewDialogue();
         }
@@ -102,7 +122,7 @@ public class NPCDialogue : MonoBehaviour
         }
     }
 
-    // Close 버튼이 누를 때 호출
+    // Close 버튼이 눌릴 때 호출
     public void ForceEndFromUI()
     {
         EndDialogue();
@@ -117,6 +137,14 @@ public class NPCDialogue : MonoBehaviour
         if (dialogueUI != null)
         {
             dialogueUI.Hide();
+        }
+
+        // 대화가 끝났을 때, 아직 근처에 있으면 E 텍스트 다시 보여주기
+        if (pressEHint != null && player != null)
+        {
+            float dist = Vector3.Distance(transform.position, player.position);
+            bool canInteract = dist <= interactDistance;
+            pressEHint.SetActive(canInteract);
         }
     }
 }
