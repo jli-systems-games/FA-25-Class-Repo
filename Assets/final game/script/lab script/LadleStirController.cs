@@ -10,6 +10,7 @@ public class LadleStirController : MonoBehaviour
     public UnityEvent onStirOnce;   // 드래그 후 MouseUp 한 번 = 저은 1회
 
     bool _isDragging = false;
+    public bool IsDragging => _isDragging;
     float _yHeight;
     Vector3 _centerPos;
     Quaternion _initialRot;
