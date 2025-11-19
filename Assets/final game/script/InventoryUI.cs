@@ -7,12 +7,19 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryPanel;
 
     [Header("아이콘을 보여줄 슬롯 이미지들")]
-    public Image[] slotImages;     // Inspector에서 슬롯들 드래그해서 넣기
+    public Image[] slotImages;
+    bool[] _slotSelected;
 
     [Header("랩 선택 (랩에서만 쓰고, 아니면 비워둬도 됨)")]
     public LabInventorySelector labSelector;   // 랩에서 섞을 때 선택 전달용
 
     bool _isOpen = false;
+
+    void Awake()
+    {
+        if (slotImages != null)
+            _slotSelected = new bool[slotImages.Length];
+    }
 
     void Start()
     {
@@ -37,14 +44,6 @@ public class InventoryUI : MonoBehaviour
             InventoryManager.Instance.OnInventoryChanged -= Refresh;
     }
 
-    void Update()
-    {
-        // 필요 없으면 무시해도 됨
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            ToggleInventory();
-        }
-    }
 
     public void ToggleInventory()
     {
@@ -59,9 +58,6 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// InventoryManager의 items 내용을 슬롯 이미지에 반영
-    /// </summary>
     public void Refresh()
     {
         if (slotImages == null || slotImages.Length == 0)
@@ -90,11 +86,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 시작할 때 한 번, 슬롯 이미지가 붙어있는 오브젝트에서 Button을 찾아
-    /// 클릭 시 OnSlotClicked가 호출되게 자동으로 연결.
-    /// 슬롯이 15개든 30개든 여기서 한 번에 처리함.
-    /// </summary>
+
     void SetupSlotButtons()
     {
         if (slotImages == null) return;
@@ -119,17 +111,29 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 슬롯이 눌렸을 때 호출.
-    /// 그 칸의 ItemData를 찾아서 LabInventorySelector.OnItemClicked(...) 로 넘겨줌.
-    /// </summary>
     void OnSlotClicked(int slotIndex)
     {
-        if (labSelector == null)
-        {
-            // 랩 선택을 안 쓰는 씬이면 그냥 무시
+        // 0. 슬롯 인덱스/배열 체크
+        if (slotImages == null || slotIndex < 0 || slotIndex >= slotImages.Length)
             return;
+
+        // 1. 색 토글 (선택 ↔ 해제)
+        if (_slotSelected[slotIndex])
+        {
+            // 이미 선택되어 있었으면 → 해제
+            _slotSelected[slotIndex] = false;
+            slotImages[slotIndex].color = Color.white;
         }
+        else
+        {
+            // 아직 선택 안 되어 있으면 → 선택 + 빨강
+            _slotSelected[slotIndex] = true;
+            slotImages[slotIndex].color = new Color(1f, 0.3f, 0.3f, 1f);
+        }
+
+        // 2. 실제 아이템을 LabSelector에 전달 (기존 로직 유지)
+        if (labSelector == null)
+            return;
 
         var mgr = InventoryManager.Instance;
         if (mgr == null || mgr.items == null) return;
@@ -140,7 +144,22 @@ public class InventoryUI : MonoBehaviour
         ItemData data = list[slotIndex];
         if (data == null) return;
 
-        // 여기서 랩 셀렉터로 전달!
+        // LabInventorySelector가 내부 리스트를 토글(add/remove) 하도록
         labSelector.OnItemClicked(data);
     }
+
+    public void ResetAllSlotColors()
+    {
+        if (slotImages == null || _slotSelected == null) return;
+
+        for (int i = 0; i < slotImages.Length; i++)
+        {
+            _slotSelected[i] = false;
+            if (slotImages[i] != null)
+                slotImages[i].color = Color.white;
+        }
+    }
+
+
+
 }

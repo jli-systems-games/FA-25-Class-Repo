@@ -1,4 +1,4 @@
-using System.Collections;                     // 👈 코루틴용
+using System.Collections;             
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,25 +10,26 @@ public class LabMixingManager : MonoBehaviour
     List<ItemData> _selectedItems = new List<ItemData>();
 
     [Header("정답 레시피 (아이템 ID 5개)")]
-    public string[] correctRecipeIds = new string[5];  // "CrocNoseHair", "SnailGoo" 이런 문자열
-
+    public string[] correctRecipeIds = new string[5];  
     [Header("책상 위 스폰 위치들 (5개)")]
     public Transform[] spawnPoints;
 
+    [Header("스폰 간격(초)")]
+    public float spawnInterval = 0.3f;
+
     [Header("이펙트 & 오디오")]
-    public ParticleSystem boilingEffect;    // 끓는 이펙트 (Loop)
-    public ParticleSystem failSmokeEffect;  // 실패 이펙트 (One-shot)
-    public ParticleSystem successEffect;    // 성공 이펙트 (One-shot)
-    public AudioSource boilingAudio;        // 끓는 소리
-    public Text resultText;                 // "success" / "fail" 텍스트
+    public ParticleSystem boilingEffect;   
+    public ParticleSystem failSmokeEffect; 
+    public ParticleSystem successEffect;    
+    public AudioSource boilingAudio;     
+    public Text resultText;               
 
     [Header("국자 & 젓기 설정")]
     public LadleStirController ladle;
     public int requiredStirs = 5;
 
     [Header("국자 움직임 파티클")]
-    public ParticleSystem ladleMoveEffect;  // 국자를 움직이는 동안만 나올 파티클 (Loop)
-
+    public ParticleSystem ladleMoveEffect;  
     [Header("선택 초기화(옵션)")]
     public LabInventorySelector selector;
 
@@ -38,11 +39,11 @@ public class LabMixingManager : MonoBehaviour
 
     void Start()
     {
-        // 결과 텍스트 숨기기
+
         if (resultText != null)
             resultText.gameObject.SetActive(false);
 
-        // 국자 1회 젓기 이벤트 연결
+
         if (ladle != null)
         {
             if (ladle.onStirOnce == null)
@@ -51,7 +52,6 @@ public class LabMixingManager : MonoBehaviour
             ladle.onStirOnce.AddListener(OnStirOnce);
         }
 
-        // 시작할 때는 파티클 오브젝트들만 비활성화 (삭제 X)
         if (boilingEffect != null)
             boilingEffect.gameObject.SetActive(false);
         if (failSmokeEffect != null)
@@ -67,23 +67,28 @@ public class LabMixingManager : MonoBehaviour
         HandleLadleMoveEffect();
     }
 
-    // LabInventorySelector에서 선택된 아이템 리스트를 전달해 줌
     public void SetSelectedItems(List<ItemData> items)
     {
         _selectedItems = new List<ItemData>(items);
     }
 
-    // mix 버튼 눌렀을 때
+
     public void OnClickMixButton()
     {
-        if (_selectedItems == null || _selectedItems.Count != 5)
+        
+        // 이제는 "아무 것도 없을 때만 막고",
+        // 1~5개면 섞게 둠 (나중에 CheckRecipe에서 5개만 성공 처리)
+        if (_selectedItems == null || _selectedItems.Count == 0)
         {
-            Debug.LogWarning("5개의 아이템이 선택되어야 섞을 수 있습니다.");
+            Debug.LogWarning("적어도 1개 이상의 아이템이 선택되어야 섞을 수 있습니다.");
             return;
         }
 
         ClearSpawnedItems();
-        SpawnItemsOnTable();
+
+        // 한 번에 다 스폰 대신, 코루틴으로 순서대로 스폰
+        StartCoroutine(SpawnItemsOnTableCoroutine());
+
         StartBoiling();
 
         _mixingInProgress = true;
@@ -93,23 +98,28 @@ public class LabMixingManager : MonoBehaviour
             resultText.gameObject.SetActive(false);
     }
 
-    // 선택된 아이템들을 책상 위 위치에 스폰
-    void SpawnItemsOnTable()
+   
+    System.Collections.IEnumerator SpawnItemsOnTableCoroutine()
     {
         int count = Mathf.Min(spawnPoints.Length, _selectedItems.Count);
 
         for (int i = 0; i < count; i++)
         {
             var data = _selectedItems[i];
-            if (data == null || data.worldPrefab == null) continue;
+            if (data != null && data.worldPrefab != null)
+            {
+                Transform point = spawnPoints[i];
+                GameObject spawned = Instantiate(data.worldPrefab, point.position, point.rotation);
+                _spawnedWorldItems.Add(spawned);
+            }
 
-            Transform point = spawnPoints[i];
-            GameObject spawned = Instantiate(data.worldPrefab, point.position, point.rotation);
-            _spawnedWorldItems.Add(spawned);
+      
+            if (spawnInterval > 0f && i < count - 1)
+                yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-    // 이전에 스폰된 아이템들 정리 (이건 Destroy 써도 괜찮음 – 사과/재료만)
+
     void ClearSpawnedItems()
     {
         foreach (var go in _spawnedWorldItems)
@@ -119,7 +129,6 @@ public class LabMixingManager : MonoBehaviour
         _spawnedWorldItems.Clear();
     }
 
-    // 끓는 이펙트 + 소리 시작 (활성화)
     void StartBoiling()
     {
         if (boilingEffect != null)
@@ -136,7 +145,6 @@ public class LabMixingManager : MonoBehaviour
         }
     }
 
-    // 끓는 이펙트 + 소리 정지 (비활성화)
     void StopBoiling()
     {
         if (boilingEffect != null)
@@ -148,8 +156,6 @@ public class LabMixingManager : MonoBehaviour
         if (boilingAudio != null)
             boilingAudio.Stop();
     }
-
-    // 국자 한 번 저을 때마다 호출
     void OnStirOnce()
     {
         if (!_mixingInProgress) return;
@@ -161,7 +167,6 @@ public class LabMixingManager : MonoBehaviour
             _mixingInProgress = false;
             StopBoiling();
 
-            // 국자 움직임 파티클도 완전히 끄기
             if (ladleMoveEffect != null)
             {
                 ladleMoveEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -171,18 +176,21 @@ public class LabMixingManager : MonoBehaviour
             bool success = CheckRecipe();
             ShowResult(success);
 
+            // 🟡 결과가 나온 뒤, 테이블 위에 스폰된 음식들 제거
+            ClearSpawnedItems();
+
+            // 🟥 선택/버튼 색 초기화 (인벤토리에는 아이템 그대로 남겨둠)
             if (selector != null)
                 selector.ClearSelection();
         }
     }
 
-    // 국자 움직이는 동안에만 나오는 파티클 제어
+
     void HandleLadleMoveEffect()
     {
         if (ladleMoveEffect == null || ladle == null)
             return;
 
-        // mix 버튼 누른 뒤 + 드래그 중일 때만 파티클 켜기
         bool shouldPlay = _mixingInProgress && ladle.IsDragging;
         bool isActive = ladleMoveEffect.gameObject.activeSelf;
 
@@ -199,7 +207,7 @@ public class LabMixingManager : MonoBehaviour
         }
     }
 
-    // 선택된 아이템들이 정답 레시피와 일치하는지 체크
+
     bool CheckRecipe()
     {
         if (_selectedItems == null || _selectedItems.Count != 5)
@@ -221,10 +229,8 @@ public class LabMixingManager : MonoBehaviour
         return true;
     }
 
-    // 성공/실패 이펙트 + 텍스트 표시 (잠깐 활성화했다가 다시 꺼줌)
     void ShowResult(bool success)
     {
-        // 둘 다 일단 꺼두고 시작
         if (successEffect != null)
         {
             successEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -264,14 +270,12 @@ public class LabMixingManager : MonoBehaviour
         }
     }
 
-    // 한 번만 켰다가 자동으로 비활성화하는 코루틴
     IEnumerator PlayOneShotEffect(ParticleSystem ps)
     {
         ps.gameObject.SetActive(true);
         ps.Clear();
         ps.Play();
 
-        // 대략적인 지속 시간만큼 기다렸다가
         var main = ps.main;
         float duration = main.duration + main.startLifetime.constantMax;
         yield return new WaitForSeconds(duration);
