@@ -1,36 +1,46 @@
-// === Billboard.cs (새 파일) ===
+// === Billboard.cs (수정된 파일) ===
 
 using UnityEngine;
 
 public class Billboard : MonoBehaviour
 {
-    // 메인 카메라의 Transform을 저장할 변수
-    private Transform mainCameraTransform;
+    // 바라볼 대상 (카메라의 Transform)
+    private Transform targetCameraTransform;
 
     void Start()
     {
-        // 씬에서 'MainCamera' 태그가 붙은 카메라를 찾습니다.
+        // 1. SceneToggle 찾기 (골드플레이어 카메라 참조용)
+        SceneToggle sceneToggle = FindFirstObjectByType<SceneToggle>();
+
+        // 2. 씬에 현재 활성화된 Main Camera가 있는지 확인 (주로 랩 카메라일 가능성)
         if (Camera.main != null)
         {
-            mainCameraTransform = Camera.main.transform;
+            // 랩 카메라든 월드 카메라든 현재 'MainCamera' 태그를 가진 카메라를 사용
+            targetCameraTransform = Camera.main.transform;
+        }
+        // 3. Main Camera가 없으면 (태그가 없거나 비활성화되었거나), SceneToggle의 worldCamera 사용
+        else if (sceneToggle != null && sceneToggle.worldCamera != null)
+        {
+            // 골드플레이어 카메라 (worldCamera)를 사용
+            targetCameraTransform = sceneToggle.worldCamera.transform;
         }
         else
         {
-            Debug.LogError("씬에 Main Camera (Tag: MainCamera)가 없습니다!");
+            Debug.LogError("Billboard: 바라볼 카메라를 찾을 수 없습니다! MainCamera 태그나 SceneToggle의 worldCamera 설정을 확인해주세요.", this);
         }
     }
 
-    // Update 대신 LateUpdate를 사용하면 카메라 움직임 후에 처리되어 더 부드럽습니다.
     void LateUpdate()
     {
-        if (mainCameraTransform == null) return;
+        // 타겟 카메라 Transform이 없으면 아무것도 하지 않습니다.
+        if (targetCameraTransform == null) return;
 
-        // 1. NPC의 현재 위치에서 카메라를 향하는 방향을 계산합니다.
-        // 2. Vector3.up (월드의 위 방향)을 기준으로 회전하여 캐릭터가 누워 보이지 않도록 합니다.
-        // 이 LookAt 코드는 NPC가 항상 카메라를 바라보게 만들지만, 
-        // 바닥을 뚫고 숙이거나 젖혀지는 현상 없이 Y축 회전을 유지합니다.
-
-        transform.LookAt(transform.position + mainCameraTransform.rotation * Vector3.forward,
+        // NPC의 Y축 회전만 유지하면서, 카메라를 정면으로 바라보게 합니다.
+        transform.LookAt(transform.position + targetCameraTransform.rotation * Vector3.forward,
                          Vector3.up);
+
+        // 💡 다른 방식 (카메라 위치 자체를 바라보기):
+        // transform.LookAt(targetCameraTransform.position, Vector3.up);
+        // *두 방식 중 더 자연스러운 것을 선택하여 사용하시면 됩니다. 위에 코드는 카메라의 회전(시선) 방향을 따라가므로 NPC가 더 플랫하게 느껴질 수 있습니다.
     }
 }
