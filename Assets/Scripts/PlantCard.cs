@@ -14,9 +14,7 @@ public class PlantCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private int currentStock;  // 当前库存
 
     [Header("UI引用")]
-    [SerializeField] private Image plantIcon;
-    [SerializeField] private TextMeshProUGUI plantNameText;
-    [SerializeField] private TextMeshProUGUI fertilityConsumptionText;
+    [SerializeField] private Image cardImage;       // 完整的卡牌图片
     [SerializeField] private TextMeshProUGUI stockText;  // 库存显示
 
     [Header("视觉状态")]
@@ -57,30 +55,17 @@ public class PlantCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
         // 根据库存状态设置颜色
         bool isEmpty = currentStock <= 0;
-        Color cardColor = isEmpty ? emptyColor : normalColor;
 
-        if (plantIcon != null)
+        if (cardImage != null)
         {
-            plantIcon.sprite = plantData.youngSprite;  // 卡牌显示幼年贴图
-            plantIcon.color = cardColor;
-        }
-
-        if (plantNameText != null)
-        {
-            plantNameText.text = plantData.plantName;
-            plantNameText.color = cardColor;
-        }
-
-        if (fertilityConsumptionText != null)
-        {
-            fertilityConsumptionText.text = $"-{plantData.fertilityConsumptionPerSecond}/s";
-            fertilityConsumptionText.color = cardColor;
+            cardImage.sprite = plantData.cardSprite;
+            cardImage.color = isEmpty ? emptyColor : normalColor;
         }
 
         if (stockText != null)
         {
             stockText.text = $"x{currentStock}";
-            stockText.color = cardColor;
+            stockText.color = isEmpty ? emptyColor : normalColor;
         }
     }
 

@@ -11,6 +11,8 @@ public class PlantData : ScriptableObject
     public string plantName = "植物";
     [Tooltip("植物预制体（必须包含Plant组件和碰撞箱）")]
     public GameObject plantPrefab;
+    [Tooltip("卡牌UI贴图（包含图标、名字、消耗等所有信息）")]
+    public Sprite cardSprite;
     [Tooltip("幼年期贴图")]
     public Sprite youngSprite;
     [Tooltip("成熟期贴图")]
