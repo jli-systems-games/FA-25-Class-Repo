@@ -1,3 +1,5 @@
+// === NPCDialogue.cs ===
+
 using UnityEngine;
 
 [System.Serializable]
@@ -31,24 +33,31 @@ public class NPCDialogue : MonoBehaviour
 
     void Start()
     {
+        // 플레이어 자동 연결 시도
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
 
+        // DialogueUI 자동 연결 시도 (씬에 하나만 존재해야 함)
         if (dialogueUI == null)
         {
             dialogueUI = FindFirstObjectByType<DialogueUI>();
         }
 
-        // 시작할 때 E 텍스트는 꺼둠
+        // 시작할 때 E 텍스트는 꺼둠 (Hierarchy에서 비활성화하지 않았다면)
         if (pressEHint != null)
             pressEHint.SetActive(false);
+
+        // ⚠️ 필수 연결 필드가 누락되었는지 확인 (디버그용)
+        if (player == null) Debug.LogError(gameObject.name + ": 'Player' 오브젝트를 찾을 수 없습니다. 태그를 확인하세요.");
+        if (dialogueUI == null) Debug.LogError(gameObject.name + ": 'DialogueUI' 오브젝트를 찾을 수 없습니다. 씬에 있는지 확인하세요.");
     }
 
     void Update()
     {
+        // 필수 요소 중 하나라도 없으면 여기서 즉시 종료
         if (player == null || dialogueUI == null) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
@@ -102,6 +111,7 @@ public class NPCDialogue : MonoBehaviour
         string text = group.lines[_currentLineIndex];
         bool hasNext = (_currentLineIndex < group.lines.Length - 1);
 
+        // dialogueUI의 ShowDialogue 함수가 DialogueUI 컴포넌트에서 구현되어 있어야 합니다.
         dialogueUI.ShowDialogue(this, text, hasNext);
     }
 

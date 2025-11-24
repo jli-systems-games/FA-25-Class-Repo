@@ -6,18 +6,22 @@ public class DialogueUI : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject panel;      // 대화창 전체 패널
-    public TMP_Text dialogueText; // 텍스트메시프로
+    public TMP_Text dialogueText; // 텍스트메시프로 텍스트
     public Button nextButton;     // "다음" 버튼
-    public Button closeButton;    // "닫기" 버튼
+    public Button closeButton;    // "닫기" 버튼 (원하면 안 써도 됨)
 
     NPCDialogue _currentNPC;
 
     void Awake()
     {
+        // 시작할 때는 숨겨두기
         if (panel != null)
             panel.SetActive(false);
     }
 
+    /// <summary>
+    /// NPC가 대사를 보여달라고 요청할 때 호출
+    /// </summary>
     public void ShowDialogue(NPCDialogue npc, string text, bool hasNext)
     {
         _currentNPC = npc;
@@ -43,7 +47,8 @@ public class DialogueUI : MonoBehaviour
         _currentNPC = null;
     }
 
-    // === 버튼 연결용 ===
+    // === 버튼에서 연결해서 쓸 메서드들 ===
+
     public void OnClickNext()
     {
         if (_currentNPC != null)
@@ -54,14 +59,6 @@ public class DialogueUI : MonoBehaviour
 
     public void OnClickClose()
     {
-        if (_currentNPC != null)
-        {
-            // ✅ NPC한테도 "이제 끝이야" 알려주기
-            _currentNPC.ForceEndFromUI();
-        }
-        else
-        {
-            Hide();
-        }
+        Hide();
     }
 }
