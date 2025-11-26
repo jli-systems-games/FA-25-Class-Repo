@@ -12,22 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b6ede27bae84dc4a56e80dbca1e3e6, type: 3}
   m_Name: Mushroom
   m_EditorClassIdentifier: 
-  plantName: Fungi
-  plantPrefab: {fileID: 2585109413886622149, guid: 9690dcd481de3497bbe090eb6418475c, type: 3}
-  cardSprite: {fileID: 21300000, guid: d716eeb9fced5447dad053d5c552a55c, type: 3}
-  youngSprite: {fileID: 21300000, guid: b1de6a006376249fea56b76b7ea66e9d, type: 3}
-  matureSprite: {fileID: 21300000, guid: 6d2c84b553755472da2bde6952964c90, type: 3}
+  plantName: Mushroom
+  plantPrefab: {fileID: 0}
+  cardSprite: {fileID: 0}
+  youngSprite: {fileID: 0}
+  matureSprite: {fileID: 0}
   witherSprite: {fileID: 0}
   priority: 1
   initialStock: 3
-  lifespanMin: 8
-  lifespanMax: 15
+  lifespanMin: 5
+  lifespanMax: 20
   witherTime: 5
-  lightRequirementMin: 5
-  lightRequirementMax: 30
-  shadowValue: 1
-  fertilityConsumptionPerSecond: 0
-  fertilityReturnOnMatureDeath: 20
+  lightRequirementMin: 50
+  lightRequirementMax: 100
+  shadowValue: 20
+  fertilityConsumptionPerSecond: 3
+  fertilityReturnOnMatureDeath: 100
   immatureDeathReturnMultiplier: 0.5
+  spreadMode: 0
+  spreadCount: 2
+  spreadRange: 2
+  spreadInterval: 15
   matureEffectDescription: 
-  matureEffect: 2
+  matureEffect: 0

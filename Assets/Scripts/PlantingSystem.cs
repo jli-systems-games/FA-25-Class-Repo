@@ -52,6 +52,55 @@ public class PlantingSystem : MonoBehaviour
                 TryPlacePlant();
             }
         }
+        else
+        {
+            // 不在拖拽时，检测点击植物
+            if (Input.GetMouseButtonDown(0))
+            {
+                TrySelectPlant();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 尝试选中植物（射线检测所有碰撞，选最近的）
+    /// </summary>
+    private void TrySelectPlant()
+    {
+        // 从鼠标位置发射射线
+        Vector3 mousePos = GetMouseWorldPosition();
+
+        // 检测所有碰撞的物体
+        Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
+
+        Plant closestPlant = null;
+        float closestDistance = float.MaxValue;
+
+        // 遍历所有碰撞物，找最近的植物
+        foreach (Collider2D hit in hits)
+        {
+            Plant plant = hit.GetComponentInParent<Plant>();
+            if (plant != null)
+            {
+                float distance = Vector2.Distance(mousePos, plant.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPlant = plant;
+                }
+            }
+        }
+
+        // 如果找到植物，显示信息面板
+        if (closestPlant != null)
+        {
+            if (PlantInfoPanel.Instance != null)
+            {
+                PlantInfoPanel.Instance.ShowPanel(closestPlant);
+            }
+
+            Debug.Log($"[PlantingSystem] 选中植物: {closestPlant.plantData.plantName}");
+        }
     }
 
     /// <summary>

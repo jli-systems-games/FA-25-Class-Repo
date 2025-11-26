@@ -94,6 +94,12 @@ public class EcosystemManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 尝试消耗肥力（植物每帧调用）
+    /// </summary>
+    /// <returns>是否成功消耗（肥力是否充足）</returns>
+    
+
+    /// <summary>
     /// 注册植物到系统
     /// </summary>
     public void RegisterPlant(Plant plant)
@@ -151,11 +157,11 @@ public class EcosystemManager : MonoBehaviour
     {
         if (fertilityText != null)
         {
-            fertilityText.text = $"Fertility: {currentFertility:F1} / {maxFertility}";
+            fertilityText.text = $"肥力: {currentFertility:F1} / {maxFertility}";
         }
         if (recoveryRateText != null)
         {
-            recoveryRateText.text = $"Recovery: {currentFertilityRecoveryRate:F1}/s";
+            recoveryRateText.text = $"恢复速率: {currentFertilityRecoveryRate:F1}/秒";
         }
         if (fertilitySlider != null)
         {

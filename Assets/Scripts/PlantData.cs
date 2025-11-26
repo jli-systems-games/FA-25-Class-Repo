@@ -44,12 +44,24 @@ public class PlantData : ScriptableObject
     public float shadowValue = 20f;
 
     [Header("肥力系统")]
-    [Tooltip("每秒消耗肥力")]
+    [Tooltip("幼年期每秒消耗肥力")]
     public float fertilityConsumptionPerSecond = 3f;
     [Tooltip("成熟后死亡返还肥力")]
     public float fertilityReturnOnMatureDeath = 100f;
     [Tooltip("未成熟死亡返还肥力倍率")]
     public float immatureDeathReturnMultiplier = 0.5f;
+
+    [Header("繁殖系统")]
+    [Tooltip("繁殖模式")]
+    public SpreadMode spreadMode = SpreadMode.None;
+    [Tooltip("繁殖生成的Prefab（如果为空则生成自己）")]
+    public GameObject offspringPrefab;
+    [Tooltip("繁殖数量")]
+    public int spreadCount = 2;
+    [Tooltip("繁殖范围（米）- 如果有SpawnArea碰撞箱则在碰撞箱内生成")]
+    public float spreadRange = 2f;
+    [Tooltip("繁殖间隔（秒，仅持续繁殖）")]
+    public float spreadInterval = 15f;
 
     [Header("成熟效果")]
     [TextArea(3, 5)]
@@ -67,4 +79,16 @@ public enum PlantMatureEffect
     SunflowerFertilitySpread,      // 向日葵肥力扩散（死亡时返还2倍并扩散）
     FruitProduction,               // 结果植物（持续产出）
     VineAttachment                 // 爬藤植物（依附木本）
+}
+
+/// <summary>
+/// 植物繁殖模式枚举
+/// </summary>
+public enum SpreadMode
+{
+    None,                    // 不繁殖
+    OnMature,               // 成熟时触发一次（向日葵）
+    Continuous,             // 成熟后持续繁殖（草本、蘑菇菌丝）
+    OnDeath,                // 死亡时触发（暂未使用）
+    RequireAnimal           // 需要动物传播（橡树+松鼠）
 }

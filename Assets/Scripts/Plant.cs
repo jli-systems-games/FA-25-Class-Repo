@@ -8,7 +8,7 @@ using UnityEngine;
 public class Plant : MonoBehaviour
 {
     [Header("植物配置")]
-    [SerializeField] private PlantData plantData;
+    [SerializeField] public PlantData plantData;  // 改为public，允许外部访问
 
     [Header("碰撞箱引用")]
     [SerializeField] private BoxCollider2D lightSensor;      // 光照检测箱
@@ -26,9 +26,20 @@ public class Plant : MonoBehaviour
     private bool isMature = false;
     private bool isDead = false;
 
+    // 公开属性供UI访问
+    public float CurrentAge => currentAge;
+    public bool IsMature => isMature;
+    public bool IsDead => isDead;
+    public bool IsWithering => isWithering;
+    public float CurrentLight => currentLight;
+
     [Header("枯萎状态")]
     private bool isWithering = false;     // 是否正在枯萎
     private float witherTimer = 0f;       // 枯萎计时器
+
+    [Header("繁殖状态")]
+    private float spreadTimer = 0f;       // 繁殖计时器（持续繁殖用）
+    private bool hasSpreadOnMature = false; // 是否已在成熟时繁殖过
 
     [Header("阳光状态")]
     private float currentLight = 100f;
@@ -90,14 +101,23 @@ public class Plant : MonoBehaviour
             OnMatured();
         }
 
+        // 幼年期持续消耗肥力
+        if (!isMature)
+        {
+            CheckFertilityRequirement();
+        }
+
         // 检查阳光需求
         CheckLightRequirement();
 
-        // 检查肥力需求
-        CheckFertilityRequirement();
-
         // 检查枯萎状态
         CheckWitherState();
+
+        // 成熟后处理繁殖
+        if (isMature && !isWithering)
+        {
+            HandleSpread();
+        }
 
         // 检查是否寿终正寝
         if (currentAge >= deathTime)
@@ -107,15 +127,12 @@ public class Plant : MonoBehaviour
     }
 
     /// <summary>
-    /// 检查肥力需求
+    /// 检查肥力需求（幼年期持续消耗）
     /// </summary>
     private void CheckFertilityRequirement()
     {
-        // 检查当前肥力是否足够支撑植物消耗
-        float currentFertility = EcosystemManager.Instance.CurrentFertility;
-        float consumption = plantData.fertilityConsumptionPerSecond;
-
-        hasEnoughFertility = currentFertility >= consumption * Time.deltaTime;
+        float consumption = plantData.fertilityConsumptionPerSecond * Time.deltaTime;
+        hasEnoughFertility = EcosystemManager.Instance.TryConsumeFertility(consumption);
     }
 
     /// <summary>
@@ -157,6 +174,98 @@ public class Plant : MonoBehaviour
                 spriteRenderer.sprite = isMature ? plantData.matureSprite : plantData.youngSprite;
                 Debug.Log($"[Plant] {plantData.plantName} 恢复正常");
             }
+        }
+    }
+
+    /// <summary>
+    /// 处理繁殖逻辑
+    /// </summary>
+    private void HandleSpread()
+    {
+        switch (plantData.spreadMode)
+        {
+            case SpreadMode.OnMature:
+                // 成熟时触发一次（向日葵）
+                if (!hasSpreadOnMature)
+                {
+                    TriggerSpread();
+                    hasSpreadOnMature = true;
+                }
+                break;
+
+            case SpreadMode.Continuous:
+                // 成熟后持续繁殖（草本、蘑菇菌丝）
+                spreadTimer += Time.deltaTime;
+                if (spreadTimer >= plantData.spreadInterval)
+                {
+                    TriggerSpread();
+                    spreadTimer = 0f;
+                }
+                break;
+
+            case SpreadMode.OnDeath:
+                // 死亡时触发，在Die方法中处理
+                break;
+
+            case SpreadMode.RequireAnimal:
+                // 需要动物，暂不实现
+                break;
+
+            case SpreadMode.None:
+            default:
+                // 不繁殖
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 触发繁殖（生成幼苗）
+    /// </summary>
+    private void TriggerSpread()
+    {
+        // 确定要生成的Prefab（优先使用offspringPrefab，为空则生成自己）
+        GameObject prefabToSpawn = plantData.offspringPrefab != null ?
+            plantData.offspringPrefab : plantData.plantPrefab;
+
+        if (prefabToSpawn == null)
+        {
+            Debug.LogWarning($"[Plant] {plantData.plantName} 没有设置繁殖Prefab，无法繁殖");
+            return;
+        }
+
+        // 检查是否有指定的生成区域（蘑菇菌丝用）
+        BoxCollider2D spawnArea = GetComponentInChildren<BoxCollider2D>();
+        bool hasSpawnArea = spawnArea != null && spawnArea.gameObject.name.Contains("SpawnArea");
+
+        for (int i = 0; i < plantData.spreadCount; i++)
+        {
+            Vector3 spawnPosition;
+
+            if (hasSpawnArea)
+            {
+                // 在指定碰撞箱内随机生成（蘑菇菌丝）
+                Bounds bounds = spawnArea.bounds;
+                float randomX = Random.Range(bounds.min.x, bounds.max.x);
+                float randomZ = Random.Range(bounds.min.z, bounds.max.z);
+                spawnPosition = new Vector3(randomX, transform.position.y, randomZ);
+            }
+            else
+            {
+                // 在范围内随机位置（普通植物）
+                Vector2 randomOffset = Random.insideUnitCircle * plantData.spreadRange;
+                spawnPosition = transform.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
+                spawnPosition.y = transform.position.y;
+            }
+
+            // 直接生成，不检测重叠（让生态自然淘汰）
+            GameObject offspring = Instantiate(
+                prefabToSpawn,
+                spawnPosition,
+                Quaternion.identity,
+                transform.parent
+            );
+
+            Debug.Log($"[Plant] {plantData.plantName} 繁殖生成幼苗 at {spawnPosition}");
         }
     }
 
@@ -275,6 +384,41 @@ public class Plant : MonoBehaviour
         {
             EcosystemManager.Instance.UnregisterPlant(this);
         }
+    }
+
+    // 不再使用OnMouseDown，改用PlantingSystem的射线检测
+
+    /// <summary>
+    /// 收割植物（手动收割）
+    /// </summary>
+    public void Harvest()
+    {
+        if (isDead) return;
+
+        Debug.Log($"[Plant] 手动收割: {plantData.plantName}");
+
+        // 计算返还肥力
+        float returnFertility = isMature ?
+            plantData.fertilityReturnOnMatureDeath :
+            plantData.fertilityReturnOnMatureDeath * plantData.immatureDeathReturnMultiplier;
+
+        // 返还肥力
+        EcosystemManager.Instance.AddFertility(returnFertility);
+
+        // 橡树死亡时减少恢复速率
+        if (plantData.matureEffect == PlantMatureEffect.OakLeafFall && isMature)
+        {
+            EcosystemManager.Instance.OnOakDied();
+        }
+
+        // 从生态系统注销
+        EcosystemManager.Instance.UnregisterPlant(this);
+
+        Debug.Log($"[Plant] {plantData.plantName} 收割完成，返还肥力: {returnFertility:F1}");
+
+        // 销毁游戏对象
+        isDead = true;
+        Destroy(gameObject);
     }
 
     // 调试信息
