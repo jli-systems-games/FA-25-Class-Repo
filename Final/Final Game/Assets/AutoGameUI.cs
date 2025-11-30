@@ -1,35 +1,43 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using MoreMountains.TopDownEngine;
 
-public class AutoGameUI : MonoBehaviour
+public class AutoGameUI_Final : MonoBehaviour
 {
-    [Header("ÓÎÏ·ÉèÖÃ")]
-    public float GameDuration = 60f;
-    public float MaxScore = 20f;
+    [Header("Phase 1: å»ºé€ é˜¶æ®µè®¾ç½®")]
+    public float BuildDuration = 60f;
+    public float MaxWallScore = 20f;
+
+    [Header("Phase 2: çŒæ€é˜¶æ®µè®¾ç½®")]
+    public float HuntDuration = 60f;
+    public int BaseHealthBonus = 30;
+    [Range(0f, 1f)]
+    public float EnemyHealthBonusRatio = 0.5f;
 
     private Text _timerText;
     private Slider _p1Slider;
     private Slider _p2Slider;
-    private Text _winnerText;
+    private Text _centerText;
 
     private SmartScalingWall _p1Wall;
     private SmartScalingWall _p2Wall;
+    private Character _p1Character;
+    private Character _p2Character;
 
     private float _timer;
-    private bool _isGameOver = false;
+    private bool _isHuntingPhase = false;
+    private bool _gameEnded = false;
+
+    // ã€æ–°å¢ã€‘ç”¨äºUIæ˜¾ç¤ºçš„ç»Ÿä¸€æœ€å¤§å€¼ï¼Œè€Œä¸æ˜¯å„è‡ªçš„æœ€å¤§è¡€é‡
+    private float _huntPhaseUIMax;
 
     void Start()
     {
-        // 1. ÕÒÇ½
+        CreateOverlayInterface();
         FindWalls();
-
-        // 2. Éú³É UI (ĞŞ¸´ÁË×ÖÌå±¨´í)
-        CreateUserInterface();
-
-        // 3. ³õÊ¼»¯
-        _timer = GameDuration;
+        FindCharacters();
+        _timer = BuildDuration;
     }
 
     void FindWalls()
@@ -42,105 +50,178 @@ public class AutoGameUI : MonoBehaviour
         }
     }
 
+    void FindCharacters()
+    {
+        Character[] chars = FindObjectsByType<Character>(FindObjectsSortMode.None);
+        foreach (var c in chars)
+        {
+            if (c.PlayerID == "Player1") _p1Character = c;
+            else if (c.PlayerID == "Player2") _p2Character = c;
+        }
+    }
+
     void Update()
     {
-        if (_isGameOver) return;
+        if (_p1Character == null || _p2Character == null)
+        {
+            FindCharacters();
+        }
+
+        if (_gameEnded) return;
 
         _timer -= Time.deltaTime;
 
-        // °²È«¸üĞÂ£ºÏÈ¼ì²é UI ÊÇ·ñ´æÔÚ
         if (_timerText != null)
         {
             float timeToShow = Mathf.Max(0, Mathf.CeilToInt(_timer));
-            _timerText.text = timeToShow.ToString() + "s";
+            string phasePrefix = _isHuntingPhase ? "HUNT: " : "BUILD: ";
+            _timerText.text = phasePrefix + timeToShow.ToString() + "s";
+            if (_isHuntingPhase) _timerText.color = Color.red;
         }
 
-        if (_p1Slider != null) _p1Slider.value = (_p1Wall != null) ? _p1Wall.CurrentScore : 0;
-        if (_p2Slider != null) _p2Slider.value = (_p2Wall != null) ? _p2Wall.CurrentScore : 0;
+        // --- è¿›åº¦æ¡æ›´æ–°é€»è¾‘ ---
+        if (!_isHuntingPhase)
+        {
+            // å»ºé€ é˜¶æ®µï¼šæ˜¾ç¤ºå¢™åˆ†
+            if (_p1Slider != null) { _p1Slider.maxValue = MaxWallScore; _p1Slider.value = (_p1Wall != null) ? _p1Wall.CurrentScore : 0; }
+            if (_p2Slider != null) { _p2Slider.maxValue = MaxWallScore; _p2Slider.value = (_p2Wall != null) ? _p2Wall.CurrentScore : 0; }
+        }
+        else
+        {
+            // ã€å…³é”®ä¿®å¤ã€‘çŒæ€é˜¶æ®µï¼šä½¿ç”¨ç»Ÿä¸€çš„æœ€å¤§å€¼ _huntPhaseUIMax
+            // è¿™æ ·å¦‚æœåˆ†ä½ï¼Œæ¡å°±ä¸æ˜¯æ»¡çš„
+            if (_p1Slider != null && _p1Character != null)
+            {
+                _p1Slider.maxValue = _huntPhaseUIMax;
+                _p1Slider.value = _p1Character.GetComponent<Health>().CurrentHealth;
+            }
+            if (_p2Slider != null && _p2Character != null)
+            {
+                _p2Slider.maxValue = _huntPhaseUIMax;
+                _p2Slider.value = _p2Character.GetComponent<Health>().CurrentHealth;
+            }
+        }
 
         if (_timer <= 0)
         {
-            EndGame();
+            if (!_isHuntingPhase) StartCoroutine(TransitionToHuntPhase());
+            else EndGame();
+        }
+    }
+
+    IEnumerator TransitionToHuntPhase()
+    {
+        _timer = 9999f;
+        FindCharacters();
+
+        float score1 = (_p1Wall != null) ? _p1Wall.CurrentScore : 0;
+        float score2 = (_p2Wall != null) ? _p2Wall.CurrentScore : 0;
+
+        string result = "";
+        Color color = Color.white;
+        if (score1 > score2) { result = "P1 BUILD WIN!"; color = Color.cyan; }
+        else if (score2 > score1) { result = "P2 BUILD WIN!"; color = Color.red; }
+        else { result = "BUILD DRAW!"; color = Color.yellow; }
+
+        ShowCenterText(result, color);
+        yield return new WaitForSeconds(1.5f);
+
+        ShowCenterText("HUNTING TIME!", Color.red);
+
+        // è®¡ç®—è¡€é‡
+        int p1FinalHealth = Mathf.RoundToInt(score1 + BaseHealthBonus + (score2 * EnemyHealthBonusRatio));
+        int p2FinalHealth = Mathf.RoundToInt(score2 + BaseHealthBonus + (score1 * EnemyHealthBonusRatio));
+
+        // ã€å…³é”®ä¿®å¤ã€‘è®¡ç®—UIæ¡çš„ç†è®ºæœ€å¤§å€¼ (æ»¡å¢™åˆ† + åŸºç¡€åŠ æˆ + æ»¡å¢™åˆ†çš„50%)
+        // è¿™æ ·æ¡çš„é•¿åº¦æ˜¯å›ºå®šçš„ï¼Œè¡€é‡å°‘çš„äººæ¡å°±ä¼šçŸ­
+        _huntPhaseUIMax = MaxWallScore + BaseHealthBonus + (MaxWallScore * EnemyHealthBonusRatio);
+
+        // åº”ç”¨è¡€é‡
+        SetPlayerHealth(_p1Character, p1FinalHealth);
+        SetPlayerHealth(_p2Character, p2FinalHealth);
+
+        Debug.Log($"P1è¡€é‡: {p1FinalHealth}, P2è¡€é‡: {p2FinalHealth}, UIæœ€å¤§å€¼: {_huntPhaseUIMax}");
+
+        _isHuntingPhase = true;
+        _timer = HuntDuration;
+
+        yield return new WaitForSeconds(1f);
+        _centerText.gameObject.SetActive(false);
+    }
+
+    void SetPlayerHealth(Character p, int healthValue)
+    {
+        if (p == null) return;
+        Health health = p.GetComponent<Health>();
+        if (health != null)
+        {
+            health.MaximumHealth = healthValue;
+            health.CurrentHealth = healthValue;
+            health.UpdateHealthBar(true);
         }
     }
 
     void EndGame()
     {
-        _isGameOver = true;
-        _timer = 0;
-        if (_timerText) _timerText.text = "0s";
-
-        float score1 = (_p1Wall != null) ? _p1Wall.CurrentScore : 0;
-        float score2 = (_p2Wall != null) ? _p2Wall.CurrentScore : 0;
-        string result = "";
-        Color winColor = Color.white;
-
-        if (score1 > score2) { result = "PLAYER 1 WINS!"; winColor = Color.cyan; }
-        else if (score2 > score1) { result = "PLAYER 2 WINS!"; winColor = Color.red; }
-        else { result = "DRAW!"; winColor = Color.yellow; }
-
-        if (_winnerText)
-        {
-            _winnerText.text = result;
-            _winnerText.color = winColor;
-            _winnerText.gameObject.SetActive(true);
-        }
-
-        // ÓÎÏ·½áÊøÔİÍ£
+        _gameEnded = true;
+        _timerText.text = "GAME OVER";
+        ShowCenterText("GAME OVER", Color.white);
         Time.timeScale = 0f;
     }
 
-    // ----------------- UI Éú³É (ĞŞ¸´°æ) -----------------
-    void CreateUserInterface()
+    void ShowCenterText(string content, Color col)
     {
-        // ·ÀÖ¹ÖØ¸´ EventSystem
+        if (_centerText != null)
+        {
+            _centerText.text = content;
+            _centerText.color = col;
+            _centerText.gameObject.SetActive(true);
+        }
+    }
+
+    void CreateOverlayInterface()
+    {
         if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
         {
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.EventSystems.StandaloneInputModule));
         }
 
-        GameObject canvasObj = new GameObject("AutoCanvas");
+        GameObject canvasObj = new GameObject("FinalOverlayCanvas");
         Canvas canvas = canvasObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100; // ±£Ö¤ÔÚ×îÉÏ²ã
-
-        // ¹Ø¼üĞŞ¸´£ºÉèÖÃËõ·ÅÄ£Ê½£¬·ÀÖ¹ UI ¾Ş´óÎŞ±È
+        canvas.sortingOrder = 9999;
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920, 1080); // Éè¶¨±ê×¼·Ö±æÂÊ
-
+        scaler.referenceResolution = new Vector2(1920, 1080);
         canvasObj.AddComponent<GraphicRaycaster>();
 
-        // Timer (×óÏÂ)
-        GameObject timerObj = CreateTextObj("TimerText", canvasObj.transform, 80, Color.white, TextAnchor.LowerLeft); // ×ÖºÅ¸Ä´ó
+        GameObject timerObj = CreateTextObj("TimerText", canvasObj.transform, 60, Color.white, TextAnchor.LowerCenter);
         RectTransform timerRect = timerObj.GetComponent<RectTransform>();
-        timerRect.anchorMin = Vector2.zero; timerRect.anchorMax = Vector2.zero; timerRect.pivot = Vector2.zero;
-        timerRect.anchoredPosition = new Vector2(50, 50); // ÉÔÎ¢Àë±ßÔµÔ¶µã
+        timerRect.anchorMin = new Vector2(0.5f, 0); timerRect.anchorMax = new Vector2(0.5f, 0); timerRect.pivot = new Vector2(0.5f, 0);
+        timerRect.anchoredPosition = new Vector2(0, 50);
         _timerText = timerObj.GetComponent<Text>();
 
-        // P1 Bar (×óÉÏ)
         GameObject s1 = CreateSliderObj("P1_Bar", canvasObj.transform, Color.cyan);
         RectTransform r1 = s1.GetComponent<RectTransform>();
         r1.anchorMin = new Vector2(0, 1); r1.anchorMax = new Vector2(0, 1); r1.pivot = new Vector2(0, 1);
-        r1.anchoredPosition = new Vector2(50, -50);
+        r1.anchoredPosition = new Vector2(30, -30);
         _p1Slider = s1.GetComponent<Slider>();
 
-        // P2 Bar (ÓÒÉÏ)
         GameObject s2 = CreateSliderObj("P2_Bar", canvasObj.transform, Color.red);
         RectTransform r2 = s2.GetComponent<RectTransform>();
         r2.anchorMin = new Vector2(1, 1); r2.anchorMax = new Vector2(1, 1); r2.pivot = new Vector2(1, 1);
-        r2.anchoredPosition = new Vector2(-50, -50);
+        r2.anchoredPosition = new Vector2(-30, -30);
         _p2Slider = s2.GetComponent<Slider>();
         _p2Slider.direction = Slider.Direction.RightToLeft;
 
-        // Winner Text (ÖĞ¼ä)
-        GameObject winObj = CreateTextObj("WinnerText", canvasObj.transform, 100, Color.white, TextAnchor.MiddleCenter);
+        GameObject winObj = CreateTextObj("CenterText", canvasObj.transform, 120, Color.white, TextAnchor.MiddleCenter);
         RectTransform winRect = winObj.GetComponent<RectTransform>();
         winRect.anchorMin = new Vector2(0.5f, 0.5f); winRect.anchorMax = new Vector2(0.5f, 0.5f); winRect.pivot = new Vector2(0.5f, 0.5f);
         winRect.anchoredPosition = Vector2.zero;
-        winRect.sizeDelta = new Vector2(1000, 300);
-        _winnerText = winObj.GetComponent<Text>();
-        _winnerText.gameObject.SetActive(false);
+        winRect.sizeDelta = new Vector2(1200, 400);
+        _centerText = winObj.GetComponent<Text>();
+        _centerText.fontStyle = FontStyle.Bold;
+        _centerText.gameObject.SetActive(false);
     }
 
     GameObject CreateTextObj(string name, Transform parent, int size, Color color, TextAnchor align)
@@ -148,15 +229,13 @@ public class AutoGameUI : MonoBehaviour
         GameObject go = new GameObject(name);
         go.transform.SetParent(parent);
         Text t = go.AddComponent<Text>();
-
-        // ĞŞ¸´×ÖÌå£º³¢ÊÔÓÃ Arial£¬Èç¹û²»ĞĞ¾ÍÓÃÄ¬ÈÏ
-        t.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        if (t.font == null) t.font = Font.CreateDynamicFontFromOSFont("Arial", size);
-
+        t.font = Font.CreateDynamicFontFromOSFont("Arial", size);
+        if (t.font == null) t.font = Resources.FindObjectsOfTypeAll<Font>()[0];
         t.fontSize = size;
         t.color = color;
         t.alignment = align;
         t.rectTransform.sizeDelta = new Vector2(400, 150);
+        t.raycastTarget = false;
         return go;
     }
 
@@ -165,27 +244,24 @@ public class AutoGameUI : MonoBehaviour
         GameObject root = new GameObject(name);
         root.transform.SetParent(parent);
         Slider slider = root.AddComponent<Slider>();
-        slider.maxValue = MaxScore;
-        RectTransform rootRect = root.AddComponent<RectTransform>();
-        rootRect.sizeDelta = new Vector2(400, 40); // ÌõÉÔÎ¢´óÒ»µã
+        slider.maxValue = MaxWallScore;
+        slider.interactable = false;
+        RectTransform rootRect = root.GetComponent<RectTransform>();
+        rootRect.sizeDelta = new Vector2(400, 35);
 
-        // ±³¾°
         GameObject bg = new GameObject("Background");
         bg.transform.SetParent(root.transform);
         Image bgImg = bg.AddComponent<Image>();
         bgImg.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-        RectTransform bgRect = bg.GetComponent<RectTransform>();
-        bgRect.anchorMin = Vector2.zero; bgRect.anchorMax = Vector2.one;
-        bgRect.offsetMin = Vector2.zero; bgRect.offsetMax = Vector2.zero;
+        bgImg.rectTransform.anchorMin = Vector2.zero; bgImg.rectTransform.anchorMax = Vector2.one;
+        bgImg.rectTransform.offsetMin = Vector2.zero; bgImg.rectTransform.offsetMax = Vector2.zero;
 
-        // Ìî³äÇø
         GameObject fillArea = new GameObject("Fill Area");
         fillArea.transform.SetParent(root.transform);
         RectTransform fillAreaRect = fillArea.AddComponent<RectTransform>();
         fillAreaRect.anchorMin = Vector2.zero; fillAreaRect.anchorMax = Vector2.one;
-        fillAreaRect.offsetMin = new Vector2(0, 0); fillAreaRect.offsetMax = new Vector2(0, 0);
+        fillAreaRect.offsetMin = Vector2.zero; fillAreaRect.offsetMax = Vector2.zero;
 
-        // Ìî³ä
         GameObject fill = new GameObject("Fill");
         fill.transform.SetParent(fillArea.transform);
         Image fillImg = fill.AddComponent<Image>();

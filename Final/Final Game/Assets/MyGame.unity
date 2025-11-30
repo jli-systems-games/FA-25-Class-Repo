@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 071011635f1949c46a85b7caac317267, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f82291c3386de4c42bb6456fe563d7a6, type: 2}
   m_HaloStrength: 0.308
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -978,11 +978,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &644343604
 MeshRenderer:
@@ -1783,8 +1783,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1284542781}
-  - component: {fileID: 1284542782}
   - component: {fileID: 1284542783}
+  - component: {fileID: 1284542784}
   m_Layer: 0
   m_Name: GameUIManager
   m_TagString: Untagged
@@ -1807,20 +1807,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1284542782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1284542780}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb5a0f8f8150e4d4192bba80d77777ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameDuration: 60
-  MaxScore: 20
 --- !u!114 &1284542783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1833,6 +1819,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27a432e0f93b82542bf64d9885bc7321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1284542784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284542780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb5a0f8f8150e4d4192bba80d77777ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildDuration: 60
+  MaxWallScore: 20
+  HuntDuration: 60
+  BaseHealthBonus: 5
+  EnemyHealthBonusRatio: 0.3
 --- !u!1 &1291175414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2439,6 +2442,7 @@ MonoBehaviour:
     type: 3}
   HeightPerScore: 0.5
   CurrentScore: 0
+  StealCooldown: 3
 --- !u!1 &1918232350
 GameObject:
   m_ObjectHideFlags: 0
@@ -2688,6 +2692,7 @@ MonoBehaviour:
     type: 3}
   HeightPerScore: 0.5
   CurrentScore: 0
+  StealCooldown: 3
 --- !u!1001 &1967243807
 PrefabInstance:
   m_ObjectHideFlags: 0

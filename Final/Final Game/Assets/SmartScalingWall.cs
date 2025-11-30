@@ -22,8 +22,13 @@ public class SmartScalingWall : MonoBehaviour
     [Header("数值规则")]
     public float HeightPerScore = 0.25f;
 
-    // --- 关键修改：这里改成了 public，并且去掉了下划线 ---
+    // 公开变量，方便 UI 读取
     public float CurrentScore = 0f;
+
+    // --- 偷窃冷却 (解决连点BUG) ---
+    [Header("偷窃冷却")]
+    public float StealCooldown = 1.0f; // 1秒只能偷一次
+    private float _lastStealTime = -100f;
 
     private Stack<int> _stoneHistory = new Stack<int>();
     private Vector3 _initialScale;
@@ -36,10 +41,12 @@ public class SmartScalingWall : MonoBehaviour
         }
     }
 
+    // ------------------- 建造逻辑 -------------------
     private void OnTriggerEnter(Collider other)
     {
-        CharacterHandleWeapon handleWeapon = other.GetComponent<CharacterHandleWeapon>();
-        Character character = other.GetComponent<Character>();
+        // 【关键修复】使用 GetComponentInParent，防止只碰到手或武器没反应
+        CharacterHandleWeapon handleWeapon = other.GetComponentInParent<CharacterHandleWeapon>();
+        Character character = other.GetComponentInParent<Character>();
 
         if (character == null || handleWeapon == null || handleWeapon.CurrentWeapon == null) return;
 
@@ -54,23 +61,25 @@ public class SmartScalingWall : MonoBehaviour
             if (scoreToAdd > 0)
             {
                 _stoneHistory.Push(scoreToAdd);
-
-                // 关键修改：使用 CurrentScore
                 CurrentScore += scoreToAdd;
-
                 UpdateWallHeight();
                 handleWeapon.ChangeWeapon(null, "EmptyHands");
             }
         }
     }
 
+    // ------------------- 偷窃逻辑 (带冷却 + 修复判定) -------------------
     private void OnTriggerStay(Collider other)
     {
-        Character character = other.GetComponent<Character>();
+        // 【关键修复】使用 GetComponentInParent，让判定360度无死角
+        Character character = other.GetComponentInParent<Character>();
         if (character == null) return;
 
         if (character.PlayerID != OwnerID)
         {
+            // 冷却检查：如果还没冷却好，直接无视按键
+            if (Time.time < _lastStealTime + StealCooldown) return;
+
             bool stealInput = false;
             if (character.PlayerID == "Player1" && Input.GetKeyDown(KeyCode.F)) stealInput = true;
             else if (character.PlayerID == "Player2" && Input.GetKeyDown(KeyCode.Return)) stealInput = true;
@@ -86,14 +95,15 @@ public class SmartScalingWall : MonoBehaviour
     {
         if (_stoneHistory.Count == 0) return;
 
+        // 记录偷窃时间，开始冷却
+        _lastStealTime = Time.time;
+
         int lastStoneScore = _stoneHistory.Pop();
-
-        // 关键修改：使用 CurrentScore
         CurrentScore -= lastStoneScore;
-
         UpdateWallHeight();
 
-        CharacterHandleWeapon thiefWeaponHandle = thief.FindAbility<CharacterHandleWeapon>();
+        // 同样使用 GetComponentInParent 确保能找到武器组件
+        CharacterHandleWeapon thiefWeaponHandle = thief.GetComponentInParent<CharacterHandleWeapon>();
         if (thiefWeaponHandle != null)
         {
             if (lastStoneScore == 1) thiefWeaponHandle.ChangeWeapon(SmallStoneWeapon, "StolenSmallStone");
@@ -116,9 +126,7 @@ public class SmartScalingWall : MonoBehaviour
     {
         if (WallMesh == null) return;
 
-        // 关键修改：使用 CurrentScore
         float addedValue = CurrentScore * HeightPerScore;
-
         Vector3 newScale = _initialScale;
 
         switch (GrowthAxis)
