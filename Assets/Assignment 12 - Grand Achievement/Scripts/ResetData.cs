@@ -8,5 +8,8 @@ public class ResetData : MonoBehaviour
         //{
         //    Data.SolutionMap.Clear();
         //}
-    }
+
+        Data.firstPuzzleSolved = false;
+        Data.secondPuzzleSolved = false;
+}
 }

@@ -16,6 +16,8 @@ public class AnimalPlatformCheck : MonoBehaviour
 
     private bool isFalseOrder;
 
+    public PuzzleStageManager stageManager;
+
     private void Start()
     {
         platformClickedStatus = new Dictionary<GameObject, bool>();
@@ -39,7 +41,7 @@ public class AnimalPlatformCheck : MonoBehaviour
         {
             platformClickedStatus.Add(platformKey, false);
 
-            PlatformAllAppearance(Color.black);
+            PlatformAllAppearance("Animal Platform", Color.black);
         }
 
         platformClickedCount = 0;
@@ -109,7 +111,7 @@ public class AnimalPlatformCheck : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        PlatformAllAppearance(Color.green);
+        PlatformAllAppearance("Animal Platform", Color.green);
 
         yield return new WaitForSeconds(2f);
 
@@ -120,16 +122,25 @@ public class AnimalPlatformCheck : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        PlatformAllAppearance(Color.red);
+        PlatformAllAppearance("Animal Platform", Color.red);
 
         yield return new WaitForSeconds(resetTime);
 
         ResetVariables();
     }
 
-    private void PlatformAllAppearance(Color endColor)
+    public IEnumerator PuzzleEnd(string tagName, Color col)
     {
-        GameObject[] allPlatformsArray = GameObject.FindGameObjectsWithTag("Animal Platform");
+        yield return new WaitForSeconds(1f);
+
+        PlatformAllAppearance(tagName, col);
+
+        stageManager.CheckPuzzleSolved();
+    }
+
+    public void PlatformAllAppearance(string tagName, Color endColor)
+    {
+        GameObject[] allPlatformsArray = GameObject.FindGameObjectsWithTag(tagName);
 
         foreach (GameObject platform in allPlatformsArray)
         {
@@ -141,7 +152,7 @@ public class AnimalPlatformCheck : MonoBehaviour
         }
     }
 
-    private void PlatformClickedAppearance(GameObject platform)
+    public void PlatformClickedAppearance(GameObject platform)
     {
         Renderer platformRenderer = platform.GetComponent<Renderer>();
         Material platformMaterial = platformRenderer.material;
