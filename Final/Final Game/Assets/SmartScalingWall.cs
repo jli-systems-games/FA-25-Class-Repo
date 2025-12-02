@@ -138,4 +138,29 @@ public class SmartScalingWall : MonoBehaviour
 
         WallMesh.localScale = newScale;
     }
+    public void ForceUpdateHeight()
+    {
+        UpdateWallHeight();
+    }
+    // --- 把这个方法加到 SmartScalingWall.cs 里面 ---
+    public void ShrinkWall(float amount)
+    {
+        // 1. 获取当前的大小
+        Vector3 newScale = transform.localScale;
+
+        // 2. 减去指定的长度 
+        // (注意：这里默认你的墙是沿着 X轴 变长的。如果你的墙是沿着 Z轴 长，请把 .x 改成 .z)
+        newScale.x -= amount;
+
+        // 3. 限制一下最小长度，防止缩成负数直接翻转了
+        if (newScale.x < 0.2f)
+        {
+            newScale.x = 0.2f;
+        }
+
+        // 4. 应用新的大小
+        transform.localScale = newScale;
+
+        Debug.Log($"墙壁缩短了！当前长度: {newScale.x}");
+    }
 }
