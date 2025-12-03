@@ -1,4 +1,3 @@
-// === NPCDialogue.cs ===
 
 using UnityEngine;
 
@@ -27,6 +26,13 @@ public class NPCDialogue : MonoBehaviour
     [Header("E 키 안내 텍스트 (TMP 들어있는 오브젝트)")]
     public GameObject pressEHint;   // ← 여기에 TextMeshPro가 들어있는 오브젝트 연결
 
+    // 💡 아이템 지급 설정 (유형 2: 사라지는 NPC)
+    [Header("💡 아이템 지급 & NPC 제거 (선택 사항)")]
+    [Tooltip("지급할 아이템 프리팹. 연결하면 대화 종료 후 NPC가 사라지면서 아이템이 스폰됨.")]
+    public GameObject rewardItemPrefab;
+    [Tooltip("아이템을 스폰할 때 NPC 발밑에서 띄울 높이")]
+    public float itemSpawnOffset = 0.2f;
+
     bool _isTalking = false;
     int _currentGroupIndex = -1;
     int _currentLineIndex = 0;
@@ -49,21 +55,15 @@ public class NPCDialogue : MonoBehaviour
         // 시작할 때 E 텍스트는 꺼둠 (Hierarchy에서 비활성화하지 않았다면)
         if (pressEHint != null)
             pressEHint.SetActive(false);
-
-        // ⚠️ 필수 연결 필드가 누락되었는지 확인 (디버그용)
-        if (player == null) Debug.LogError(gameObject.name + ": 'Player' 오브젝트를 찾을 수 없습니다. 태그를 확인하세요.");
-        if (dialogueUI == null) Debug.LogError(gameObject.name + ": 'DialogueUI' 오브젝트를 찾을 수 없습니다. 씬에 있는지 확인하세요.");
     }
 
     void Update()
     {
-        // 필수 요소 중 하나라도 없으면 여기서 즉시 종료
         if (player == null || dialogueUI == null) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
         bool canInteract = dist <= interactDistance;
 
-        // 대화 중이 아니면, 거리 안에 있을 때만 E 텍스트 보이기
         if (pressEHint != null)
         {
             if (!_isTalking && canInteract)
@@ -72,13 +72,10 @@ public class NPCDialogue : MonoBehaviour
                 pressEHint.SetActive(false);
         }
 
-        // 플레이어가 가까이 있고, E를 눌렀을 때
         if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
-            // 이미 대화 중이면 무시
             if (_isTalking) return;
 
-            // 대화를 시작하니까 E 텍스트는 숨기기
             if (pressEHint != null)
                 pressEHint.SetActive(false);
 
@@ -93,7 +90,6 @@ public class NPCDialogue : MonoBehaviour
 
         _isTalking = true;
 
-        // 매번 새로 대화를 시작할 때마다 A~E 중 하나 랜덤 뽑기
         _currentGroupIndex = Random.Range(0, dialogueGroups.Length);
         _currentLineIndex = 0;
 
@@ -108,10 +104,16 @@ public class NPCDialogue : MonoBehaviour
         DialogueGroup group = dialogueGroups[_currentGroupIndex];
         if (group.lines == null || group.lines.Length == 0) return;
 
+        if (_currentLineIndex >= group.lines.Length)
+        {
+            EndDialogue();
+            return;
+        }
+
         string text = group.lines[_currentLineIndex];
         bool hasNext = (_currentLineIndex < group.lines.Length - 1);
 
-        // dialogueUI의 ShowDialogue 함수가 DialogueUI 컴포넌트에서 구현되어 있어야 합니다.
+        // DialogueUI는 Next/Close 버튼을 hasNext에 따라 알아서 토글합니다.
         dialogueUI.ShowDialogue(this, text, hasNext);
     }
 
@@ -128,6 +130,7 @@ public class NPCDialogue : MonoBehaviour
         }
         else
         {
+            // 마지막 줄에서 Next를 누르면 대화 종료 (Close 버튼을 누른 것과 동일)
             EndDialogue();
         }
     }
@@ -140,16 +143,33 @@ public class NPCDialogue : MonoBehaviour
 
     void EndDialogue()
     {
+        // 1. 대화 종료 상태 초기화
         _isTalking = false;
         _currentGroupIndex = -1;
         _currentLineIndex = 0;
 
+        // 2. UI 숨기기
         if (dialogueUI != null)
         {
             dialogueUI.Hide();
         }
 
-        // 대화가 끝났을 때, 아직 근처에 있으면 E 텍스트 다시 보여주기
+        // 💡 아이템 지급 설정이 되어 있는 경우 (유형 2: 사라지는 NPC)
+        if (rewardItemPrefab != null)
+        {
+            // ⭐️ 디버그 로그! 이 메시지가 콘솔에 찍혀야 합니다.
+            Debug.Log($"✅ 아이템 ({rewardItemPrefab.name}) 스폰 및 NPC 제거 시작.");
+
+            // NPC가 서 있던 위치에 아이템 스폰
+            Vector3 spawnPos = transform.position + Vector3.up * itemSpawnOffset;
+            Instantiate(rewardItemPrefab, spawnPos, Quaternion.identity);
+
+            // ⭐️ NPC 자신을 월드에서 제거
+            Destroy(gameObject);
+            return;
+        }
+
+        // 3. (유형 1: 남아있는 NPC) E 텍스트 다시 보여주기
         if (pressEHint != null && player != null)
         {
             float dist = Vector3.Distance(transform.position, player.position);
