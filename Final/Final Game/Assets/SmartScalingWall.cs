@@ -163,4 +163,19 @@ public class SmartScalingWall : MonoBehaviour
 
         Debug.Log($"墙壁缩短了！当前长度: {newScale.x}");
     }
+    public void UpdateWallSize(float newSize)
+    {
+        // 限制最小长度，防止消失或穿模
+        if (newSize < 0.1f) newSize = 0.1f;
+
+        Vector3 currentScale = transform.localScale;
+
+        // 假设墙是沿着 X 轴变长 (根据你的模型调整，可能是 Z)
+        currentScale.x = newSize;
+
+        transform.localScale = currentScale;
+
+        // 如果你有 Score 变量，也顺便更新一下
+        CurrentScore = newSize;
+    }
 }
