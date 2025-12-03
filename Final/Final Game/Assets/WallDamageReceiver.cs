@@ -1,40 +1,45 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using MoreMountains.TopDownEngine;
 
-public class WallDamageReceiver : MonoBehaviour // 1. É¾µôÁË IDamageable
+public class WallDamageReceiver : MonoBehaviour
 {
-    private Character _character;
-    // private Health _health; // 2. Èç¹û²»ĞèÒª¿ÛÑª£¬Õâ¸öÒ²¿ÉÒÔ²»ÒıÓÃ£¬¿´ÄãĞèÇó
+    [Header("çŠ¶æ€ç›‘æ§")]
+    public string OwnerID;
+    public SmartScalingWall BoundWall;
 
-    // ÒıÓÃ×Ô¼ºµÄÇ½
-    private SmartScalingWall _myWall;
+    private Character _character;
 
     void Start()
     {
         _character = GetComponent<Character>();
-        // _health = GetComponent<Health>(); 
+        if (_character == null) return;
 
-        // ×Ô¶¯ÕÒµ½×Ô¼ºµÄÇ½ (±£³ÖÄãÔ­ÓĞµÄÂß¼­)
+        OwnerID = _character.PlayerID;
+        FindMyWall();
+    }
+
+    void FindMyWall()
+    {
         SmartScalingWall[] walls = FindObjectsByType<SmartScalingWall>(FindObjectsSortMode.None);
         foreach (var w in walls)
         {
-            if (w.OwnerID == _character.PlayerID)
+            if (w.OwnerID == OwnerID)
             {
-                _myWall = w;
-                break;
+                BoundWall = w;
+                Debug.Log($"<color=cyan>âœ” {name} ({OwnerID}) æˆåŠŸç»‘å®šå¢™å£: {w.name}</color>");
+                return;
             }
         }
+        Debug.LogError($"<color=red>âœ˜ {name} ({OwnerID}) æœªæ‰¾åˆ°å¯¹åº”çš„å¢™å£ï¼è¯·æ£€æŸ¥ OwnerID è®¾ç½®ã€‚</color>");
     }
 
-    // --- ĞÂÔö£º±»ÎäÆ÷»÷ÖĞÊ±µ÷ÓÃ ---
     public void OnHitByDebuffWeapon(float shrinkAmount)
     {
-        if (_myWall != null)
+        if (BoundWall != null)
         {
-            // ¼ÙÉèÄãµÄ SmartScalingWall ½Å±¾ÀïÓĞ ShrinkWall ·½·¨
-            // Èç¹ûÃ»ÓĞ£¬ÄãĞèÒªÈ¥ÄÇ¸ö½Å±¾Àï¼ÓÒ»¸ö public void ShrinkWall(float amount)
-            _myWall.ShrinkWall(shrinkAmount);
-            Debug.Log($"Íæ¼Ò {_character.PlayerID} ±»»÷ÖĞ£¬Ç½±ÚËõ¶ÌÁË£¡");
+            BoundWall.ShrinkWall(shrinkAmount);
+            // æ’­æ”¾ä¸€ä¸ªç®€å•çš„åé¦ˆæ—¥å¿—
+            Debug.Log($"<color=orange>âš¡ {name} è¢«å‡»ä¸­ï¼å¢™å£ç¼©çŸ­äº† {shrinkAmount}</color>");
         }
     }
 }
