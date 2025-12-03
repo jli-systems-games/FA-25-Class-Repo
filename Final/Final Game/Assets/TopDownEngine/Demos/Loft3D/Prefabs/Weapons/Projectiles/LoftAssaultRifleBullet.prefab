@@ -4927,6 +4927,7 @@ GameObject:
   - component: {fileID: 54994276034465240}
   - component: {fileID: 114675558199215844}
   - component: {fileID: 114469000093533656}
+  - component: {fileID: -6077780824568378235}
   m_Layer: 18
   m_Name: LoftAssaultRifleBullet
   m_TagString: Untagged
@@ -5183,6 +5184,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PushPower: 50
   PositionOffset: 0
+--- !u!114 &-6077780824568378235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854097648223014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3874bb43baa98534ca25d2f5a96f77fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShrinkSize: 1
 --- !u!1 &1018883284677772756
 GameObject:
   m_ObjectHideFlags: 0
@@ -10248,6 +10262,7 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 1018883284677772756}
         ExtraTargetGameObjects: []
+        IgnorePlayDirection: 0
         SetStateOnInit: 0
         StateOnInit: 1
         SetStateOnPlay: 1
@@ -10696,6 +10711,7 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 1018883284677772756}
         ExtraTargetGameObjects: []
+        IgnorePlayDirection: 0
         SetStateOnInit: 1
         StateOnInit: 0
         SetStateOnPlay: 1
@@ -11146,6 +11162,7 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 1018883284677772756}
         ExtraTargetGameObjects: []
+        IgnorePlayDirection: 0
         SetStateOnInit: 1
         StateOnInit: 0
         SetStateOnPlay: 1
