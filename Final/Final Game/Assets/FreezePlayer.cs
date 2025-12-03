@@ -1,68 +1,114 @@
 ﻿using UnityEngine;
 using MoreMountains.TopDownEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerFreezeController : MonoBehaviour
 {
     private Character _character;
     private Coroutine _freezeCoroutine;
 
-    // 记录原始材质颜色，用于变色反馈
-    private Renderer[] _renderers;
-    private Color _originalColor;
+    // 记录颜色的小本本
+    private Dictionary<Renderer, Color> _originalColors = new Dictionary<Renderer, Color>();
+    private bool _hasInitializedColors = false; // 是否已经记录过颜色了
 
     void Start()
     {
         _character = GetComponent<Character>();
-
-        // 获取模型渲染器以便做变色效果 (可选)
-        if (_character.CharacterModel != null)
-        {
-            _renderers = _character.CharacterModel.GetComponentsInChildren<Renderer>();
-        }
+        // 注意：把 Start 里的记录逻辑删掉了，移到了后面
     }
 
-    // --- 供子弹调用 ---
+    // --- 【核心修改】懒加载初始化 ---
+    // 只有在第一次准备变色之前，才去记录原始颜色
+    // 这样能确保记录到的是已经加载好的红/蓝衣服，而不是开局的白模
+    void InitializeColors()
+    {
+        if (_hasInitializedColors) return; // 如果记过了就不再记
+
+        if (_character.CharacterModel != null)
+        {
+            Renderer[] renderers = _character.CharacterModel.GetComponentsInChildren<Renderer>();
+
+            foreach (var r in renderers)
+            {
+                // 优先尝试获取 _Color (标准), 如果没有再尝试 _BaseColor (URP)
+                if (r.material.HasProperty("_Color"))
+                {
+                    _originalColors[r] = r.material.color;
+                }
+                else if (r.material.HasProperty("_BaseColor"))
+                {
+                    _originalColors[r] = r.material.GetColor("_BaseColor");
+                }
+            }
+        }
+        _hasInitializedColors = true;
+        // Debug.Log($"🎨 {name} 的原始颜色已记录！(数量: {_originalColors.Count})");
+    }
+
     public void ApplyFreeze(float duration)
     {
-        // 如果之前正在冻结，先停止之前的倒计时（实现“刷新”效果）
-        if (_freezeCoroutine != null) StopCoroutine(_freezeCoroutine);
+        // 1. 在冻结之前，先确保我们记住了原本的颜色！
+        InitializeColors();
 
-        // 开启新的冻结倒计时
+        // 2. 刷新时间逻辑
+        if (_freezeCoroutine != null) StopCoroutine(_freezeCoroutine);
         _freezeCoroutine = StartCoroutine(FreezeRoutine(duration));
     }
 
     IEnumerator FreezeRoutine(float duration)
     {
-        // 1. 执行冻结
+        // 只有未冻结时才执行变色
         if (_character.ConditionState.CurrentState != CharacterStates.CharacterConditions.Frozen)
         {
-            _character.Freeze(); // TDE 自带方法，会禁止移动和操作
+            _character.Freeze();
 
-            // 变个色 (变成冰蓝色)
-            ChangeColor(Color.cyan);
-            Debug.Log($"❄️ {name} 被冻结了！时长: {duration}秒");
+            // [修复报错] 使用 MovementState.ChangeState 替代 SetMovementState
+            // 强制停止移动 (双重保险)
+            if (_character.MovementState != null)
+            {
+                _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
+            }
+
+            // 变成冰蓝色
+            SetColor(Color.cyan);
+            // Debug.Log($"❄️ {name} 被冻结！");
         }
 
-        // 2. 等待
         yield return new WaitForSeconds(duration);
 
-        // 3. 解冻
+        // 解冻
         _character.UnFreeze();
-        ChangeColor(Color.white); // 恢复颜色 (假设原色是白)
-        Debug.Log($"🔥 {name} 解冻了！");
+
+        // 恢复原本颜色
+        RestoreOriginalColor();
+        // Debug.Log($"🔥 {name} 解冻恢复！");
 
         _freezeCoroutine = null;
     }
 
-    void ChangeColor(Color color)
+    void SetColor(Color color)
     {
-        if (_renderers != null)
+        foreach (var kvp in _originalColors)
         {
-            foreach (var r in _renderers)
+            if (kvp.Key != null)
             {
-                // 简单的材质变色，如果材质不支持可以忽略
-                if (r.material.HasProperty("_Color")) r.material.color = color;
+                // 同时设置 _Color 和 _BaseColor 以兼容所有材质
+                if (kvp.Key.material.HasProperty("_Color")) kvp.Key.material.color = color;
+                if (kvp.Key.material.HasProperty("_BaseColor")) kvp.Key.material.SetColor("_BaseColor", color);
+            }
+        }
+    }
+
+    void RestoreOriginalColor()
+    {
+        foreach (var kvp in _originalColors)
+        {
+            if (kvp.Key != null)
+            {
+                // 还原回小本本上记的颜色
+                if (kvp.Key.material.HasProperty("_Color")) kvp.Key.material.color = kvp.Value;
+                if (kvp.Key.material.HasProperty("_BaseColor")) kvp.Key.material.SetColor("_BaseColor", kvp.Value);
             }
         }
     }

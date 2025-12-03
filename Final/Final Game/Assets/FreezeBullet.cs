@@ -1,71 +1,75 @@
 ﻿using UnityEngine;
 using MoreMountains.TopDownEngine;
-using MoreMountains.Tools; // 引用工具包以检测对象池
+using MoreMountains.Tools;
 
 public class FreezeBullet : MonoBehaviour
 {
     [Header("冷冻弹设置")]
     public float Duration = 2.0f; // 冻结时长 2秒
 
-    [Header("安全设置")]
-    public float ActivationDelay = 0.1f; // 生成后0.1秒内不生效
-
-    // 防止一次碰撞触发多次
+    // 我们需要用 DamageOnTouch 来获取 Owner (即使伤害为0)
+    // 这是 TDE 传递“谁开了枪”的标准方式
+    private DamageOnTouch _damageOnTouch;
     private bool _hasHit = false;
-    private float _spawnTime;
 
-    // --- 改用 OnEnable ---
-    // 因为子弹是对象池复用的，Start 只会运行一次，而 OnEnable 每次发射都会运行
+    void Awake()
+    {
+        _damageOnTouch = GetComponent<DamageOnTouch>();
+    }
+
     void OnEnable()
     {
-        _hasHit = false; // 重置碰撞状态
-        _spawnTime = Time.time; // 重置出生时间
-        Debug.Log($"🔧 [子弹复用] 我发射了！时间: {_spawnTime}");
+        _hasHit = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (_hasHit) return;
 
-        // 安全检查：如果子弹刚出生，忽略碰撞
-        if (Time.time - _spawnTime < ActivationDelay) return;
+        // --- 1. 获取被击中者的冻结控制器 ---
+        var hitController = other.GetComponent<PlayerFreezeController>();
+        if (hitController == null) hitController = other.GetComponentInParent<PlayerFreezeController>();
 
-        // --- 侦探功能 ---
-        // Debug.Log($"💥 [碰撞检查] 我撞到了: {other.name}");
+        // --- 2. 身份核查 (防止误伤自己) ---
+        // 使用 DamageOnTouch 里的 Owner 信息
+        if (_damageOnTouch != null && _damageOnTouch.Owner != null)
+        {
+            GameObject ownerObj = _damageOnTouch.Owner;
 
-        // 1. 尝试找玩家身上的冻结控制器
-        var controller = other.GetComponent<PlayerFreezeController>();
-        if (controller == null) controller = other.GetComponentInParent<PlayerFreezeController>();
+            // 检查撞到的物体是否属于 Owner (包括 Owner 本身，或 Owner 的手臂、枪模型)
+            if (other.gameObject == ownerObj || other.transform.IsChildOf(ownerObj.transform))
+            {
+                // 是自己人，直接 Return 忽略本次碰撞
+                return;
+            }
+        }
 
-        // 2. 如果打中了玩家
-        if (controller != null)
+        // --- 3. 命中敌人逻辑 ---
+        if (hitController != null)
         {
             _hasHit = true;
-            Debug.Log($"❄️ [逻辑成功] 正在冻结 {other.name}...");
+            Debug.Log($"❄️ [命中] 成功冻结目标: {other.name}");
 
-            controller.ApplyFreeze(Duration);
-
-            // 【修复】正确回收子弹
+            hitController.ApplyFreeze(Duration);
             Despawn();
         }
-        // 3. 如果撞到别的东西 (不是自己，不是其他子弹，不是触发器)
-        else if (!other.CompareTag("Projectile") && !other.CompareTag("Player") && !other.isTrigger)
+        // --- 4. 撞墙逻辑 ---
+        // 排除自己(Layer check)、排除Player(Tag check)、排除Trigger
+        else if (other.gameObject.layer != gameObject.layer && !other.CompareTag("Player") && !other.isTrigger)
         {
             Despawn();
         }
     }
 
-    // --- 智能销毁/回收方法 ---
     void Despawn()
     {
-        // 检查自己是不是对象池里的东西
         if (GetComponent<MMPoolableObject>() != null)
         {
-            gameObject.SetActive(false); // 只是隐藏，回收到池里等待下次使用
+            gameObject.SetActive(false);
         }
         else
         {
-            Destroy(gameObject); // 如果不是池子里的，才彻底销毁
+            Destroy(gameObject);
         }
     }
 }
