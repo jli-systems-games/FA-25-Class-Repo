@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; 
 
 public class InventoryUI : MonoBehaviour
 {
@@ -11,7 +12,12 @@ public class InventoryUI : MonoBehaviour
     bool[] _slotSelected;
 
     [Header("랩 선택 (랩에서만 쓰고, 아니면 비워둬도 됨)")]
-    public LabInventorySelector labSelector;   // 랩에서 섞을 때 선택 전달용
+    public LabInventorySelector labSelector;   
+
+    [Header("Tooltip Text Fields")]
+    public TMP_Text tooltipNameText;              
+    public TMP_Text tooltipDescriptionText;      
+
 
     bool _isOpen = false;
 
@@ -23,18 +29,17 @@ public class InventoryUI : MonoBehaviour
 
     void Start()
     {
-        // 처음에는 닫아두기
+
         if (inventoryPanel != null)
             inventoryPanel.SetActive(false);
 
-        // 인벤토리 변경 이벤트에 반응해서 자동으로 새로고침
+        HideTooltip();
+
         if (InventoryManager.Instance != null)
             InventoryManager.Instance.OnInventoryChanged += Refresh;
 
-        // 슬롯 버튼들에 클릭 리스너 자동으로 연결
         SetupSlotButtons();
 
-        // 처음 한 번 그려주기
         Refresh();
     }
 
@@ -56,6 +61,10 @@ public class InventoryUI : MonoBehaviour
         {
             Refresh();
         }
+        else
+        {
+            HideTooltip();
+        }
     }
 
     public void Refresh()
@@ -73,15 +82,13 @@ public class InventoryUI : MonoBehaviour
 
             if (list != null && i < list.Count && list[i] != null)
             {
-                // 아이템이 있는 슬롯
                 img.sprite = list[i].icon;
-                img.color = Color.white;     // 완전 보이게
+                img.color = Color.white;   
             }
             else
             {
-                // 비어 있는 슬롯
                 img.sprite = null;
-                img.color = new Color(1f, 1f, 1f, 0f); // 완전 투명하게
+                img.color = new Color(1f, 1f, 1f, 0f); 
             }
         }
     }
@@ -98,14 +105,18 @@ public class InventoryUI : MonoBehaviour
 
             int slotIndex = i;
 
-            // 같은 오브젝트에 붙어있는 Button 찾기
             Button btn = img.GetComponent<Button>();
             if (btn == null)
+                
                 btn = img.GetComponentInParent<Button>();
 
-            if (btn == null) continue;
+            if (btn == null)
+            {
+      
+                btn = img.gameObject.AddComponent<Button>();
+            }
 
-            // 중복 방지로 기존 리스너 제거하고 다시 달기
+
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => OnSlotClicked(slotIndex));
         }
@@ -113,26 +124,7 @@ public class InventoryUI : MonoBehaviour
 
     void OnSlotClicked(int slotIndex)
     {
-        // 0. 슬롯 인덱스/배열 체크
         if (slotImages == null || slotIndex < 0 || slotIndex >= slotImages.Length)
-            return;
-
-        // 1. 색 토글 (선택 ↔ 해제)
-        if (_slotSelected[slotIndex])
-        {
-            // 이미 선택되어 있었으면 → 해제
-            _slotSelected[slotIndex] = false;
-            slotImages[slotIndex].color = Color.white;
-        }
-        else
-        {
-            // 아직 선택 안 되어 있으면 → 선택 + 빨강
-            _slotSelected[slotIndex] = true;
-            slotImages[slotIndex].color = new Color(1f, 0.3f, 0.3f, 1f);
-        }
-
-        // 2. 실제 아이템을 LabSelector에 전달 (기존 로직 유지)
-        if (labSelector == null)
             return;
 
         var mgr = InventoryManager.Instance;
@@ -142,9 +134,37 @@ public class InventoryUI : MonoBehaviour
         if (slotIndex < 0 || slotIndex >= list.Count) return;
 
         ItemData data = list[slotIndex];
+
+        if (data != null)
+        {
+            if (_slotSelected[slotIndex])
+            {
+                _slotSelected[slotIndex] = false;
+                slotImages[slotIndex].color = Color.white;
+
+                HideTooltip();
+            }
+            else
+            {
+                _slotSelected[slotIndex] = true;
+                slotImages[slotIndex].color = new Color(1f, 0.3f, 0.3f, 1f);
+
+                ShowTooltip(data);
+            }
+        }
+        else
+        {
+
+            HideTooltip();
+            return;
+        }
+
+
+        if (labSelector == null)
+            return;
+
         if (data == null) return;
 
-        // LabInventorySelector가 내부 리스트를 토글(add/remove) 하도록
         labSelector.OnItemClicked(data);
     }
 
@@ -158,8 +178,30 @@ public class InventoryUI : MonoBehaviour
             if (slotImages[i] != null)
                 slotImages[i].color = Color.white;
         }
+
+        HideTooltip();
     }
 
+    public void ShowTooltip(ItemData data)
+    {
+        if (data == null) return;
 
+        if (tooltipNameText != null)
+            tooltipNameText.text = data.displayName;
 
+        if (tooltipDescriptionText != null)
+            tooltipDescriptionText.text = data.description;
+    }
+
+    public void HideTooltip()
+    {
+        if (tooltipNameText != null)
+        {
+            tooltipNameText.text = string.Empty;
+        }
+        if (tooltipDescriptionText != null)
+        {
+            tooltipDescriptionText.text = string.Empty;
+        }
+    }
 }
