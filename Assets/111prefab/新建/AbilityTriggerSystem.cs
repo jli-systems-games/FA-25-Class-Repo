@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 能力触发系统 - 负责主动技能触发、CD管理、效果激活
-/// </summary>
+
 public class AbilityTriggerSystem : MonoBehaviour
 {
     public static AbilityTriggerSystem instance;
@@ -14,20 +12,19 @@ public class AbilityTriggerSystem : MonoBehaviour
     public bool redQueenSkillActive = false;
     public bool whiteQueenSkillActive = false;
 
-    [Header("Alice 击杀计数")]
+    [Header("击杀")]
     public int aliceKillCounter = 0;
     public int aliceKillRequired = 10;
     public bool aliceCountingActive = true;
 
-    [Header("技能CD")]
+    [Header("技能")]
     public float redQueenCooldown = 10f;
     public float whiteQueenCooldown = 20f;
 
-    // ⭐ 修改：改为 public，让 UI 可以读取
     public float redQueenCDRemaining = 0f;      // Red Queen CD剩余时间
     public float whiteQueenCDRemaining = 0f;    // White Queen CD剩余时间
 
-    [Header("特效Prefab")]
+    [Header("特效")]
     public GameObject whiteQueenLv0EffectPrefab;
     public GameObject whiteQueenLv2EffectPrefab;
 
@@ -44,7 +41,7 @@ public class AbilityTriggerSystem : MonoBehaviour
     public List<GameObject> whiteQueenLv1Effects = new List<GameObject>();
     public List<GameObject> whiteQueenLv2Effects = new List<GameObject>();
 
-    [Header("White Queen Lv2 特效位置")]
+    [Header("W1l22 特效位置")]
     public Vector3 whiteQueenLv2EffectPosition = new Vector3(0, 14.5f, 22.6f);
     public Vector3 whiteQueenLv2EffectRotation = new Vector3(-34.03f, 0, 0);
     public Vector3 whiteQueenLv2EffectScale = new Vector3(23.56f, 23.56f, 23.56f);
@@ -68,10 +65,10 @@ public class AbilityTriggerSystem : MonoBehaviour
         launcherRef = FindObjectOfType<BallLauncher>();
         if (launcherRef == null)
         {
-            Debug.LogError("未找到 BallLauncher！");
+   
         }
 
-        // 确保所有特效物体初始状态为禁用
+    
         InitializeEffectObjects();
 
         if (SkillDataStorage.instance != null)
@@ -80,10 +77,10 @@ public class AbilityTriggerSystem : MonoBehaviour
         }
     }
 
-    // 初始化所有特效物体状态
+
     void InitializeEffectObjects()
     {
-        Debug.Log("🔧 初始化所有技能特效物体状态...");
+
 
         DeactivateEffectObjects(aliceLv0Effects);
         DeactivateEffectObjects(aliceLv1Effects);
@@ -100,7 +97,7 @@ public class AbilityTriggerSystem : MonoBehaviour
 
     void Update()
     {
-        // 更新CD计时器
+
         if (redQueenCDRemaining > 0)
         {
             redQueenCDRemaining -= Time.deltaTime;
@@ -118,7 +115,7 @@ public class AbilityTriggerSystem : MonoBehaviour
     {
         if (SkillDataStorage.instance == null) return;
 
-        // G键 - Red Queen
+ 
         if (Input.GetKeyDown(KeyCode.G))
         {
             if (SkillDataStorage.instance.redQueenSkillLevel > 0)
@@ -127,7 +124,7 @@ public class AbilityTriggerSystem : MonoBehaviour
             }
         }
 
-        // H键 - White Queen
+
         if (Input.GetKeyDown(KeyCode.H))
         {
             if (SkillDataStorage.instance.whiteQueenSkillLevel > 0)
@@ -137,7 +134,6 @@ public class AbilityTriggerSystem : MonoBehaviour
         }
     }
 
-    // ===== Alice 技能 =====
 
     public void OnEnemyKilledNotification()
     {
@@ -194,7 +190,7 @@ public class AbilityTriggerSystem : MonoBehaviour
 
         Debug.Log($"Alice 技能激活！Lv{skillLevel - 1}, {projectileCount}弹道, {durationTime}秒");
 
-        // ⭐ 激活瞬间：先关闭所有Alice特效，再打开对应等级的
+
         ForceDeactivateSkillCategory("Alice");
         ActivateEffectObjects(effectsToActivate);
 
