@@ -37,7 +37,22 @@ public class LabMixingManager : MonoBehaviour
     bool _mixingInProgress = false;
     List<GameObject> _spawnedWorldItems = new List<GameObject>();
 
-    void Start()
+    public void MixItems()
+    {
+        
+
+        // ⭐️ [추가] 믹싱 시작과 동시에 인벤토리를 닫습니다.
+        var invUI = FindFirstObjectByType<InventoryUI>();
+        if (invUI != null)
+        {
+            invUI.CloseInventory(); // 인벤토리 닫기 (이 함수가 InventoryUI.cs에 있어야 함)
+        }
+
+        _mixingInProgress = true;
+        _currentStirCount = 0;
+    }
+
+        void Start()
     {
 
         if (resultText != null)

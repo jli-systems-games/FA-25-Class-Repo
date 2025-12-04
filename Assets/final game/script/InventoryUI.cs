@@ -61,10 +61,6 @@ public class InventoryUI : MonoBehaviour
         {
             Refresh();
         }
-        else
-        {
-            HideTooltip();
-        }
     }
 
     public void Refresh()
@@ -204,4 +200,17 @@ public class InventoryUI : MonoBehaviour
             tooltipDescriptionText.text = string.Empty;
         }
     }
+
+    public void CloseInventory()
+    {
+        if (_isOpen)
+        {
+            _isOpen = false;
+
+            if (inventoryPanel != null)
+                inventoryPanel.SetActive(false);
+
+        }
+    }
+
 }
