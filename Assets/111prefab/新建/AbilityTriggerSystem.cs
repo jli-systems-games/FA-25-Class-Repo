@@ -21,8 +21,8 @@ public class AbilityTriggerSystem : MonoBehaviour
     public float redQueenCooldown = 10f;
     public float whiteQueenCooldown = 20f;
 
-    public float redQueenCDRemaining = 0f;      // Red Queen CD剩余时间
-    public float whiteQueenCDRemaining = 0f;    // White Queen CD剩余时间
+    public float redQueenCDRemaining = 0f;
+    public float whiteQueenCDRemaining = 0f;
 
     [Header("特效")]
     public GameObject whiteQueenLv0EffectPrefab;
@@ -65,10 +65,9 @@ public class AbilityTriggerSystem : MonoBehaviour
         launcherRef = FindObjectOfType<BallLauncher>();
         if (launcherRef == null)
         {
-   
+            // launcher找不到的话...算了先不管
         }
 
-    
         InitializeEffectObjects();
 
         if (SkillDataStorage.instance != null)
@@ -77,11 +76,9 @@ public class AbilityTriggerSystem : MonoBehaviour
         }
     }
 
-
+    // 开场把所有特效关了
     void InitializeEffectObjects()
     {
-
-
         DeactivateEffectObjects(aliceLv0Effects);
         DeactivateEffectObjects(aliceLv1Effects);
         DeactivateEffectObjects(aliceLv2Effects);
@@ -92,12 +89,12 @@ public class AbilityTriggerSystem : MonoBehaviour
         DeactivateEffectObjects(whiteQueenLv1Effects);
         DeactivateEffectObjects(whiteQueenLv2Effects);
 
-        Debug.Log("✅ 所有技能特效物体已设为禁用状态");
+        Debug.Log("所有技能特效物体已禁用");
     }
 
     void Update()
     {
-
+        // cd倒计时
         if (redQueenCDRemaining > 0)
         {
             redQueenCDRemaining -= Time.deltaTime;
@@ -115,7 +112,7 @@ public class AbilityTriggerSystem : MonoBehaviour
     {
         if (SkillDataStorage.instance == null) return;
 
- 
+        // G键放红皇后
         if (Input.GetKeyDown(KeyCode.G))
         {
             if (SkillDataStorage.instance.redQueenSkillLevel > 0)
@@ -124,7 +121,7 @@ public class AbilityTriggerSystem : MonoBehaviour
             }
         }
 
-
+        // H键放白皇后
         if (Input.GetKeyDown(KeyCode.H))
         {
             if (SkillDataStorage.instance.whiteQueenSkillLevel > 0)
@@ -134,7 +131,7 @@ public class AbilityTriggerSystem : MonoBehaviour
         }
     }
 
-
+    // alice的被动，杀够10个就触发
     public void OnEnemyKilledNotification()
     {
         if (SkillDataStorage.instance == null || SkillDataStorage.instance.aliceSkillLevel == 0)
@@ -144,7 +141,7 @@ public class AbilityTriggerSystem : MonoBehaviour
             return;
 
         aliceKillCounter++;
-        Debug.Log($"Alice 击杀计数: {aliceKillCounter}/{aliceKillRequired}");
+        Debug.Log("Alice击杀计数: " + aliceKillCounter + "/" + aliceKillRequired);
 
         if (aliceKillCounter >= aliceKillRequired)
         {
@@ -166,21 +163,22 @@ public class AbilityTriggerSystem : MonoBehaviour
         float intervalMult = 0.7f;
         List<GameObject> effectsToActivate = null;
 
+        // 根据等级设置参数
         switch (skillLevel)
         {
-            case 1: // Lv0
+            case 1: // lv0: 2发, 5秒
                 projectileCount = 2;
                 durationTime = 5f;
                 intervalMult = 0.7f;
                 effectsToActivate = aliceLv0Effects;
                 break;
-            case 2: // Lv1
+            case 2: // lv1: 3发, 10秒
                 projectileCount = 3;
                 durationTime = 10f;
                 intervalMult = 0.7f;
                 effectsToActivate = aliceLv1Effects;
                 break;
-            case 3: // Lv2
+            case 3: // lv2: 6发, 10秒, 快速射击
                 projectileCount = 6;
                 durationTime = 10f;
                 intervalMult = 0.3f;
@@ -188,9 +186,9 @@ public class AbilityTriggerSystem : MonoBehaviour
                 break;
         }
 
-        Debug.Log($"Alice 技能激活！Lv{skillLevel - 1}, {projectileCount}弹道, {durationTime}秒");
+        Debug.Log("Alice技能激活 Lv" + (skillLevel - 1) + ", 弹道数:" + projectileCount + ", 持续:" + durationTime + "秒");
 
-
+        // 先把alice的其他等级特效关了
         ForceDeactivateSkillCategory("Alice");
         ActivateEffectObjects(effectsToActivate);
 
@@ -204,6 +202,7 @@ public class AbilityTriggerSystem : MonoBehaviour
 
         yield return new WaitForSeconds(durationTime);
 
+        // 时间到了恢复原样
         if (launcherRef != null)
         {
             launcherRef.aliceMultiShotActive = false;
@@ -217,22 +216,21 @@ public class AbilityTriggerSystem : MonoBehaviour
         aliceSkillActive = false;
         aliceCountingActive = true;
 
-        Debug.Log("Alice 技能结束");
+        Debug.Log("Alice技能结束");
     }
 
-    // ===== Red Queen 技能 =====
-
+    // 红皇后主动技能
     void TryActivateRedQueen()
     {
         if (redQueenSkillActive)
         {
-            Debug.Log("Red Queen 技能正在激活中！");
+            Debug.Log("Red Queen技能正在使用中");
             return;
         }
 
         if (redQueenCDRemaining > 0)
         {
-            Debug.Log($"Red Queen CD中，还需 {redQueenCDRemaining:F1} 秒");
+            Debug.Log("Red Queen CD中, 还需" + redQueenCDRemaining.ToString("F1") + "秒");
             return;
         }
 
@@ -249,14 +247,13 @@ public class AbilityTriggerSystem : MonoBehaviour
 
         List<GameObject> effectsToActivate = null;
 
-        Debug.Log($"Red Queen 技能激活！Lv{skillLevel - 1}");
+        Debug.Log("Red Queen技能激活 Lv" + (skillLevel - 1));
 
-        // ⭐ 激活瞬间：先关闭所有Red Queen特效
         ForceDeactivateSkillCategory("RedQueen");
 
         switch (skillLevel)
         {
-            case 1: // Lv0
+            case 1: // lv0: 子弹变大2倍，持续5秒
                 effectsToActivate = redQueenLv0Effects;
                 if (launcherRef != null)
                 {
@@ -269,7 +266,7 @@ public class AbilityTriggerSystem : MonoBehaviour
                 DeactivateEffectObjects(effectsToActivate);
                 break;
 
-            case 2: // Lv1
+            case 2: // lv1: 子弹变大3倍，击退更强
                 effectsToActivate = redQueenLv1Effects;
                 if (launcherRef != null)
                 {
@@ -282,7 +279,7 @@ public class AbilityTriggerSystem : MonoBehaviour
                 DeactivateEffectObjects(effectsToActivate);
                 break;
 
-            case 3: // Lv2
+            case 3: // lv2: 发射3个巨型球
                 effectsToActivate = redQueenLv2Effects;
                 ActivateEffectObjects(effectsToActivate);
 
@@ -304,6 +301,7 @@ public class AbilityTriggerSystem : MonoBehaviour
                 break;
         }
 
+        // 技能结束后复原
         if (launcherRef != null)
         {
             launcherRef.redQueenSizeMultiplier = 1f;
@@ -312,22 +310,21 @@ public class AbilityTriggerSystem : MonoBehaviour
         }
 
         redQueenSkillActive = false;
-        Debug.Log("Red Queen 技能结束");
+        Debug.Log("Red Queen技能结束");
     }
 
-    // ===== White Queen 技能 =====
-
+    // 白皇后主动技能
     void TryActivateWhiteQueen()
     {
         if (whiteQueenSkillActive)
         {
-            Debug.Log("White Queen 技能正在激活中！");
+            Debug.Log("White Queen技能正在使用中");
             return;
         }
 
         if (whiteQueenCDRemaining > 0)
         {
-            Debug.Log($"White Queen CD中，还需 {whiteQueenCDRemaining:F1} 秒");
+            Debug.Log("White Queen CD中, 还需" + whiteQueenCDRemaining.ToString("F1") + "秒");
             return;
         }
 
@@ -342,7 +339,7 @@ public class AbilityTriggerSystem : MonoBehaviour
         whiteQueenSkillActive = true;
         whiteQueenCDRemaining = whiteQueenCooldown;
 
-        float durationTime = (skillLevel == 3) ? 4f : 10f;
+        float durationTime = (skillLevel == 3) ? 4f : 10f; // lv2只持续4秒
         float aoeRadiusValue = 5f;
         float effectScaleValue = 1f;
         float speedMult = 1f;
@@ -350,19 +347,19 @@ public class AbilityTriggerSystem : MonoBehaviour
 
         switch (skillLevel)
         {
-            case 1: // Lv0
+            case 1: // lv0: 半径5, 持续10秒
                 aoeRadiusValue = 5f;
                 effectScaleValue = 1f;
                 speedMult = 1f;
                 effectsToActivate = whiteQueenLv0Effects;
                 break;
-            case 2: // Lv1
+            case 2: // lv1: 半径8, 攻速加快
                 aoeRadiusValue = 8f;
                 effectScaleValue = 1.5f;
                 speedMult = 1.3f;
                 effectsToActivate = whiteQueenLv1Effects;
                 break;
-            case 3: // Lv2
+            case 3: // lv2: 全屏aoe，只持续4秒
                 aoeRadiusValue = 999f;
                 effectScaleValue = 2f;
                 speedMult = 1f;
@@ -370,9 +367,8 @@ public class AbilityTriggerSystem : MonoBehaviour
                 break;
         }
 
-        Debug.Log($"White Queen 技能激活！Lv{skillLevel - 1}, AOE半径:{aoeRadiusValue}, {durationTime}秒");
+        Debug.Log("White Queen技能激活 Lv" + (skillLevel - 1) + ", AOE半径:" + aoeRadiusValue + ", 持续:" + durationTime + "秒");
 
-        // ⭐ 激活瞬间：先关闭所有White Queen特效
         ForceDeactivateSkillCategory("WhiteQueen");
         ActivateEffectObjects(effectsToActivate);
 
@@ -387,6 +383,7 @@ public class AbilityTriggerSystem : MonoBehaviour
 
         yield return new WaitForSeconds(durationTime);
 
+        // 技能时间结束
         if (launcherRef != null)
         {
             launcherRef.whiteQueenActive = false;
@@ -399,37 +396,38 @@ public class AbilityTriggerSystem : MonoBehaviour
         DeactivateEffectObjects(effectsToActivate);
 
         whiteQueenSkillActive = false;
-        Debug.Log("White Queen 技能结束");
+        Debug.Log("White Queen技能结束");
     }
 
+    // launcher那边会调这个来生成aoe特效
     public void SpawnWhiteQueenEffect(Vector3 position, int level)
     {
-        Debug.Log($"[SpawnWhiteQueenEffect] 开始生成特效 - 位置:{position}, 等级:{level}");
+        Debug.Log("[SpawnWhiteQueenEffect] 开始生成特效 - 位置:" + position + ", 等级:" + level);
 
         GameObject effectPrefab = null;
         Vector3 spawnPos = position;
         Quaternion rotation = Quaternion.identity;
         Vector3 scale = Vector3.one;
 
-        if (level == 3)
+        if (level == 3) // lv2用特殊的大范围特效
         {
             effectPrefab = whiteQueenLv2EffectPrefab;
             spawnPos = whiteQueenLv2EffectPosition;
             rotation = Quaternion.Euler(whiteQueenLv2EffectRotation);
             scale = whiteQueenLv2EffectScale;
-            Debug.Log($"[SpawnWhiteQueenEffect] Lv2模式 - Prefab:{(effectPrefab != null ? effectPrefab.name : "NULL")}");
+            Debug.Log("[SpawnWhiteQueenEffect] Lv2模式 - Prefab:" + (effectPrefab != null ? effectPrefab.name : "NULL"));
         }
-        else
+        else // lv0和lv1用同一个prefab但缩放不同
         {
             effectPrefab = whiteQueenLv0EffectPrefab;
             if (launcherRef != null)
             {
                 scale = Vector3.one * launcherRef.whiteQueenEffectScale;
-                Debug.Log($"[SpawnWhiteQueenEffect] Lv0/1模式 - Prefab:{(effectPrefab != null ? effectPrefab.name : "NULL")}, Scale:{scale}");
+                Debug.Log("[SpawnWhiteQueenEffect] Lv0/1模式 - Prefab:" + (effectPrefab != null ? effectPrefab.name : "NULL") + ", Scale:" + scale);
             }
             else
             {
-                Debug.LogWarning("[SpawnWhiteQueenEffect] launcherRef 为空！");
+                Debug.LogWarning("[SpawnWhiteQueenEffect] launcherRef为空");
             }
         }
 
@@ -437,12 +435,12 @@ public class AbilityTriggerSystem : MonoBehaviour
         {
             GameObject effect = Instantiate(effectPrefab, spawnPos, rotation);
             effect.transform.localScale = scale;
-            Destroy(effect, 1.5f);
-            Debug.Log($"✅ [SpawnWhiteQueenEffect] 特效已成功生成！名称:{effect.name}, 位置:{spawnPos}, 缩放:{scale}");
+            Destroy(effect, 1.5f); // 1.5秒后销毁
+            Debug.Log("[SpawnWhiteQueenEffect] 特效已生成 - 名称:" + effect.name + ", 位置:" + spawnPos + ", 缩放:" + scale);
         }
         else
         {
-            Debug.LogError($"❌ [SpawnWhiteQueenEffect] 特效Prefab未设置！等级:{level}, 请在Inspector中设置 whiteQueenLv0EffectPrefab！");
+            Debug.LogError("[SpawnWhiteQueenEffect] 特效Prefab未设置, 等级:" + level + ", 请在Inspector中设置whiteQueenLv0EffectPrefab");
         }
     }
 
@@ -455,11 +453,11 @@ public class AbilityTriggerSystem : MonoBehaviour
             if (obj != null)
             {
                 obj.SetActive(true);
-                Debug.Log($"✅ [激活特效] {obj.name}");
+                Debug.Log("[激活特效] " + obj.name);
             }
             else
             {
-                Debug.LogWarning("⚠️ [激活特效] 列表中包含空引用!");
+                Debug.LogWarning("[激活特效] 列表中包含空引用");
             }
         }
     }
@@ -472,24 +470,23 @@ public class AbilityTriggerSystem : MonoBehaviour
         {
             if (obj != null)
             {
-                // 只禁用当前激活的物体
                 if (obj.activeSelf)
                 {
                     obj.SetActive(false);
-                    Debug.Log($"❌ [禁用特效] {obj.name}");
+                    Debug.Log("[禁用特效] " + obj.name);
                 }
             }
             else
             {
-                Debug.LogWarning("⚠️ [禁用特效] 列表中包含空引用!");
+                Debug.LogWarning("[禁用特效] 列表中包含空引用");
             }
         }
     }
 
-    // ⭐ 新增：强制禁用某个技能分类的所有等级特效
+    // 强制关闭某个技能的所有等级特效，防止特效堆叠
     void ForceDeactivateSkillCategory(string category)
     {
-        Debug.Log($"🔒 [强制清理] {category} 技能分类的所有特效");
+        Debug.Log("[强制清理] " + category + "技能分类的所有特效");
 
         switch (category)
         {
