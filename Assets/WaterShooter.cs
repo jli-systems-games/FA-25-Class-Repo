@@ -3,17 +3,33 @@ using System.Collections;
 
 public class WaterShooter : MonoBehaviour
 {
-    public GameObject dropPrefab;
+    public GameObject waterDropPrefab;
+    public GameObject fireDropPrefab;
+    [HideInInspector] public GameObject dropPrefab;
     public Transform shootPoint;
     public float shootInterval = 0.1f;
-    public float minRange = 3f;
-    public float maxRange = 5f;
+    public float minRange = 7f;
+    public float maxRange = 10f;
     public float shootSpeed = 10f;
 
+    public GameManager gameManager;
+
     bool isShooting = false;
+    bool fireMode = false;
+
+    void Start()
+    {
+        dropPrefab = waterDropPrefab;
+    }
 
     void Update()
     {
+        if (gameManager == null || !gameManager.canShoot)
+        {
+            isShooting = false;
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (!isShooting)
@@ -31,7 +47,7 @@ public class WaterShooter : MonoBehaviour
 
     IEnumerator ShootLoop()
     {
-        while (isShooting)
+        while (isShooting && gameManager != null && gameManager.canShoot)
         {
             Shoot();
             yield return new WaitForSeconds(shootInterval);
@@ -41,9 +57,18 @@ public class WaterShooter : MonoBehaviour
     void Shoot()
     {
         GameObject drop = Instantiate(dropPrefab, shootPoint.position, Quaternion.identity);
-
         float randomRange = Random.Range(minRange, maxRange);
+        drop.GetComponent<WaterDrop>().Init(transform.up, shootSpeed, randomRange);
+    }
 
-        drop.GetComponent<WaterDrop>().Init(shootPoint.up, shootSpeed, randomRange);
+    public void ActivateFireDrop()
+    {
+        fireMode = true;
+        dropPrefab = fireDropPrefab;
+
+        if (gameManager != null)
+        {
+            gameManager.tripleScoreActive = true;
+        }
     }
 }
