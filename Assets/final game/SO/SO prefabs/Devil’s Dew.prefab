@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3989620115701309152}
   - component: {fileID: 9180730509769022326}
   - component: {fileID: 1551542456878626283}
-  - component: {fileID: 6877566345232757397}
   - component: {fileID: 4244174147891855356}
+  - component: {fileID: -3537883442340458624}
   m_Layer: 0
   m_Name: "Devil\u2019s Dew"
   m_TagString: Untagged
@@ -102,52 +102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a2291337cbd45a0a5c62cdfa423b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!61 &6877566345232757397
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1022616022261416138}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 6.66, y: 9.49}
-    newSize: {x: 6.66, y: 9.49}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 6.66, y: 9.49}
-  m_EdgeRadius: 0
 --- !u!114 &4244174147891855356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,3 +118,24 @@ MonoBehaviour:
   requiredToolName: 
   toolHintText: {fileID: 0}
   hintMessage: A  tool  is  required  to  pick  up  this  item
+--- !u!65 &-3537883442340458624
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022616022261416138}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.66, y: 9.49, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
