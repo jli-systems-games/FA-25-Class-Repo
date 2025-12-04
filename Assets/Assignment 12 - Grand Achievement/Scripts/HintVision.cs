@@ -2,19 +2,26 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HintVision : MonoBehaviour
 {
     //Materials
-    public Material mossyRockHintMaterial;
-    public Material spriteHintMaterial;
+    //public Material mossyRockHintMaterial;
+    //public Material spriteHintMaterial;
+    //public Material hiddenBlueGlowMaterial;
+
+    public Material[] shaderEmissionChangeMaterials;
+    public Material[] opacityChangeMaterials;
+    public Material[] emissionChangeMaterials;
 
     public Image circleImage;
     public Image eyeImage;
     public Image EIconImage;
 
     public Camera hintCamera;
+    public Camera hiddenHintCamera;
     public Volume hintVisionVolume;
     public Volume hintCameraVolume;
     public Volume hintSymbolCameraVolume;
@@ -31,20 +38,40 @@ public class HintVision : MonoBehaviour
     {
         //Reset
         hintCamera.enabled = false;
+        hiddenHintCamera.enabled = false;
         hintVisionVolume.weight = 0;
         hintCameraVolume.weight = 0;
         hintSymbolCameraVolume.weight = 0;
 
-        mossyRockHintMaterial.SetColor("_GlowEmission", Color.black);
 
-        Color awakeColor = spriteHintMaterial.color;
-        awakeColor.a = 0;
-        spriteHintMaterial.color = awakeColor;
+        foreach (Material mat in shaderEmissionChangeMaterials)
+        {
+            mat.SetColor("_GlowEmission", Color.black);
+        }
+
+        //mossyRockHintMaterial.SetColor("_GlowEmission", Color.black);
+        //hiddenBlueGlowMaterial.SetColor("_GlowEmission", Color.black);
+
+        foreach (Material mat in opacityChangeMaterials)
+        {
+            Color awakeColor = mat.color;
+            awakeColor.a = 0;
+            mat.color = awakeColor;
+        }
+
+        //Color awakeColor = spriteHintMaterial.color;
+        //awakeColor.a = 0;
+        //spriteHintMaterial.color = awakeColor;
+
+        foreach (Material mat in emissionChangeMaterials)
+        {
+            mat.SetColor("_EmissionColor", Color.black);
+        }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && !isOnCooldown && Data.hintVisionEnabled)
+        if (Input.GetKeyDown(KeyCode.E) && !isOnCooldown && Data.hintVisionEnabled && !Data.inDisableZone)
         {
             isOnCooldown = true;
 
@@ -53,17 +80,36 @@ public class HintVision : MonoBehaviour
 
             currentCoroutine = StartCoroutine(HintVisionSequence());
         }
+        else if (!Data.inDisableZone)
+        {
+            //StartCoroutine(VisionIconDisable(Color.white, 1f));
+        }
+        else if (Data.inDisableZone)
+        {
+            StartCoroutine(FadeAtOnce(0f, Color.black, 0f, Color.white, 0.1f));
+            StartCoroutine(VisionIconDisable(Color.white, 0.1f));
+
+            isOnCooldown = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene("Start Scene");
+        }
     }
 
     private IEnumerator HintVisionSequence()
     {
         hintCamera.enabled = true;
-        yield return StartCoroutine(FadeAtOnce(1f,mossyRockHintMaterial, OGEmissionColor, 1f, Color.yellow, 1f));
+        hiddenHintCamera.enabled = true;
+        yield return StartCoroutine(FadeAtOnce(1f, OGEmissionColor, 1f, Color.yellow, 1f));
 
         yield return new WaitForSeconds(hintVisionDuration);
 
-        yield return StartCoroutine(FadeAtOnce(0f, mossyRockHintMaterial, Color.black, 0f, Color.white, 0.1f));
+        yield return StartCoroutine(FadeAtOnce(0f, Color.black, 0f, Color.white, 0.1f));
+
         hintCamera.enabled = false;
+        hiddenHintCamera.enabled = false;
 
         yield return new WaitForSeconds(coolDownTime);
         isOnCooldown = false;
@@ -71,17 +117,19 @@ public class HintVision : MonoBehaviour
         StartCoroutine(VisionIconDisable(Color.white, 1f));
     }
 
-    private IEnumerator FadeAtOnce(float weightTarget, Material material, Color emissionTarget, float alphaTarget, Color targetColor, float opacityTarget)
+    private IEnumerator FadeAtOnce(float weightTarget, Color emissionTarget, float alphaTarget, Color targetColor, float opacityTarget)
     {
         Coroutine c = StartCoroutine(HintVisionFade(weightTarget));
-        Coroutine c1 = StartCoroutine(HintGlowEmissionColorFade(material, emissionTarget));
-        Coroutine c2 = StartCoroutine(SpriteHintFade(alphaTarget));
-        Coroutine c3 = StartCoroutine(VisionIconDisable(targetColor, opacityTarget));
+        Coroutine c1 = StartCoroutine(HintGlowEmissionColorFade(shaderEmissionChangeMaterials, "_GlowEmission", emissionTarget));
+        Coroutine c2 = StartCoroutine(HintGlowEmissionColorFade(emissionChangeMaterials, "_EmissionColor", emissionTarget * 30));
+        Coroutine c3 = StartCoroutine(SpriteHintFade(alphaTarget));
+        Coroutine c4 = StartCoroutine(VisionIconDisable(targetColor, opacityTarget));
 
         yield return c;
         yield return c1;
         yield return c2;
         yield return c3;
+        yield return c4;
     }
 
     private IEnumerator VisionIconDisable(Color targetColor, float opacityTarget)
@@ -123,36 +171,42 @@ public class HintVision : MonoBehaviour
         hintSymbolCameraVolume.weight = weightTarget;
     }
 
-    private IEnumerator HintGlowEmissionColorFade(Material material, Color emissionTarget)
+    private IEnumerator HintGlowEmissionColorFade(Material[] materialArray, string emissionVariableName, Color emissionTarget)
     {
-        Color startEmission = material.GetColor("_GlowEmission");
-        float t = 0f;
-
-        while (t < fadeDuration)
+        foreach (Material mat in materialArray)
         {
-            t += Time.deltaTime;
-            material.SetColor("_GlowEmission", Color.Lerp(startEmission, emissionTarget, t / fadeDuration));
-            yield return null;
-        }
+            Color startEmission = mat.GetColor(emissionVariableName);
+            float t = 0f;
 
-        material.SetColor("_GlowEmission", emissionTarget);
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                mat.SetColor(emissionVariableName, Color.Lerp(startEmission, emissionTarget, t / fadeDuration));
+                yield return null;
+            }
+
+            mat.SetColor(emissionVariableName, emissionTarget);
+        }
     }
 
     private IEnumerator SpriteHintFade(float alphaTarget)
     {
-        Color startColor = spriteHintMaterial.color;
-        float startAlpha = startColor.a;
-        float t = 0f;
-
-        while (t < fadeDuration)
+        foreach (Material mat in opacityChangeMaterials)
         {
-            t += Time.deltaTime;
-            startColor.a = Mathf.Lerp(startAlpha, alphaTarget, t / fadeDuration);
-            spriteHintMaterial.color = startColor;
-            yield return null;
-        }
+            Color startColor = mat.color;
+            float startAlpha = startColor.a;
+            float t = 0f;
 
-        startColor.a = alphaTarget;
-        spriteHintMaterial.color = startColor;
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                startColor.a = Mathf.Lerp(startAlpha, alphaTarget, t / fadeDuration);
+                mat.color = startColor;
+                yield return null;
+            }
+
+            startColor.a = alphaTarget;
+            mat.color = startColor;
+        }
     }
 }

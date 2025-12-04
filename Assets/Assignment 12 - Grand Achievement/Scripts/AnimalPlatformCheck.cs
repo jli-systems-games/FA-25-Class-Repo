@@ -15,20 +15,26 @@ public class AnimalPlatformCheck : MonoBehaviour
     private Dictionary<GameObject, bool> firstPlatformClickedStatus;
     private Dictionary<GameObject, bool> secondPlatformClickedStatus;
     private Dictionary<GameObject, bool> thirdPlatformClickedStatus;
+    private Dictionary<GameObject, bool> fourthPlatformClickedStatus;
+    private Dictionary<GameObject, bool> fifthPlatformClickedStatus;
 
     private bool isFalseOrder;
 
-    public PuzzleStageManager stageManager;
+    public IslandStageManager stageManager;
 
     private void Start()
     {
         firstPlatformClickedStatus = new Dictionary<GameObject, bool>();
         secondPlatformClickedStatus = new Dictionary<GameObject, bool>();
         thirdPlatformClickedStatus = new Dictionary<GameObject, bool>();
+        fourthPlatformClickedStatus = new Dictionary<GameObject, bool>();
+        fifthPlatformClickedStatus = new Dictionary<GameObject, bool>();
 
         ResetVariables(Data.SolutionMap, "Animal Platform", firstPlatformClickedStatus);
         ResetVariables(Data.SecondSolutionMap, "Second Platform", secondPlatformClickedStatus);
         ResetVariables(Data.ThirdSolutionMap, "Third Platform", thirdPlatformClickedStatus);
+        ResetVariables(Data.FourthSolutionMap, "Fourth Platform", fourthPlatformClickedStatus);
+        ResetVariables(Data.FifthSolutionMap, "Fifth Platform", fifthPlatformClickedStatus);
     }
 
     private void ResetVariables(Dictionary<GameObject, int> solutionMap, string tagName, Dictionary<GameObject, bool> platformClickedStatus)
@@ -68,11 +74,16 @@ public class AnimalPlatformCheck : MonoBehaviour
             Debug.Log("Clicked third platform");
             PlatformOnClick(Data.ThirdSolutionMap, other.gameObject, "Third Platform", 3, thirdPlatformClickedStatus);
         }
-
-        Debug.Log("Clicked platform: " + other.gameObject.name);
-        Debug.Log("Keys in solutionMap:");
-        foreach (var key in Data.ThirdSolutionMap.Keys)
-            Debug.Log(key.name);
+        else if (other.gameObject.CompareTag("Fourth Platform"))
+        {
+            Debug.Log("Clicked fourth platform");
+            PlatformOnClick(Data.FourthSolutionMap, other.gameObject, "Fourth Platform", 3, fourthPlatformClickedStatus);
+        }
+        else if (other.gameObject.CompareTag("Fifth Platform"))
+        {
+            Debug.Log("Clicked fifth platform");
+            PlatformOnClick(Data.FifthSolutionMap, other.gameObject, "Fifth Platform", 4, fifthPlatformClickedStatus);
+        }
     }
 
     private void PlatformOnClick(Dictionary<GameObject, int> solutionMap, GameObject platformObject, string tagName, int platformCount, Dictionary<GameObject, bool> platformClickedStatus)
@@ -141,8 +152,16 @@ public class AnimalPlatformCheck : MonoBehaviour
         {
             Data.thirdPuzzleSolved = true;
         }
+        else if (tagName == "Fourth Platform")
+        {
+            Data.fourthPuzzleSolved = true;
+        }
+        else if (tagName == "Fifth Platform")
+        {
+            Data.fifthPuzzleSolved = true;
+        }
 
-        stageManager.CheckPuzzleSolved();
+            stageManager.CheckPuzzleSolved();
 
         ResetPreviousPuzzleVariables();
     }
