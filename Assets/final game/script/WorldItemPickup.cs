@@ -10,7 +10,7 @@ public class WorldItemPickup : MonoBehaviour
 
     public TMP_Text toolHintText;
 
-    public string hintMessage = "A tool is required to pick up this item";
+    public string hintMessage = "A  tool  is  required  to  pick  up  this  item";
 
     public void Pickup()
     {
