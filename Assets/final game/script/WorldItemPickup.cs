@@ -1,17 +1,56 @@
 using UnityEngine;
+using System.Collections;
+using TMPro;
 
 public class WorldItemPickup : MonoBehaviour
 {
-    public ItemData itemData;   // Inspector에서 어떤 아이템인지 지정
+    public ItemData itemData;
 
-    // 플레이어가 집을 때 호출할 함수
+    public string requiredToolName = "";
+
+    public TMP_Text toolHintText;
+
+    public string hintMessage = "A tool is required to pick up this item";
+
     public void Pickup()
     {
-        if (itemData != null)
+        if (InventoryManager.Instance == null || itemData == null)
+        {
+            Debug.LogError("InventoryManager 또는 ItemData가 설정되지 않았습니다.");
+            return;
+        }
+
+        bool requiresTool = !string.IsNullOrEmpty(requiredToolName);
+
+        bool canPickUp = !requiresTool ||
+                      (requiresTool && InventoryManager.Instance.HasTool(requiredToolName));
+        if (canPickUp)
         {
             InventoryManager.Instance.AddItem(itemData);
-            // 월드에서 사라지게
             Destroy(gameObject);
         }
+        else
+        {
+            if (toolHintText != null)
+            {
+                StartCoroutine(ShowHintTemporarily(hintMessage));
+            }
+        }
+    }
+
+    IEnumerator ShowHintTemporarily(string message)
+    {
+        if (toolHintText.gameObject.activeSelf)
+        {
+
+        }
+
+        toolHintText.text = message;
+        toolHintText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(1f);
+
+        toolHintText.gameObject.SetActive(false);
+
     }
 }

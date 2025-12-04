@@ -7,7 +7,24 @@ public class InventoryManager : MonoBehaviour
 
     public List<ItemData> items = new List<ItemData>();
 
-    public System.Action OnInventoryChanged;   // UI에게 알리는 이벤트
+    public System.Action OnInventoryChanged;
+
+    public HashSet<string> acquiredTools = new HashSet<string>();
+
+    public bool hasCuttingTool = false;
+
+    public bool HasTool(string toolName)
+    {
+        return acquiredTools.Contains(toolName);
+    }
+
+    public void AcquireTool(string toolName)
+    {
+        if(!acquiredTools.Contains(toolName))
+        {
+            acquiredTools.Add(toolName);
+        }
+    }
 
     void Awake()
     {
