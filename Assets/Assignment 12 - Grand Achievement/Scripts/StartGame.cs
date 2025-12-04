@@ -14,7 +14,7 @@ public class StartGame : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            SceneManager.LoadScene("Island Scene");
+            SceneManager.LoadScene("Islands Scene");
         }
     }
 }

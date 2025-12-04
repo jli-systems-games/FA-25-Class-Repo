@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SecondPuzzleManager : MonoBehaviour
+public class ThirdPuzzleManager : MonoBehaviour
 {
     [Header("Platform Objects")]
     public GameObject circPlatform;
@@ -19,6 +19,11 @@ public class SecondPuzzleManager : MonoBehaviour
     public float secondPlatformPosX;
     public float lastPlatformPosX;
 
+    [Header("Platform Rotations")]
+    public float firstPlatformRotY;
+    public float secondPlatformRotY;
+    public float lastPlatformRotY;
+
     [Header("Inscription Positions")]
     public float firstSymbolPosY;
     public float secondSymbolPosY;
@@ -30,7 +35,7 @@ public class SecondPuzzleManager : MonoBehaviour
     void Awake()
     {
         //Reset Solution Map
-        if (Data.SecondSolutionMap != null) Data.SecondSolutionMap.Clear();
+        if (Data.ThirdSolutionMap != null) Data.ThirdSolutionMap.Clear();
 
         //Set Random Symbol Order
         GameObject[] symbols = new GameObject[] {circSymbol, rectSymbol, hexSymbol};
@@ -68,14 +73,21 @@ public class SecondPuzzleManager : MonoBehaviour
             lastPlatformPosX
         };
 
-        SetPlatformPositions(platformXPositions);
+        float[] platformYRotations = new float[]
+        {
+            firstPlatformRotY,
+            secondPlatformRotY,
+            lastPlatformRotY
+        };
+
+        SetPlatformPositions(platformXPositions, platformYRotations);
 
         GenerateSolutionMap();
     }
 
     private void GenerateSolutionMap()
     {
-        Data.SecondSolutionMap = new Dictionary<GameObject, int>();
+        Data.ThirdSolutionMap = new Dictionary<GameObject, int>();
 
         for (int i = 0; i < passwordList.Count; i++)
         {
@@ -87,7 +99,7 @@ public class SecondPuzzleManager : MonoBehaviour
             else if (symbol == rectSymbol) platform = rectPlatform;
             else if (symbol == hexSymbol) platform = hexPlatform;
 
-            Data.SecondSolutionMap[platform] = i;
+            Data.ThirdSolutionMap[platform] = i;
         }
     }
 
@@ -100,28 +112,23 @@ public class SecondPuzzleManager : MonoBehaviour
 
             Vector3 currentPos = symbolObject.transform.localPosition;
 
-            symbolObject.transform.localPosition = new Vector3(
-                currentPos.x,
-                symbolY,
-                currentPos.z
-            );
+            symbolObject.transform.localPosition = new Vector3(currentPos.x, symbolY, currentPos.z);
         }
     }
 
-    private void SetPlatformPositions(float[] platformXPositions)
+    private void SetPlatformPositions(float[] platformXPositions, float[] platformYRotations)
     {
         for (int i = 0; i < platformList.Count; i++)
         {
             GameObject platformObject = platformList[i];
-            float platformX = platformXPositions[i];
+            float platformXPosition = platformXPositions[i];
+            float platformYRotation = platformYRotations[i];
 
             Vector3 currentPos = platformObject.transform.localPosition;
 
-            platformObject.transform.localPosition = new Vector3(
-                platformX,
-                currentPos.y,
-                currentPos.z
-            );
+            platformObject.transform.localPosition = new Vector3(platformXPosition, currentPos.y, currentPos.z);
+
+            platformObject.transform.localRotation = Quaternion.Euler(0, platformYRotation, 0);
         }
     }
 }

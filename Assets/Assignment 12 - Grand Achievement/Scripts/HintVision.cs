@@ -17,6 +17,7 @@ public class HintVision : MonoBehaviour
     public Camera hintCamera;
     public Volume hintVisionVolume;
     public Volume hintCameraVolume;
+    public Volume hintSymbolCameraVolume;
     public float hintVisionDuration = 2f;
     public float fadeDuration = 1f;
     public float coolDownTime = 5f;
@@ -32,6 +33,7 @@ public class HintVision : MonoBehaviour
         hintCamera.enabled = false;
         hintVisionVolume.weight = 0;
         hintCameraVolume.weight = 0;
+        hintSymbolCameraVolume.weight = 0;
 
         mossyRockHintMaterial.SetColor("_GlowEmission", Color.black);
 
@@ -42,7 +44,7 @@ public class HintVision : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && !isOnCooldown)
+        if (Input.GetKeyDown(KeyCode.E) && !isOnCooldown && Data.hintVisionEnabled)
         {
             isOnCooldown = true;
 
@@ -112,11 +114,13 @@ public class HintVision : MonoBehaviour
             t += Time.deltaTime;
             hintVisionVolume.weight = Mathf.Lerp(startWeight, weightTarget, t / fadeDuration);
             hintCameraVolume.weight = Mathf.Lerp(startWeight, weightTarget, t / fadeDuration);
+            hintSymbolCameraVolume.weight = Mathf.Lerp(startWeight, weightTarget, t / fadeDuration);
             yield return null;
         }
 
         hintVisionVolume.weight = weightTarget;
         hintCameraVolume.weight = weightTarget;
+        hintSymbolCameraVolume.weight = weightTarget;
     }
 
     private IEnumerator HintGlowEmissionColorFade(Material material, Color emissionTarget)
