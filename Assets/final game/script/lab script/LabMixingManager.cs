@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LabMixingManager : MonoBehaviour
 {
@@ -269,6 +270,7 @@ public class LabMixingManager : MonoBehaviour
                 resultText.gameObject.SetActive(true);
                 resultText.text = "success";
             }
+            SceneManager.LoadScene("success");
         }
         else
         {

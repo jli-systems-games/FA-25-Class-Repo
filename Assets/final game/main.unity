@@ -8559,24 +8559,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 2
-  toolPrefabToSpawn: {fileID: 0}
-  spawnPoint: {fileID: 0}
-  isToolExchangeNPC: 0
-  toolNameFlag: CuttingTool
+  toolPrefabToSpawn: {fileID: 1022616022261416138, guid: 0776c35db49f64760a3cd051918fa15c, type: 3}
+  spawnPoint: {fileID: 367486951}
+  isToolExchangeNPC: 1
+  toolNameFlag: "Devil\u2019s Dew"
   dialogueGroups:
   - groupName: apple
     lines:
     - "They say gold apples are incredibly good for your health\u2026"
     - If you ever come across one, you should definitely keep it close.
     - It might help you more than you think.
-  - groupName: fact...
+  - groupName: "Devil\u2019s Dew"
     lines:
     - hey Listen..developer only taught me one fact so far
     - "gold apples are super healthy. That\u2019s literally all I know. \nI\u2019m
       basically a walking fruit commercial."
   dialogueUI: {fileID: 967553775}
   pressEHint: {fileID: 709717542}
-  rewardItemPrefab: {fileID: 0}
+  rewardItemPrefab: {fileID: 1022616022261416138, guid: 0776c35db49f64760a3cd051918fa15c, type: 3}
   itemSpawnOffset: 0.2
 --- !u!114 &367486946
 MonoBehaviour:
@@ -20706,11 +20706,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   correctRecipeIds:
-  - f
-  - s
-  - a
-  - e
-  - f
+  - angel's bun
+  - "Devil\u2019s Dew"
+  - bamboo shoot
+  - Melon Bread
+  - Gold Apple
   spawnPoints:
   - {fileID: 1208491273}
   - {fileID: 914892754}
@@ -21536,24 +21536,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 2
-  toolPrefabToSpawn: {fileID: 0}
-  spawnPoint: {fileID: 0}
-  isToolExchangeNPC: 0
-  toolNameFlag: CuttingTool
+  toolPrefabToSpawn: {fileID: 7007219520765044416, guid: d91af5fc7c691400d98d2bd41caa2595, type: 3}
+  spawnPoint: {fileID: 740742159}
+  isToolExchangeNPC: 1
+  toolNameFlag: angel's bun
   dialogueGroups:
-  - groupName: apple
+  - groupName: angel
     lines:
-    - "They say gold apples are incredibly good for your health\u2026"
-    - If you ever come across one, you should definitely keep it close.
-    - It might help you more than you think.
-  - groupName: fact...
-    lines:
-    - hey Listen..developer only taught me one fact so far
-    - "gold apples are super healthy. That\u2019s literally all I know. \nI\u2019m
-      basically a walking fruit commercial."
+    - "Oh\u2026 one of my buns seems to have fallen off."
+    - "It\u2019s alright"
+    - "I know you\u2019ll use it with kindness."
+    - This little piece carries a gentle warmth inside.
+    - "If it brings someone\u2019s hair a bit of light again\u2026 that\u2019s more
+      than enough for me."
   dialogueUI: {fileID: 967553775}
   pressEHint: {fileID: 2122632855}
-  rewardItemPrefab: {fileID: 0}
+  rewardItemPrefab: {fileID: 7007219520765044416, guid: d91af5fc7c691400d98d2bd41caa2595, type: 3}
   itemSpawnOffset: 0.2
 --- !u!114 &740742154
 MonoBehaviour:
@@ -32418,7 +32416,7 @@ Transform:
   m_GameObject: {fileID: 1211825585}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 69.3, y: -9.5, z: -129.93}
+  m_LocalPosition: {x: 142.29, y: -6.19, z: -27.7}
   m_LocalScale: {x: 0.1228942, y: 0.1228942, z: 0.1228942}
   m_ConstrainProportionsScale: 0
   m_Children: []
