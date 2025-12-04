@@ -4927,6 +4927,7 @@ GameObject:
   - component: {fileID: 54994276034465240}
   - component: {fileID: 114352293955758238}
   - component: {fileID: 114675000447675420}
+  - component: {fileID: 5486806095915541249}
   m_Layer: 18
   m_Name: LoftHandgunBullet
   m_TagString: Untagged
@@ -5057,7 +5058,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854097648223014}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76891b3b532f84acaaeed44c357bd00c, type: 3}
   m_Name: 
@@ -5067,8 +5068,8 @@ MonoBehaviour:
     m_Bits: 12032
   Owner: {fileID: 0}
   TriggerFilter: 195
-  MinDamageCaused: 20
-  MaxDamageCaused: 10
+  MinDamageCaused: 0.01
+  MaxDamageCaused: 0.02
   TypedDamages: []
   DamageDirectionMode: 1
   DamageCausedKnockbackType: 1
@@ -5182,6 +5183,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PushPower: 25
   PositionOffset: 0
+--- !u!114 &5486806095915541249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854097648223014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37cbecff81262554d8dbbdf0f5a63338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Duration: 2.2
+  SlowFactor: 0.3
 --- !u!1 &2970920551882278989
 GameObject:
   m_ObjectHideFlags: 0
@@ -5618,6 +5633,7 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 6166507258774247959}
         ExtraTargetGameObjects: []
+        IgnorePlayDirection: 0
         SetStateOnInit: 1
         StateOnInit: 0
         SetStateOnPlay: 1
@@ -10914,6 +10930,7 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 6166507258774247959}
         ExtraTargetGameObjects: []
+        IgnorePlayDirection: 0
         SetStateOnInit: 1
         StateOnInit: 0
         SetStateOnPlay: 1
