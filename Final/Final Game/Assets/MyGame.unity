@@ -755,6 +755,7 @@ GameObject:
   m_Component:
   - component: {fileID: 598334959}
   - component: {fileID: 598334958}
+  - component: {fileID: 598334960}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -796,6 +797,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &598334960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598334956}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5fa561604325f45870b9aeb2d32b01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisableShooting: 1
+  DisableInteraction: 0
+  HideCursor: 1
 --- !u!1 &612343370
 GameObject:
   m_ObjectHideFlags: 0
@@ -1987,8 +2003,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TotalGameDuration: 120
-  MaxWallScore: 20
-  TimeToStartSpawningGuns: 5
+  MaxWallScore: 35
+  TimeToStartSpawningGuns: 30
   GunSpawnInterval: 10
   GunPickupPrefab: {fileID: 6852503975490989132, guid: 253c71a5c2adac04fa6a7b774df28c6b,
     type: 3}
@@ -2002,6 +2018,9 @@ MonoBehaviour:
   - {fileID: 1344075482}
   - {fileID: 1664617574}
   - {fileID: 1794811572}
+  ZoomDuration: 1
+  StayDuration: 1.5
+  ZoomSize: 3
 --- !u!1 &1291175414
 GameObject:
   m_ObjectHideFlags: 0
