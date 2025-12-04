@@ -49,6 +49,13 @@ public class InventoryUI : MonoBehaviour
             InventoryManager.Instance.OnInventoryChanged -= Refresh;
     }
 
+ void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ToggleInventory();
+        }
+    }
 
     public void ToggleInventory()
     {

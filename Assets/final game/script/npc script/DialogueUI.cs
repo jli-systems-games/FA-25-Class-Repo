@@ -32,12 +32,12 @@ public class DialogueUI : MonoBehaviour
         if (dialogueText != null)
             dialogueText.text = text;
 
-        // hasNext가 true면 Next 버튼, false면 Close 버튼을 보여줍니다.
+
         if (nextButton != null)
-            nextButton.gameObject.SetActive(hasNext);
+            nextButton.gameObject.SetActive(false);
 
         if (closeButton != null)
-            closeButton.gameObject.SetActive(!hasNext);
+            closeButton.gameObject.SetActive(false);
     }
 
     public void Hide()
@@ -48,26 +48,5 @@ public class DialogueUI : MonoBehaviour
         _currentNPC = null;
     }
 
-    // === 버튼에서 연결해서 쓸 메서드들 ===
-
-    public void OnClickNext()
-    {
-        if (_currentNPC != null)
-        {
-            _currentNPC.OnClickNextFromUI();
-        }
-    }
-
-    public void OnClickClose()
-    {
-        if (_currentNPC != null)
-        {
-            // ✅ NPC한테도 "이제 끝이야" 알려주기 -> EndDialogue() 호출 -> 아이템 스폰/NPC 제거 로직 실행
-            _currentNPC.ForceEndFromUI();
-        }
-        else
-        {
-            Hide();
-        }
-    }
+    
 }

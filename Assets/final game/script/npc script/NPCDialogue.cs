@@ -47,6 +47,7 @@ public class NPCDialogue : MonoBehaviour
             pressEHint.SetActive(false);
     }
 
+
     void Update()
     {
         if (player == null || dialogueUI == null) return;
@@ -70,6 +71,12 @@ public class NPCDialogue : MonoBehaviour
                 pressEHint.SetActive(false);
 
             StartNewDialogue();
+        }
+
+        // ⭐️ [추가] 대화 중에는 Enter 키로 다음 대화/종료 처리
+        if (_isTalking && Input.GetKeyDown(KeyCode.Return))
+        {
+            OnClickNextFromUI();
         }
     }
 
