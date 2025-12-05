@@ -5,13 +5,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
+public class Recipe
+{
+
+    [Tooltip("이 레시피를 만드는 데 필요한 5가지 재료의 Item ID 목록입니다.")]
+    public string[] requiredItemIds = new string[5];
+
+    [Tooltip("이 레시피 성공 시 얻게 되는 결과 아이템 데이터입니다.")]
+    public ItemData resultItem;
+}
+
 public class LabMixingManager : MonoBehaviour
 {
     [Header("선택된 아이템들 (Selector에서 세팅)")]
     List<ItemData> _selectedItems = new List<ItemData>();
 
-    [Header("정답 레시피 (아이템 ID 5개)")]
-    public string[] correctRecipeIds = new string[5];  
+    public Recipe[] allRecipes;
+
     [Header("책상 위 스폰 위치들 (5개)")]
     public Transform[] spawnPoints;
 
@@ -37,6 +48,11 @@ public class LabMixingManager : MonoBehaviour
     int _currentStirCount = 0;
     bool _mixingInProgress = false;
     List<GameObject> _spawnedWorldItems = new List<GameObject>();
+
+    [Header("레시피 목록")]
+    public ItemData defaultResultItem;
+
+    public Transform resultSpawnPoint;
 
     public void MixItems()
     {
@@ -172,6 +188,8 @@ public class LabMixingManager : MonoBehaviour
         if (boilingAudio != null)
             boilingAudio.Stop();
     }
+    // LabMixingManager.cs 파일 내
+
     void OnStirOnce()
     {
         if (!_mixingInProgress) return;
@@ -183,24 +201,31 @@ public class LabMixingManager : MonoBehaviour
             _mixingInProgress = false;
             StopBoiling();
 
-            if (ladleMoveEffect != null)
+            // ... (국자 이펙트 종료 로직 유지) ...
+
+            // ⭐️ [수정] 레시피를 확인하고 결과 아이템을 얻습니다.
+            ItemData resultItem = FindResultItem();
+
+            // ItemData가 defaultResultItem이 아닐 때만 성공으로 간주
+            bool success = (resultItem != null) && (resultItem != defaultResultItem);
+
+            // 1. 결과 아이템 스폰 (인벤토리에 바로 추가 대신)
+            if (resultItem != null)
             {
-                ladleMoveEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                ladleMoveEffect.gameObject.SetActive(false);
+                SpawnResultItemWorldObject(resultItem);
             }
 
-            bool success = CheckRecipe();
+            // 2. 결과 UI/씬 전환 표시
             ShowResult(success);
 
-            // 🟡 결과가 나온 뒤, 테이블 위에 스폰된 음식들 제거
+            // 🟡 결과가 나온 뒤, 테이블 위에 스폰된 재료들 제거
             ClearSpawnedItems();
 
-            // 🟥 선택/버튼 색 초기화 (인벤토리에는 아이템 그대로 남겨둠)
+            // 🟥 선택/버튼 색 초기화
             if (selector != null)
                 selector.ClearSelection();
         }
     }
-
 
     void HandleLadleMoveEffect()
     {
@@ -223,27 +248,79 @@ public class LabMixingManager : MonoBehaviour
         }
     }
 
-
-    bool CheckRecipe()
+    ItemData FindResultItem()
     {
-        if (_selectedItems == null || _selectedItems.Count != 5)
-            return false;
-        if (correctRecipeIds == null || correctRecipeIds.Length != 5)
-            return false;
+        if (_selectedItems == null || _selectedItems.Count != 5 || allRecipes == null)
+        {
+            return defaultResultItem;
+        }
 
         var selectedIds = _selectedItems
             .Where(d => d != null)
             .Select(d => d.itemId)
-            .ToList();
+            .OrderBy(id => id) // ⭐️ Linq 필요
+            .ToArray();
 
-        foreach (var id in correctRecipeIds)
+        if (selectedIds.Length != 5)
+            return defaultResultItem;
+
+        // 2. 모든 레시피를 돌면서 일치하는지 확인
+        foreach (var recipe in allRecipes)
         {
-            if (!selectedIds.Contains(id))
-                return false;
+            if (recipe == null || recipe.requiredItemIds.Length != 5 || recipe.resultItem == null)
+                continue;
+
+            // ⭐️ [문제의 코드] 레시피 ID도 정렬하여 requiredIds 변수에 저장합니다.
+            // requiredIds는 함수가 아닌, 정렬된 문자열 배열입니다.
+            var requiredIds = recipe.requiredItemIds.OrderBy(id => id).ToArray();
+
+            // 선택된 ID 배열과 레시피 ID 배열이 완전히 동일한지 확인
+            if (selectedIds.SequenceEqual(requiredIds)) // ⭐️ Linq 필요
+            {
+                // 레시피 일치! 결과 아이템 반환
+                return recipe.resultItem;
+            }
         }
 
-        return true;
+        // 3. 일치하는 레시피 없음 -> 기본 결과물 반환
+        Debug.LogWarning("일치하는 레시피를 찾지 못했습니다. 기본 결과물을 반환합니다.");
+        return defaultResultItem;
     }
+    void SpawnResultItemWorldObject(ItemData resultItem)
+    {
+        if (resultItem == null || resultItem.worldPrefab == null)
+        {
+            Debug.LogError("결과 아이템 데이터 또는 월드 프리팹이 설정되지 않았습니다.");
+            return;
+        }
+
+        if (resultSpawnPoint == null)
+        {
+            Debug.LogError("결과물 스폰 위치(resultSpawnPoint)가 설정되지 않았습니다.");
+            return;
+        }
+
+        // ItemData에 연결된 월드 프리팹을 스폰합니다.
+        GameObject spawnedObject = Instantiate(
+            resultItem.worldPrefab,
+            resultSpawnPoint.position,
+            resultSpawnPoint.rotation);
+
+        // WorldItemPickup 스크립트를 찾아 데이터 연결
+        // 이 스크립트가 ItemData를 가지고 있어야 클릭 시 인벤토리에 추가 가능
+        WorldItemPickup pickup = spawnedObject.GetComponent<WorldItemPickup>();
+        if (pickup != null)
+        {
+            pickup.itemData = resultItem;
+            // 랩에서 나온 결과물이므로 도구 검사를 건너뛰도록 설정
+            pickup.requiredToolName = "";
+        }
+        else
+        {
+            Debug.LogError("결과물 월드 프리팹에 WorldItemPickup.cs 스크립트가 없습니다. 클릭해서 줍기가 불가능합니다.");
+        }
+    }
+
 
     void ShowResult(bool success)
     {

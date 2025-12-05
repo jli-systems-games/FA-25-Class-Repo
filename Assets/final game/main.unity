@@ -348,7 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -883,6 +883,114 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4893704287019524653, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
   m_PrefabInstance: {fileID: 94005370}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &122376293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 122376297}
+  - component: {fileID: 122376296}
+  - component: {fileID: 122376295}
+  - component: {fileID: 122376294}
+  m_Layer: 0
+  m_Name: result spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &122376294
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122376293}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &122376295
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122376293}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &122376296
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122376293}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &122376297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122376293}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0012818056, y: 1.0655941, z: -1.0926735}
+  m_LocalScale: {x: 0.09907958, y: 0.09907958, z: 0.09907958}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7964767404383840446}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &148818975
 GameObject:
   m_ObjectHideFlags: 0
@@ -6773,7 +6881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 6420528001466068051, guid: 9f1769da38f3f438c81324ac8738de00, type: 3}
   spawnPoint: {fileID: 235266605}
   isToolExchangeNPC: 1
@@ -8803,7 +8911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 1022616022261416138, guid: 0776c35db49f64760a3cd051918fa15c, type: 3}
   spawnPoint: {fileID: 367486951}
   isToolExchangeNPC: 1
@@ -21025,6 +21133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 640160379}
   - component: {fileID: 640160380}
+  - component: {fileID: 640160381}
   m_Layer: 0
   m_Name: mix manager
   m_TagString: Untagged
@@ -21059,12 +21168,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca9bd8f68e1c042e48f9f76f25147a20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  correctRecipeIds:
-  - angel's bun
-  - "Devil\u2019s Dew"
-  - bamboo shoot
-  - Melon Bread
-  - Gold Apple
+  allRecipes:
+  - requiredItemIds: []
+    resultItem: {fileID: 0}
+  - requiredItemIds: []
+    resultItem: {fileID: 0}
+  - requiredItemIds: []
+    resultItem: {fileID: 0}
+  - requiredItemIds: []
+    resultItem: {fileID: 0}
+  - requiredItemIds: []
+    resultItem: {fileID: 0}
   spawnPoints:
   - {fileID: 1208491273}
   - {fileID: 914892754}
@@ -21081,6 +21195,21 @@ MonoBehaviour:
   requiredStirs: 1
   ladleMoveEffect: {fileID: 5490853537891583033}
   selector: {fileID: 1447316750}
+  defaultResultItem: {fileID: 11400000, guid: 3a9938c82ee094beeadc022c6a627a5a, type: 2}
+  resultSpawnPoint: {fileID: 122376297}
+--- !u!114 &640160381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640160378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a1aa12f07e4478ebd534c0d826b9cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxDistance: 10
 --- !u!1 &658329365
 GameObject:
   m_ObjectHideFlags: 0
@@ -21997,7 +22126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 7007219520765044416, guid: d91af5fc7c691400d98d2bd41caa2595, type: 3}
   spawnPoint: {fileID: 740742159}
   isToolExchangeNPC: 1
@@ -32326,7 +32455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -32782,7 +32911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 4202580824193657887, guid: bf6d39f54875742b2b5da89bc5c44c4d, type: 3}
   spawnPoint: {fileID: 1211825586}
   isToolExchangeNPC: 1
@@ -34389,7 +34518,7 @@ Transform:
   m_GameObject: {fileID: 1380804523}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.06631902, z: -0, w: 0.9977985}
-  m_LocalPosition: {x: -17, y: -0.535, z: 6.08}
+  m_LocalPosition: {x: -6.61, y: -0.535, z: -23.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -35240,7 +35369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 6389717929741916434, guid: 98ba5c050670e424d98e4c88cce5ac48, type: 3}
   spawnPoint: {fileID: 1549353316}
   isToolExchangeNPC: 1
@@ -41029,7 +41158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
-  interactDistance: 5
+  interactDistance: 3
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -163640,6 +163769,7 @@ Transform:
   - {fileID: 6101498623619902468}
   - {fileID: 8040045419690512776}
   - {fileID: 1426540227}
+  - {fileID: 122376297}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7965325240046109070
