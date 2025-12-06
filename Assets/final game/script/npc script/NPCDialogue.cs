@@ -12,6 +12,9 @@ public class NPCDialogue : MonoBehaviour
     public Transform player;
     public float interactDistance = 2f;
 
+    public NpcIndicator indicatorSequencer;
+
+
     // 도구 지급 설정 (수정된 부분)
     public GameObject toolPrefabToSpawn;
     public Transform spawnPoint;
@@ -87,8 +90,15 @@ public class NPCDialogue : MonoBehaviour
 
         _isTalking = true;
 
+        //여기서부
         _currentGroupIndex = Random.Range(0, dialogueGroups.Length);
         _currentLineIndex = 0;
+
+        if (indicatorSequencer != null)
+        {
+            indicatorSequencer.GoToNextNpc();
+        }
+        //추가한부분
 
         ShowCurrentLine();
     }
@@ -161,7 +171,7 @@ public class NPCDialogue : MonoBehaviour
                 Debug.Log($"플레이어가 도구 '{toolNameFlag}' 권한을 획득했습니다!");
             }
 
-            Destroy(gameObject);
+            gameObject.SetActive(false);
             return;
         }
 

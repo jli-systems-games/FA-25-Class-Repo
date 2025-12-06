@@ -349,6 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -991,6 +992,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7964767404383840446}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &139310986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 139310987}
+  - component: {fileID: 139310989}
+  - component: {fileID: 139310988}
+  m_Layer: 5
+  m_Name: indicator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &139310987
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139310986}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.6718, y: 1.6718, z: 1.6718}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 967553774}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 520}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &139310988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139310986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &139310989
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139310986}
+  m_CullTransparentMesh: 1
 --- !u!1 &148818975
 GameObject:
   m_ObjectHideFlags: 0
@@ -6882,6 +6958,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 6420528001466068051, guid: 9f1769da38f3f438c81324ac8738de00, type: 3}
   spawnPoint: {fileID: 235266605}
   isToolExchangeNPC: 1
@@ -8912,6 +8989,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 1022616022261416138, guid: 0776c35db49f64760a3cd051918fa15c, type: 3}
   spawnPoint: {fileID: 367486951}
   isToolExchangeNPC: 1
@@ -20196,6 +20274,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a2291337cbd45a0a5c62cdfa423b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &552741933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 552741934}
+  - component: {fileID: 552741935}
+  m_Layer: 0
+  m_Name: NpcIndicatorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &552741934
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552741933}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1542180050}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &552741935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552741933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6046567abbb44018675eeae446ca62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 1748307248}
+  indicatorUIPrefab: {fileID: 139310986}
+  indicatorContainer: {fileID: 967553774}
+  sequentialNpcs:
+  - {fileID: 35185419}
+  - {fileID: 1549353316}
+  - {fileID: 1187093812}
+  minDistanceToHide: 3
+  indicatorScale: 0.1
 --- !u!1001 &555420564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22129,6 +22260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 7007219520765044416, guid: d91af5fc7c691400d98d2bd41caa2595, type: 3}
   spawnPoint: {fileID: 740742159}
   isToolExchangeNPC: 1
@@ -24783,6 +24915,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 139310987}
   - {fileID: 1067539804}
   - {fileID: 227269908}
   - {fileID: 1727818653}
@@ -32460,6 +32593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -32916,6 +33050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 4202580824193657887, guid: bf6d39f54875742b2b5da89bc5c44c4d, type: 3}
   spawnPoint: {fileID: 1211825586}
   isToolExchangeNPC: 1
@@ -35321,6 +35456,7 @@ Transform:
   - {fileID: 640160379}
   - {fileID: 2059712698}
   - {fileID: 1447316751}
+  - {fileID: 552741934}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1549353308
@@ -35374,6 +35510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 6389717929741916434, guid: 98ba5c050670e424d98e4c88cce5ac48, type: 3}
   spawnPoint: {fileID: 1549353316}
   isToolExchangeNPC: 1
@@ -41299,6 +41436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
+  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
