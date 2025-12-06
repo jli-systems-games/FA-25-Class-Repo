@@ -18,8 +18,7 @@ public class Recipe
 
 public class LabMixingManager : MonoBehaviour
 {
-
-    //public NpcIndicator indicatorSequencer;
+ 
   
 
     [Header("선택된 아이템들 (Selector에서 세팅)")]

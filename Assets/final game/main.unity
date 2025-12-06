@@ -349,7 +349,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -992,81 +991,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7964767404383840446}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &139310986
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 139310987}
-  - component: {fileID: 139310989}
-  - component: {fileID: 139310988}
-  m_Layer: 5
-  m_Name: indicator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &139310987
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 139310986}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6718, y: 1.6718, z: 1.6718}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 967553774}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 520}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &139310988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 139310986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &139310989
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 139310986}
-  m_CullTransparentMesh: 1
 --- !u!1 &148818975
 GameObject:
   m_ObjectHideFlags: 0
@@ -6958,7 +6882,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 6420528001466068051, guid: 9f1769da38f3f438c81324ac8738de00, type: 3}
   spawnPoint: {fileID: 235266605}
   isToolExchangeNPC: 1
@@ -8989,7 +8912,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 1022616022261416138, guid: 0776c35db49f64760a3cd051918fa15c, type: 3}
   spawnPoint: {fileID: 367486951}
   isToolExchangeNPC: 1
@@ -20274,59 +20196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a2291337cbd45a0a5c62cdfa423b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &552741933
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 552741934}
-  - component: {fileID: 552741935}
-  m_Layer: 0
-  m_Name: NpcIndicatorManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &552741934
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 552741933}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1542180050}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &552741935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 552741933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf6046567abbb44018675eeae446ca62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCamera: {fileID: 1748307248}
-  indicatorUIPrefab: {fileID: 139310986}
-  indicatorContainer: {fileID: 967553774}
-  sequentialNpcs:
-  - {fileID: 35185419}
-  - {fileID: 1549353316}
-  - {fileID: 1187093812}
-  minDistanceToHide: 3
-  indicatorScale: 0.1
 --- !u!1001 &555420564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22260,7 +22129,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 7007219520765044416, guid: d91af5fc7c691400d98d2bd41caa2595, type: 3}
   spawnPoint: {fileID: 740742159}
   isToolExchangeNPC: 1
@@ -23030,6 +22898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6bf6a9076731497b942b6cedfe10fd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mixButtonUI: {fileID: 416677304}
   labSelector: {fileID: 1447316750}
 --- !u!65 &779401514
 BoxCollider:
@@ -23114,7 +22983,7 @@ Transform:
   m_GameObject: {fileID: 779401512}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -101.51688, y: -50.15, z: -12.08}
+  m_LocalPosition: {x: -90.56, y: -44.84, z: -10.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24914,7 +24783,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 139310987}
   - {fileID: 1067539804}
   - {fileID: 227269908}
   - {fileID: 1727818653}
@@ -32592,7 +32460,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -33049,7 +32916,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 4202580824193657887, guid: bf6d39f54875742b2b5da89bc5c44c4d, type: 3}
   spawnPoint: {fileID: 1211825586}
   isToolExchangeNPC: 1
@@ -34306,7 +34172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam:
     canLookAround: 1
-    shouldLockCursor: 0
+    shouldLockCursor: 1
     rotateCameraOnly: 0
     invertXAxis: 0
     invertYAxis: 0
@@ -35455,7 +35321,6 @@ Transform:
   - {fileID: 640160379}
   - {fileID: 2059712698}
   - {fileID: 1447316751}
-  - {fileID: 552741934}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1549353308
@@ -35509,7 +35374,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 6389717929741916434, guid: 98ba5c050670e424d98e4c88cce5ac48, type: 3}
   spawnPoint: {fileID: 1549353316}
   isToolExchangeNPC: 1
@@ -41435,7 +41299,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1380804527}
   interactDistance: 3
-  indicatorSequencer: {fileID: 0}
   toolPrefabToSpawn: {fileID: 0}
   spawnPoint: {fileID: 0}
   isToolExchangeNPC: 0
@@ -48346,7 +48209,6 @@ GameObject:
   - component: {fileID: 5694310335237486135}
   - component: {fileID: 24942635370431490}
   - component: {fileID: 6523667505081712659}
-  - component: {fileID: 6523667505081712660}
   - component: {fileID: 6523667505081712661}
   m_Layer: 0
   m_Name: Plane
@@ -51955,7 +51817,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2796008323228793933}
   - component: {fileID: 2976147201725798545}
-  - component: {fileID: 2669080048461511010}
   - component: {fileID: 1828918378193980557}
   m_Layer: 0
   m_Name: Main Camera
@@ -64819,14 +64680,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -648762845048307919, guid: 593d4f7dc5f444843b2b02f101b56b8c, type: 3}
---- !u!81 &2669080048461511010
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1983957213275634181}
-  m_Enabled: 1
 --- !u!4 &2671180385464563628
 Transform:
   m_ObjectHideFlags: 0
@@ -73767,6 +73620,7 @@ GameObject:
   - component: {fileID: 7720527043724986652}
   - component: {fileID: 8457699288595199168}
   - component: {fileID: 166525453343956555}
+  - component: {fileID: 8881102562142706595}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -153558,33 +153412,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &6523667505081712660
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197198052645473407}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &6523667505081712661
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -153600,7 +153427,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -168140,12 +167967,39 @@ Transform:
   m_GameObject: {fileID: 4631503205247706940}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.25, y: 0, z: -3.74}
-  m_LocalScale: {x: 0.74278736, y: 9.0522, z: 9.0522}
+  m_LocalPosition: {x: 4.25, y: 2.38, z: -3.74}
+  m_LocalScale: {x: 0.74278736, y: 4.615898, z: 9.0522}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2283445540491421969}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &8881102562142706595
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4631503205247706940}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!64 &8891097583030604139
 MeshCollider:
   m_ObjectHideFlags: 0

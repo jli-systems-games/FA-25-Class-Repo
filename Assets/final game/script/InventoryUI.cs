@@ -33,8 +33,6 @@ public class InventoryUI : MonoBehaviour
         if (inventoryPanel != null)
             inventoryPanel.SetActive(false);
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
 
         HideTooltip();
 
@@ -71,14 +69,8 @@ public class InventoryUI : MonoBehaviour
         {
             Refresh();
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible=false;
-        }
+   
     }
 
     public void Refresh()
