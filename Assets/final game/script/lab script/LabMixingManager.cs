@@ -18,6 +18,9 @@ public class Recipe
 
 public class LabMixingManager : MonoBehaviour
 {
+ 
+  
+
     [Header("선택된 아이템들 (Selector에서 세팅)")]
     List<ItemData> _selectedItems = new List<ItemData>();
 
@@ -34,7 +37,10 @@ public class LabMixingManager : MonoBehaviour
     public ParticleSystem failSmokeEffect; 
     public ParticleSystem successEffect;    
     public AudioSource boilingAudio;     
-    public Text resultText;               
+    public Text resultText;
+
+    public TMPro.TMP_Text pickupHintText;
+    public string pickupMessage = "Click to pick up food";
 
     [Header("국자 & 젓기 설정")]
     public LadleStirController ladle;
@@ -53,6 +59,22 @@ public class LabMixingManager : MonoBehaviour
     public ItemData defaultResultItem;
 
     public Transform resultSpawnPoint;
+
+    IEnumerator ShowResultPickupHint()
+    {
+        if (pickupHintText != null)
+        {
+            // 텍스트 설정 및 활성화
+            pickupHintText.text = pickupMessage;
+            pickupHintText.gameObject.SetActive(true);
+
+            // 2초 대기
+            yield return new WaitForSeconds(2.0f);
+
+            // 비활성화
+            pickupHintText.gameObject.SetActive(false);
+        }
+    }
 
     public void MixItems()
     {
@@ -213,15 +235,13 @@ public class LabMixingManager : MonoBehaviour
             if (resultItem != null)
             {
                 SpawnResultItemWorldObject(resultItem);
+
+                StartCoroutine(ShowResultPickupHint());
             }
 
-            // 2. 결과 UI/씬 전환 표시
             ShowResult(success);
-
-            // 🟡 결과가 나온 뒤, 테이블 위에 스폰된 재료들 제거
             ClearSpawnedItems();
 
-            // 🟥 선택/버튼 색 초기화
             if (selector != null)
                 selector.ClearSelection();
         }
