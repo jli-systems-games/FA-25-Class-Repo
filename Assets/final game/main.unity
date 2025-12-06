@@ -22898,6 +22898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6bf6a9076731497b942b6cedfe10fd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mixButtonUI: {fileID: 416677304}
   labSelector: {fileID: 1447316750}
 --- !u!65 &779401514
 BoxCollider:
@@ -22982,7 +22983,7 @@ Transform:
   m_GameObject: {fileID: 779401512}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -101.51688, y: -50.15, z: -12.08}
+  m_LocalPosition: {x: -90.56, y: -44.84, z: -10.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -34171,7 +34172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam:
     canLookAround: 1
-    shouldLockCursor: 0
+    shouldLockCursor: 1
     rotateCameraOnly: 0
     invertXAxis: 0
     invertYAxis: 0
@@ -48208,7 +48209,6 @@ GameObject:
   - component: {fileID: 5694310335237486135}
   - component: {fileID: 24942635370431490}
   - component: {fileID: 6523667505081712659}
-  - component: {fileID: 6523667505081712660}
   - component: {fileID: 6523667505081712661}
   m_Layer: 0
   m_Name: Plane
@@ -51817,7 +51817,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2796008323228793933}
   - component: {fileID: 2976147201725798545}
-  - component: {fileID: 2669080048461511010}
   - component: {fileID: 1828918378193980557}
   m_Layer: 0
   m_Name: Main Camera
@@ -64681,14 +64680,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -648762845048307919, guid: 593d4f7dc5f444843b2b02f101b56b8c, type: 3}
---- !u!81 &2669080048461511010
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1983957213275634181}
-  m_Enabled: 1
 --- !u!4 &2671180385464563628
 Transform:
   m_ObjectHideFlags: 0
@@ -73629,6 +73620,7 @@ GameObject:
   - component: {fileID: 7720527043724986652}
   - component: {fileID: 8457699288595199168}
   - component: {fileID: 166525453343956555}
+  - component: {fileID: 8881102562142706595}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -153420,33 +153412,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &6523667505081712660
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197198052645473407}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &6523667505081712661
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -153462,7 +153427,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -168002,12 +167967,39 @@ Transform:
   m_GameObject: {fileID: 4631503205247706940}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.25, y: 0, z: -3.74}
-  m_LocalScale: {x: 0.74278736, y: 9.0522, z: 9.0522}
+  m_LocalPosition: {x: 4.25, y: 2.38, z: -3.74}
+  m_LocalScale: {x: 0.74278736, y: 4.615898, z: 9.0522}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2283445540491421969}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &8881102562142706595
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4631503205247706940}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!64 &8891097583030604139
 MeshCollider:
   m_ObjectHideFlags: 0
