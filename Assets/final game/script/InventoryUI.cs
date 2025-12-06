@@ -12,13 +12,11 @@ public class InventoryUI : MonoBehaviour
     bool[] _slotSelected;
 
     [Header("랩 선택 (랩에서만 쓰고, 아니면 비워둬도 됨)")]
-    public LabInventorySelector labSelector;
-
-    public GameObject labPanelObject;
+    public LabInventorySelector labSelector;   
 
     [Header("Tooltip Text Fields")]
-    public TMP_Text tooltipNameText;
-    public TMP_Text tooltipDescriptionText;
+    public TMP_Text tooltipNameText;              
+    public TMP_Text tooltipDescriptionText;      
 
 
     bool _isOpen = false;
@@ -54,14 +52,13 @@ public class InventoryUI : MonoBehaviour
             InventoryManager.Instance.OnInventoryChanged -= Refresh;
     }
 
-    void Update()
+ void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ToggleInventory();
         }
     }
-
 
     public void ToggleInventory()
     {
@@ -73,24 +70,14 @@ public class InventoryUI : MonoBehaviour
         if (_isOpen)
         {
             Refresh();
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            ResetAllSlotColors();
-        }
-
-        bool isLabModeActive = _isOpen &&
-                               labPanelObject != null &&
-                               labPanelObject.activeSelf; // ⭐️ .activeSelf 사용
-
-        if (labSelector != null && labSelector.mixButton != null)
-        {
-
-            labSelector.mixButton.gameObject.SetActive(isLabModeActive);
+            Cursor.visible=false;
         }
     }
 
@@ -110,12 +97,12 @@ public class InventoryUI : MonoBehaviour
             if (list != null && i < list.Count && list[i] != null)
             {
                 img.sprite = list[i].icon;
-                img.color = Color.white;
+                img.color = Color.white;   
             }
             else
             {
                 img.sprite = null;
-                img.color = new Color(1f, 1f, 1f, 0f);
+                img.color = new Color(1f, 1f, 1f, 0f); 
             }
         }
     }
@@ -134,12 +121,12 @@ public class InventoryUI : MonoBehaviour
 
             Button btn = img.GetComponent<Button>();
             if (btn == null)
-
+                
                 btn = img.GetComponentInParent<Button>();
 
             if (btn == null)
             {
-
+      
                 btn = img.gameObject.AddComponent<Button>();
             }
 
@@ -232,8 +219,6 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-
-
     public void CloseInventory()
     {
         if (_isOpen)
@@ -243,10 +228,6 @@ public class InventoryUI : MonoBehaviour
             if (inventoryPanel != null)
                 inventoryPanel.SetActive(false);
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-
-            
         }
     }
 
