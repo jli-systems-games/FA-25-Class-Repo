@@ -26,11 +26,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public int GetTotalItemCount()
-    {
-        return items.Count;
-    }
-
     void Awake()
     {
         if (Instance == null)
