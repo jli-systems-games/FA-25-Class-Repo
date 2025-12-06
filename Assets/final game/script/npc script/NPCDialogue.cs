@@ -1,4 +1,6 @@
 using UnityEngine;
+// InventoryManager를 사용하기 위해 필요
+using System.Linq;
 
 [System.Serializable]
 public class DialogueGroup
@@ -9,14 +11,17 @@ public class DialogueGroup
 
 public class NPCDialogue : MonoBehaviour
 {
+    // ⭐️ 퀘스트 마커 필드 추가
+    public GameObject questMarker;
+
     public Transform player;
     public float interactDistance = 2f;
 
-    // 도구 지급 설정 (수정된 부분)
+    // 도구 지급 설정
     public GameObject toolPrefabToSpawn;
     public Transform spawnPoint;
     public bool isToolExchangeNPC = false;
-    public string toolNameFlag = ""; // ⭐️ 획득할 도구 이름 (예: "Sickle", "Ladder")
+    public string toolNameFlag = "";
 
     public DialogueGroup[] dialogueGroups;
     public DialogueUI dialogueUI;
@@ -27,7 +32,9 @@ public class NPCDialogue : MonoBehaviour
     public float itemSpawnOffset = 0.2f;
 
     bool _isTalking = false;
+    // -1로 초기화하여 StartNewDialogue()에서 그룹이 랜덤으로 선택됨을 명시
     int _currentGroupIndex = -1;
+    // 인덱스는 0으로 유지. ShowCurrentLine()이 인덱스 0을 보여주므로 이 방식이 맞습니다.
     int _currentLineIndex = 0;
 
     void Start()
@@ -40,6 +47,7 @@ public class NPCDialogue : MonoBehaviour
 
         if (dialogueUI == null)
         {
+            // FindFirstObjectByType는 씬에서 해당 타입의 첫 번째 오브젝트를 찾습니다.
             dialogueUI = FindFirstObjectByType<DialogueUI>();
         }
 
@@ -57,6 +65,7 @@ public class NPCDialogue : MonoBehaviour
 
         if (pressEHint != null)
         {
+            // 대화 중이 아니고 상호작용 가능할 때만 E 힌트 표시
             if (!_isTalking && canInteract)
                 pressEHint.SetActive(true);
             else
@@ -73,7 +82,7 @@ public class NPCDialogue : MonoBehaviour
             StartNewDialogue();
         }
 
-        // ⭐️ [추가] 대화 중에는 Enter 키로 다음 대화/종료 처리
+        // 대화 중에는 Enter 키로 다음 대화/종료 처리
         if (_isTalking && Input.GetKeyDown(KeyCode.Return))
         {
             OnClickNextFromUI();
@@ -87,8 +96,15 @@ public class NPCDialogue : MonoBehaviour
 
         _isTalking = true;
 
+        // ⭐️ [퀘스트 마커 숨기기 로직 추가]
+        if (questMarker != null)
+        {
+            questMarker.SetActive(false);
+        }
+
+        // 현재는 랜덤 그룹 선택으로 되어 있으므로 유지
         _currentGroupIndex = Random.Range(0, dialogueGroups.Length);
-        _currentLineIndex = 0;
+        _currentLineIndex = 0; // 첫 번째 대사를 보여주기 위해 0으로 시작
 
         ShowCurrentLine();
     }
@@ -99,7 +115,12 @@ public class NPCDialogue : MonoBehaviour
             return;
 
         DialogueGroup group = dialogueGroups[_currentGroupIndex];
-        if (group.lines == null || group.lines.Length == 0) return;
+        // 🚨 중요: 여기서 lines가 비어있으면 바로 EndDialogue() 호출됩니다.
+        if (group.lines == null || group.lines.Length == 0)
+        {
+            EndDialogue();
+            return;
+        }
 
         if (_currentLineIndex >= group.lines.Length)
         {
@@ -108,6 +129,7 @@ public class NPCDialogue : MonoBehaviour
         }
 
         string text = group.lines[_currentLineIndex];
+        // 다음 대사가 남아 있는지 확인 (다음 버튼을 보여줄지 결정)
         bool hasNext = (_currentLineIndex < group.lines.Length - 1);
 
         dialogueUI.ShowDialogue(this, text, hasNext);
@@ -115,9 +137,16 @@ public class NPCDialogue : MonoBehaviour
 
     public void OnClickNextFromUI()
     {
+        // _currentGroupIndex가 유효한지 확인
+        if (_currentGroupIndex < 0 || _currentGroupIndex >= dialogueGroups.Length)
+        {
+            EndDialogue();
+            return;
+        }
+
         DialogueGroup group = dialogueGroups[_currentGroupIndex];
 
-        _currentLineIndex++;
+        _currentLineIndex++; // 인덱스 증가 (다음 대사로)
 
         if (_currentLineIndex < group.lines.Length)
         {
@@ -125,7 +154,7 @@ public class NPCDialogue : MonoBehaviour
         }
         else
         {
-            EndDialogue();
+            EndDialogue(); // 모든 대사 종료
         }
     }
 
@@ -138,7 +167,7 @@ public class NPCDialogue : MonoBehaviour
     {
         _isTalking = false;
         _currentGroupIndex = -1;
-        _currentLineIndex = 0;
+        _currentLineIndex = 0; // 다음 대화 시작을 위해 0으로 초기화 유지
 
         if (dialogueUI != null)
         {
@@ -147,13 +176,13 @@ public class NPCDialogue : MonoBehaviour
 
         if (isToolExchangeNPC)
         {
+            // 도구 스폰 및 획득 로직
             if (toolPrefabToSpawn != null && spawnPoint != null)
             {
                 Instantiate(toolPrefabToSpawn, spawnPoint.position, Quaternion.identity);
-                Debug.Log("고양이 NPC가 도구를 스폰했습니다.");
+                Debug.Log("NPC가 도구를 스폰했습니다.");
             }
 
-            // ⭐️ [수정된 핵심 로직]: 다중 도구 획득 플래그 활성화
             if (InventoryManager.Instance != null && !string.IsNullOrEmpty(toolNameFlag))
             {
                 // InventoryManager의 AcquireTool 함수 호출
@@ -165,6 +194,7 @@ public class NPCDialogue : MonoBehaviour
             return;
         }
 
+        // 대화 종료 후 E 힌트 재활성화 로직
         if (pressEHint != null && player != null)
         {
             float dist = Vector3.Distance(transform.position, player.position);
