@@ -16,7 +16,8 @@ public class InventoryUI : MonoBehaviour
 
     [Header("Tooltip Text Fields")]
     public TMP_Text tooltipNameText;              
-    public TMP_Text tooltipDescriptionText;      
+    public TMP_Text tooltipDescriptionText;
+
 
 
     bool _isOpen = false;
