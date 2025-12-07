@@ -6,11 +6,11 @@ public class LabInventorySelector : MonoBehaviour
 {
     public Button mixButton;
     public LabMixingManager mixingManager;
-    public int requiredCount = 5; 
+    public int requiredCount = 5;
 
     List<ItemData> _selectedItems = new List<ItemData>();
 
-  
+
 
     void Start()
     {
@@ -62,11 +62,11 @@ public class LabInventorySelector : MonoBehaviour
         if (mixingManager != null)
             mixingManager.SetSelectedItems(_selectedItems);
 
-        var invUI = FindFirstObjectByType<InventoryUI>();
-        if (invUI != null)
-        {
-            invUI.ResetAllSlotColors();
-            invUI.CloseInventory();
-        }
+        // ❌ [삭제된 부분]: 이 코드를 삭제해야 무한 루프가 발생하지 않습니다.
+        // var invUI = FindFirstObjectByType<InventoryUI>();
+        // if (invUI != null)
+        // {
+        //     invUI.ResetAllSlotColors(); 
+        // }
     }
 }
