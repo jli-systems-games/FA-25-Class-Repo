@@ -230,8 +230,29 @@ public class MissionManager : MonoBehaviour
         int fear = ReputationManager.Instance.familyFear;
         int respect = ReputationManager.Instance.familyRespect;
 
+        Debug.Log($"FINAL REPUTATION -> FEAR: {fear}, RESPECT: {respect}");
 
-        if (fear >= 70 && respect < 40)
+        int diff = fear - respect; // 正：Fear 多，负：Respect 多
+
+        // 参数区：以后不满意可以自己改
+        int highThreshold = 35;  // "非常高"
+        int midThreshold = 30;  // "够高"
+        int minOther = 15;  // 另一条的最低量，表示“不是零”
+        int dominanceMargin = 25; // 超过这个差距就是明显偏向一边
+
+        // 1) 好结局：Fear & Respect 都高，且差距不大
+        if (fear >= midThreshold && respect >= midThreshold && Mathf.Abs(diff) <= dominanceMargin)
+        {
+            EndingUI.Instance.ShowEnding(
+                "Harbor Boss",
+                "People lower their voices when they say your name.\n" +
+                "Not just out of fear, but out of habit and respect.\n\n" +
+                "You kept this broken harbor standing a little longer,\n" +
+                "and for now, that is enough."
+            );
+        }
+        // 2) Bloody King：Fear 非常高，Respect 也有，但Fear 明显压过Respect
+        else if (fear >= highThreshold && respect >= minOther && diff >= dominanceMargin)
         {
             EndingUI.Instance.ShowEnding(
                 "Bloody King",
@@ -241,25 +262,30 @@ public class MissionManager : MonoBehaviour
                 "but because they are terrified."
             );
         }
-        else if (respect >= 70 && fear < 60)
+        // 3) Gentleman Boss：Respect 非常高，Fear 也有，但明显偏向“被喜欢”
+        else if (respect >= highThreshold && fear >= minOther && diff <= -dominanceMargin)
         {
             EndingUI.Instance.ShowEnding(
                 "Gentleman Boss",
                 "Your enemies speak your name with caution.\n" +
-                "Your people speak it with respect.\n\n" +
-                "On these dirty streets, you built something that almost looks like order."
+                "Your people speak it with something like affection.\n\n" +
+                "You tried to hold power without drowning in blood.\n" +
+                "In this city, that's almost a miracle."
             );
         }
+        // 4) 其他情况：Burned Out
         else
         {
             EndingUI.Instance.ShowEnding(
                 "Burned Out",
-                "You tried to be feared and loved at the same time.\n" +
-                "In the end, no one truly stood by your side.\n\n" +
+                "You tried to balance terror and mercy without choosing a side.\n" +
+                "Or you never built enough of either.\n\n" +
+                "When the storm hit, no one knew which version of you to follow.\n" +
                 "The city moves on. Someone else will take your place."
             );
         }
     }
+
 
     #endregion
 }
