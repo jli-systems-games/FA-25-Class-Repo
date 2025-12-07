@@ -1,45 +1,45 @@
-using System.Collections;             
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 [System.Serializable]
 public class Recipe
 {
-
-    [Tooltip("이 레시피를 만드는 데 필요한 5가지 재료의 Item ID 목록입니다.")]
-    public string[] requiredItemIds = new string[5];
-
-    [Tooltip("이 레시피 성공 시 얻게 되는 결과 아이템 데이터입니다.")]
+    public string[] requiredItemIds;
     public ItemData resultItem;
 }
 
 public class LabMixingManager : MonoBehaviour
 {
- 
-  
-
     [Header("선택된 아이템들 (Selector에서 세팅)")]
     List<ItemData> _selectedItems = new List<ItemData>();
 
+    public TMP_Text toastMessage;
+
+    [Header("레시피 목록")]
     public Recipe[] allRecipes;
+    public ItemData defaultResultItem;
+    public ItemData successResultItem;
+    public ItemData hairRecoverItem;
 
-    [Header("책상 위 스폰 위치들 (5개)")]
+    [Header("책상 위 스폰 위치들")]
     public Transform[] spawnPoints;
-
-    [Header("스폰 간격(초)")]
     public float spawnInterval = 0.3f;
 
     [Header("이펙트 & 오디오")]
-    public ParticleSystem boilingEffect;   
-    public ParticleSystem failSmokeEffect; 
-    public ParticleSystem successEffect;    
-    public AudioSource boilingAudio;     
-    public Text resultText;
+    public ParticleSystem boilingEffect;
+    public ParticleSystem failSmokeEffect;
+    public ParticleSystem successEffect;
+    public AudioSource boilingAudio;
 
-    public TMPro.TMP_Text pickupHintText;
+    [Header("결과 텍스트(TMP)")]
+    public TMP_Text resultText;
+
+    [Header("결과 픽업 힌트 텍스트(TMP)")]
+    public TMP_Text pickupHintText;
     public string pickupMessage = "Click to pick up food";
 
     [Header("국자 & 젓기 설정")]
@@ -47,56 +47,26 @@ public class LabMixingManager : MonoBehaviour
     public int requiredStirs = 5;
 
     [Header("국자 움직임 파티클")]
-    public ParticleSystem ladleMoveEffect;  
+    public ParticleSystem ladleMoveEffect;
+
     [Header("선택 초기화(옵션)")]
     public LabInventorySelector selector;
+
+    [Header("결과 아이템 월드 스폰")]
+    public Transform resultSpawnPoint;
 
     int _currentStirCount = 0;
     bool _mixingInProgress = false;
     List<GameObject> _spawnedWorldItems = new List<GameObject>();
+    ItemData _lastResultItem;
 
-    [Header("레시피 목록")]
-    public ItemData defaultResultItem;
-
-    public Transform resultSpawnPoint;
-
-    IEnumerator ShowResultPickupHint()
+    void Start()
     {
-        if (pickupHintText != null)
-        {
-            // 텍스트 설정 및 활성화
-            pickupHintText.text = pickupMessage;
-            pickupHintText.gameObject.SetActive(true);
-
-            // 2초 대기
-            yield return new WaitForSeconds(2.0f);
-
-            // 비활성화
-            pickupHintText.gameObject.SetActive(false);
-        }
-    }
-
-    public void MixItems()
-    {
-        
-
-        // ⭐️ [추가] 믹싱 시작과 동시에 인벤토리를 닫습니다.
-        var invUI = FindFirstObjectByType<InventoryUI>();
-        if (invUI != null)
-        {
-            invUI.CloseInventory(); // 인벤토리 닫기 (이 함수가 InventoryUI.cs에 있어야 함)
-        }
-
-        _mixingInProgress = true;
-        _currentStirCount = 0;
-    }
-
-        void Start()
-    {
-
         if (resultText != null)
             resultText.gameObject.SetActive(false);
 
+        if (pickupHintText != null)
+            pickupHintText.gameObject.SetActive(false);
 
         if (ladle != null)
         {
@@ -123,15 +93,37 @@ public class LabMixingManager : MonoBehaviour
 
     public void SetSelectedItems(List<ItemData> items)
     {
-        _selectedItems = new List<ItemData>(items);
+        if (items == null)
+            _selectedItems = new List<ItemData>();
+        else
+            _selectedItems = new List<ItemData>(items);
     }
 
+    IEnumerator ShowResultPickupHint()
+    {
+        if (pickupHintText != null)
+        {
+            pickupHintText.text = pickupMessage;
+            pickupHintText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(2.0f);
+            pickupHintText.gameObject.SetActive(false);
+        }
+    }
+
+    public void MixItems()
+    {
+        var invUI = FindFirstObjectByType<InventoryUI>();
+        if (invUI != null)
+            invUI.CloseInventory();
+
+        _mixingInProgress = true;
+        _currentStirCount = 0;
+    }
 
     public void OnClickMixButton()
     {
-        
-        // 이제는 "아무 것도 없을 때만 막고",
-        // 1~5개면 섞게 둠 (나중에 CheckRecipe에서 5개만 성공 처리)
+        MixItems();
+
         if (_selectedItems == null || _selectedItems.Count == 0)
         {
             Debug.LogWarning("적어도 1개 이상의 아이템이 선택되어야 섞을 수 있습니다.");
@@ -139,12 +131,8 @@ public class LabMixingManager : MonoBehaviour
         }
 
         ClearSpawnedItems();
-
-        // 한 번에 다 스폰 대신, 코루틴으로 순서대로 스폰
         StartCoroutine(SpawnItemsOnTableCoroutine());
-
         StartBoiling();
-
         _mixingInProgress = true;
         _currentStirCount = 0;
 
@@ -152,8 +140,7 @@ public class LabMixingManager : MonoBehaviour
             resultText.gameObject.SetActive(false);
     }
 
-   
-    System.Collections.IEnumerator SpawnItemsOnTableCoroutine()
+    IEnumerator SpawnItemsOnTableCoroutine()
     {
         int count = Mathf.Min(spawnPoints.Length, _selectedItems.Count);
 
@@ -167,18 +154,17 @@ public class LabMixingManager : MonoBehaviour
                 _spawnedWorldItems.Add(spawned);
             }
 
-      
             if (spawnInterval > 0f && i < count - 1)
                 yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-
     void ClearSpawnedItems()
     {
         foreach (var go in _spawnedWorldItems)
         {
-            if (go != null) Destroy(go);
+            if (go != null)
+                Destroy(go);
         }
         _spawnedWorldItems.Clear();
     }
@@ -210,11 +196,11 @@ public class LabMixingManager : MonoBehaviour
         if (boilingAudio != null)
             boilingAudio.Stop();
     }
-    // LabMixingManager.cs 파일 내
 
     void OnStirOnce()
     {
-        if (!_mixingInProgress) return;
+        if (!_mixingInProgress)
+            return;
 
         _currentStirCount++;
 
@@ -223,23 +209,24 @@ public class LabMixingManager : MonoBehaviour
             _mixingInProgress = false;
             StopBoiling();
 
-            // ... (국자 이펙트 종료 로직 유지) ...
-
-            // ⭐️ [수정] 레시피를 확인하고 결과 아이템을 얻습니다.
             ItemData resultItem = FindResultItem();
+            _lastResultItem = resultItem;
 
-            // ItemData가 defaultResultItem이 아닐 때만 성공으로 간주
-            bool success = (resultItem != null) && (resultItem != defaultResultItem);
+            bool success = (resultItem != null && resultItem == successResultItem);
 
-            // 1. 결과 아이템 스폰 (인벤토리에 바로 추가 대신)
             if (resultItem != null)
             {
                 SpawnResultItemWorldObject(resultItem);
-
                 StartCoroutine(ShowResultPickupHint());
             }
 
-            ShowResult(success);
+            if (resultItem != null && resultItem == hairRecoverItem)
+            {
+                HealAllNPCsOneStep();
+                    StartCoroutine(ShowToast("+ Baldness condition has improved"));
+            }
+
+            ShowResult(success, resultItem);
             ClearSpawnedItems();
 
             if (selector != null)
@@ -270,42 +257,41 @@ public class LabMixingManager : MonoBehaviour
 
     ItemData FindResultItem()
     {
-        if (_selectedItems == null || _selectedItems.Count != 5 || allRecipes == null)
-        {
+        if (_selectedItems == null || _selectedItems.Count == 0 || allRecipes == null)
             return defaultResultItem;
-        }
 
         var selectedIds = _selectedItems
             .Where(d => d != null)
             .Select(d => d.itemId)
-            .OrderBy(id => id) // ⭐️ Linq 필요
+            .OrderBy(id => id)
             .ToArray();
 
-        if (selectedIds.Length != 5)
+        if (selectedIds.Length == 0)
             return defaultResultItem;
 
-        // 2. 모든 레시피를 돌면서 일치하는지 확인
         foreach (var recipe in allRecipes)
         {
-            if (recipe == null || recipe.requiredItemIds.Length != 5 || recipe.resultItem == null)
+            if (recipe == null ||
+                recipe.requiredItemIds == null ||
+                recipe.requiredItemIds.Length == 0 ||
+                recipe.resultItem == null)
                 continue;
 
-            // ⭐️ [문제의 코드] 레시피 ID도 정렬하여 requiredIds 변수에 저장합니다.
-            // requiredIds는 함수가 아닌, 정렬된 문자열 배열입니다.
-            var requiredIds = recipe.requiredItemIds.OrderBy(id => id).ToArray();
+            var requiredIds = recipe.requiredItemIds
+                .Where(id => !string.IsNullOrEmpty(id))
+                .OrderBy(id => id)
+                .ToArray();
 
-            // 선택된 ID 배열과 레시피 ID 배열이 완전히 동일한지 확인
-            if (selectedIds.SequenceEqual(requiredIds)) // ⭐️ Linq 필요
-            {
-                // 레시피 일치! 결과 아이템 반환
+            if (selectedIds.Length != requiredIds.Length)
+                continue;
+
+            if (selectedIds.SequenceEqual(requiredIds))
                 return recipe.resultItem;
-            }
         }
 
-        // 3. 일치하는 레시피 없음 -> 기본 결과물 반환
-        Debug.LogWarning("일치하는 레시피를 찾지 못했습니다. 기본 결과물을 반환합니다.");
         return defaultResultItem;
     }
+
     void SpawnResultItemWorldObject(ItemData resultItem)
     {
         if (resultItem == null || resultItem.worldPrefab == null)
@@ -320,29 +306,24 @@ public class LabMixingManager : MonoBehaviour
             return;
         }
 
-        // ItemData에 연결된 월드 프리팹을 스폰합니다.
         GameObject spawnedObject = Instantiate(
             resultItem.worldPrefab,
             resultSpawnPoint.position,
             resultSpawnPoint.rotation);
 
-        // WorldItemPickup 스크립트를 찾아 데이터 연결
-        // 이 스크립트가 ItemData를 가지고 있어야 클릭 시 인벤토리에 추가 가능
         WorldItemPickup pickup = spawnedObject.GetComponent<WorldItemPickup>();
         if (pickup != null)
         {
             pickup.itemData = resultItem;
-            // 랩에서 나온 결과물이므로 도구 검사를 건너뛰도록 설정
             pickup.requiredToolName = "";
         }
         else
         {
-            Debug.LogError("결과물 월드 프리팹에 WorldItemPickup.cs 스크립트가 없습니다. 클릭해서 줍기가 불가능합니다.");
+            Debug.LogError("결과물 월드 프리팹에 WorldItemPickup.cs 스크립트가 없습니다.");
         }
     }
 
-
-    void ShowResult(bool success)
+    void ShowResult(bool success, ItemData resultItem)
     {
         if (successEffect != null)
         {
@@ -358,23 +339,23 @@ public class LabMixingManager : MonoBehaviour
         if (success)
         {
             if (successEffect != null)
-            {
                 StartCoroutine(PlayOneShotEffect(successEffect));
-            }
 
             if (resultText != null)
             {
                 resultText.gameObject.SetActive(true);
-                resultText.text = "success";
+                if (resultItem != null)
+                    resultText.text = resultItem.displayName + " crafted!!";
+                else
+                    resultText.text = "success";
             }
+
             SceneManager.LoadScene("success");
         }
         else
         {
             if (failSmokeEffect != null)
-            {
                 StartCoroutine(PlayOneShotEffect(failSmokeEffect));
-            }
 
             if (resultText != null)
             {
@@ -397,4 +378,49 @@ public class LabMixingManager : MonoBehaviour
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         ps.gameObject.SetActive(false);
     }
+
+    void HealAllNPCsOneStep()
+    {
+        NPCHairController[] npcs = FindObjectsOfType<NPCHairController>();
+        foreach (var npc in npcs)
+        {
+            if (npc != null)
+                npc.RecoverHair(1);
+        }
+    }
+
+    IEnumerator ShowToast(string msg)
+    {
+        if (toastMessage == null) yield break;
+
+        toastMessage.text = msg;
+        toastMessage.gameObject.SetActive(true);
+
+        Color c = toastMessage.color;
+
+        toastMessage.color = new Color(c.r, c.g, c.b, 1f);
+
+        Vector3 startPos = toastMessage.rectTransform.anchoredPosition;
+        Vector3 endPos = startPos + new Vector3(0, 80f, 0);
+
+        float t = 0f;
+        float duration = 1.2f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+
+            toastMessage.rectTransform.anchoredPosition =
+                Vector3.Lerp(startPos, endPos, t / duration);
+
+            float alpha = Mathf.Lerp(1f, 0f, t / duration);
+            toastMessage.color = new Color(c.r, c.g, c.b, alpha);
+
+            yield return null;
+        }
+
+        toastMessage.gameObject.SetActive(false);
+        toastMessage.rectTransform.anchoredPosition = startPos;
+    }
+
 }
