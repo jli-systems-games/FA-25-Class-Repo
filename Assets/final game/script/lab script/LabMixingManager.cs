@@ -338,19 +338,7 @@ public class LabMixingManager : MonoBehaviour
 
         if (success)
         {
-            if (successEffect != null)
-                StartCoroutine(PlayOneShotEffect(successEffect));
-
-            if (resultText != null)
-            {
-                resultText.gameObject.SetActive(true);
-                if (resultItem != null)
-                    resultText.text = resultItem.displayName + " crafted!!";
-                else
-                    resultText.text = "success";
-            }
-
-            SceneManager.LoadScene("success");
+            StartCoroutine(SuccessSequence(resultItem));
         }
         else
         {
@@ -422,5 +410,34 @@ public class LabMixingManager : MonoBehaviour
         toastMessage.gameObject.SetActive(false);
         toastMessage.rectTransform.anchoredPosition = startPos;
     }
+    IEnumerator SuccessSequence(ItemData resultItem)
+    {
+        if (successEffect != null)
+        {
+            successEffect.gameObject.SetActive(true);
+            successEffect.Clear();
+            successEffect.Play();
+        }
+
+        if (resultText != null)
+        {
+            resultText.gameObject.SetActive(true);
+            if (resultItem != null)
+                resultText.text = resultItem.displayName + " crafted!!";
+            else
+                resultText.text = "success";
+        }
+
+        yield return new WaitForSeconds(5f);
+
+        if (successEffect != null)
+        {
+            successEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            successEffect.gameObject.SetActive(false);
+        }
+
+        SceneManager.LoadScene("success");
+    }
+
 
 }
