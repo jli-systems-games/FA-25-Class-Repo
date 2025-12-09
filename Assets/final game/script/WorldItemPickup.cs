@@ -23,7 +23,7 @@ public class WorldItemPickup : MonoBehaviour
         bool requiresTool = !string.IsNullOrEmpty(requiredToolName);
 
         bool canPickUp = !requiresTool ||
-                      (requiresTool && InventoryManager.Instance.HasTool(requiredToolName));
+                      (requiresTool && InventoryManager.Instance.HasItem(requiredToolName));
         if (canPickUp)
         {
             InventoryManager.Instance.AddItem(itemData);
