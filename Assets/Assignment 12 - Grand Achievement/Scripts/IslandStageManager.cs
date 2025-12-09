@@ -9,7 +9,8 @@ public class IslandStageManager : MonoBehaviour
     public GameObject thirdIsland;
     public GameObject fourthIsland;
     public GameObject fifthIsland;
-    //public GameObject sixthIsland;
+    public GameObject sixthIsland;
+    public GameObject seventhIsland;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,7 +19,8 @@ public class IslandStageManager : MonoBehaviour
         thirdIsland.SetActive(false);
         fourthIsland.SetActive(false);
         fifthIsland.SetActive(false);
-        //sixthIsland.SetActive(false);
+        sixthIsland.SetActive(false);
+        seventhIsland.SetActive(false);
     }
 
     public void CheckPuzzleSolved()
@@ -45,8 +47,12 @@ public class IslandStageManager : MonoBehaviour
 
         if (Data.fifthPuzzleSolved)
         {
-            SceneManager.LoadScene("End Scene");
-            //sixthIsland.SetActive(true);
+            sixthIsland.SetActive(true);
+        }
+
+        if (Data.sixthPuzzleSolved)
+        {
+            seventhIsland.SetActive(true);
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FifthPuzzleManager : MonoBehaviour
+public class SixthPuzzleManager : MonoBehaviour
 {
     [Header("Animal Statue Parent Objects")]
     public GameObject rabbitStatueParent;
@@ -66,14 +66,13 @@ public class FifthPuzzleManager : MonoBehaviour
         deerStatue = deerStatueParent.transform.GetChild(0).gameObject;
 
         //Assign platform from parent
-        //Assign statue from parent
         rabbitPlatform = rabbitPlatformParent.transform.GetChild(0).gameObject;
         elephantPlatform = elephantPlatformParent.transform.GetChild(0).gameObject;
         rhinoPlatform = rhinoPlatformParent.transform.GetChild(0).gameObject;
         deerPlatform = deerPlatformParent.transform.GetChild(0).gameObject;
 
         //Reset Solution Map
-        if (Data.FifthSolutionMap != null) Data.FifthSolutionMap.Clear();
+        if (Data.SixthSolutionMap != null) Data.SixthSolutionMap.Clear();
 
         animalGemIndexMap = new Dictionary<GameObject, int>();
         childSymbolOrder = new GameObject[] { rectSymbol, tearSymbol, hexSymbol, circSymbol };
@@ -129,7 +128,7 @@ public class FifthPuzzleManager : MonoBehaviour
         string platformsContents = string.Join(", ", platformList);
         Debug.Log(platformsContents);
 
-        //Set Platform Positions
+        //Set Platform Rotation
         float[] platformParentYRotations = new float[]
         {
             firstPlatformRotY,
@@ -167,7 +166,7 @@ public class FifthPuzzleManager : MonoBehaviour
 
     private void GenerateSolutionMap()
     {
-        Data.FifthSolutionMap = new Dictionary<GameObject, int>();
+        Data.SixthSolutionMap = new Dictionary<GameObject, int>();
 
         //Assign animal platform order depending on symbol order and gem on animal statue
         foreach (KeyValuePair<GameObject, int> entry in animalGemIndexMap)
@@ -181,7 +180,7 @@ public class FifthPuzzleManager : MonoBehaviour
 
             GameObject animalPlatform = GetPlatformForStatue(statueObject);
 
-            Data.FifthSolutionMap.Add(animalPlatform, passwordSymbolOrder);
+            Data.SixthSolutionMap.Add(animalPlatform, passwordSymbolOrder);
         }
     }
 

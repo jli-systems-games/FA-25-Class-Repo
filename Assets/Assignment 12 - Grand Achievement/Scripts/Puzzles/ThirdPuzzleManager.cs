@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class ThirdPuzzleManager : MonoBehaviour
 {
-    [Header("Platform Objects")]
+    [Header("Platform Parent Objects")]
+    public GameObject circPlatformParent;
+    public GameObject rectPlatformParent;
+    public GameObject hexPlatformParent;
+
     public GameObject circPlatform;
     public GameObject rectPlatform;
     public GameObject hexPlatform;
@@ -13,11 +17,6 @@ public class ThirdPuzzleManager : MonoBehaviour
     public GameObject circSymbol;
     public GameObject rectSymbol;
     public GameObject hexSymbol;
-
-    [Header("Platform Positions")]
-    public float firstPlatformPosX;
-    public float secondPlatformPosX;
-    public float lastPlatformPosX;
 
     [Header("Platform Rotations")]
     public float firstPlatformRotY;
@@ -34,6 +33,11 @@ public class ThirdPuzzleManager : MonoBehaviour
 
     void Awake()
     {
+        //Assign platform from parent
+        circPlatform = circPlatformParent.transform.GetChild(0).gameObject;
+        rectPlatform = rectPlatformParent.transform.GetChild(0).gameObject;
+        hexPlatform = hexPlatformParent.transform.GetChild(0).gameObject;
+
         //Reset Solution Map
         if (Data.ThirdSolutionMap != null) Data.ThirdSolutionMap.Clear();
 
@@ -65,22 +69,14 @@ public class ThirdPuzzleManager : MonoBehaviour
         string platformsContents = string.Join(", ", platformList);
         Debug.Log(platformsContents);
 
-        //Set Platform Positions
-        float[] platformXPositions = new float[]
-        {
-            firstPlatformPosX,
-            secondPlatformPosX,
-            lastPlatformPosX
-        };
-
-        float[] platformYRotations = new float[]
+        float[] platformParentYRotations = new float[]
         {
             firstPlatformRotY,
             secondPlatformRotY,
             lastPlatformRotY
         };
 
-        SetPlatformPositions(platformXPositions, platformYRotations);
+        SetPlatformParentRotations(platformParentYRotations);
 
         GenerateSolutionMap();
     }
@@ -116,19 +112,16 @@ public class ThirdPuzzleManager : MonoBehaviour
         }
     }
 
-    private void SetPlatformPositions(float[] platformXPositions, float[] platformYRotations)
+    private void SetPlatformParentRotations(float[] platformParentYRotations)
     {
         for (int i = 0; i < platformList.Count; i++)
         {
-            GameObject platformObject = platformList[i];
-            float platformXPosition = platformXPositions[i];
-            float platformYRotation = platformYRotations[i];
+            GameObject platform = platformList[i];
+            GameObject platformParent = platform.transform.parent.gameObject;
 
-            Vector3 currentPos = platformObject.transform.localPosition;
+            float platformParentY = platformParentYRotations[i];
 
-            platformObject.transform.localPosition = new Vector3(platformXPosition, currentPos.y, currentPos.z);
-
-            platformObject.transform.localRotation = Quaternion.Euler(0, platformYRotation, 0);
+            platformParent.transform.localRotation = Quaternion.Euler(0, platformParentY, 0);
         }
     }
 }

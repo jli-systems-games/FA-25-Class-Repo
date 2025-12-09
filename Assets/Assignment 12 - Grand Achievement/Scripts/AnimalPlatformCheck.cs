@@ -12,11 +12,12 @@ public class AnimalPlatformCheck : MonoBehaviour
     private int platformClickedCount;
     private int currentStepIndex;
 
-    private Dictionary<GameObject, bool> firstPlatformClickedStatus;
     private Dictionary<GameObject, bool> secondPlatformClickedStatus;
     private Dictionary<GameObject, bool> thirdPlatformClickedStatus;
     private Dictionary<GameObject, bool> fourthPlatformClickedStatus;
     private Dictionary<GameObject, bool> fifthPlatformClickedStatus;
+    private Dictionary<GameObject, bool> sixthPlatformClickedStatus;
+    private Dictionary<GameObject, bool> seventhPlatformClickedStatus;
 
     private bool isFalseOrder;
 
@@ -24,17 +25,19 @@ public class AnimalPlatformCheck : MonoBehaviour
 
     private void Start()
     {
-        firstPlatformClickedStatus = new Dictionary<GameObject, bool>();
         secondPlatformClickedStatus = new Dictionary<GameObject, bool>();
         thirdPlatformClickedStatus = new Dictionary<GameObject, bool>();
         fourthPlatformClickedStatus = new Dictionary<GameObject, bool>();
         fifthPlatformClickedStatus = new Dictionary<GameObject, bool>();
+        sixthPlatformClickedStatus = new Dictionary<GameObject, bool>();
+        seventhPlatformClickedStatus = new Dictionary<GameObject, bool>();
 
-        ResetVariables(Data.SolutionMap, "Animal Platform", firstPlatformClickedStatus);
         ResetVariables(Data.SecondSolutionMap, "Second Platform", secondPlatformClickedStatus);
         ResetVariables(Data.ThirdSolutionMap, "Third Platform", thirdPlatformClickedStatus);
         ResetVariables(Data.FourthSolutionMap, "Fourth Platform", fourthPlatformClickedStatus);
         ResetVariables(Data.FifthSolutionMap, "Fifth Platform", fifthPlatformClickedStatus);
+        ResetVariables(Data.SixthSolutionMap, "Sixth Platform", sixthPlatformClickedStatus);
+        ResetVariables(Data.SeventhSolutionMap, "Seventh Platform", seventhPlatformClickedStatus);
     }
 
     private void ResetVariables(Dictionary<GameObject, int> solutionMap, string tagName, Dictionary<GameObject, bool> platformClickedStatus)
@@ -83,6 +86,16 @@ public class AnimalPlatformCheck : MonoBehaviour
         {
             Debug.Log("Clicked fifth platform");
             PlatformOnClick(Data.FifthSolutionMap, other.gameObject, "Fifth Platform", 4, fifthPlatformClickedStatus);
+        }
+        else if (other.gameObject.CompareTag("Sixth Platform"))
+        {
+            Debug.Log("Clicked sixth platform");
+            PlatformOnClick(Data.SixthSolutionMap, other.gameObject, "Sixth Platform", 4, sixthPlatformClickedStatus);
+        }
+        else if (other.gameObject.CompareTag("Seventh Platform"))
+        {
+            Debug.Log("Clicked seventh platform");
+            PlatformOnClick(Data.SeventhSolutionMap, other.gameObject, "Seventh Platform", 4, seventhPlatformClickedStatus);
         }
     }
 
@@ -160,8 +173,16 @@ public class AnimalPlatformCheck : MonoBehaviour
         {
             Data.fifthPuzzleSolved = true;
         }
+        else if (tagName == "Sixth Platform")
+        {
+            Data.sixthPuzzleSolved = true;
+        }
+        else if (tagName == "Seventh Platform")
+        {
+            Data.seventhPuzzleSolved = true;
+        }
 
-            stageManager.CheckPuzzleSolved();
+        stageManager.CheckPuzzleSolved();
 
         ResetPreviousPuzzleVariables();
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,88 +7,56 @@ public class FourthPuzzleManager : MonoBehaviour
     [Header("Animal Statue Parent Objects")]
     public GameObject rabbitStatueParent;
     public GameObject elephantStatueParent;
-    public GameObject rhinoStatueParent;
     public GameObject deerStatueParent;
 
     private GameObject rabbitStatue;
     private GameObject elephantStatue;
-    private GameObject rhinoStatue;
     private GameObject deerStatue;
 
     [Header("Platform Objects")]
     public GameObject rabbitPlatform;
     public GameObject elephantPlatform;
-    public GameObject rhinoPlatform;
     public GameObject deerPlatform;
 
     [Header("Symbol Objects")]
     public GameObject circSymbol;
     public GameObject rectSymbol;
-    public GameObject tearSymbol;
     public GameObject hexSymbol;
 
     [Header("Platform Positions")]
     public float firstPlatformPosZ;
     public float secondPlatformPosZ;
-    public float thirdPlatformPosZ;
     public float lastPlatformPosZ;
 
     [Header("Statue Rotations")]
     public float firstStatueParentRotY;
     public float secondStatueParentRotY;
-    public float thirdStatueParentRotY;
     public float lastStatueParentRotY;
 
     [Header("Inscription Positions")]
     public float firstSymbolPosY;
     public float secondSymbolPosY;
-    public float thirdSymbolPosY;
     public float lastSymbolPosY;
-
-    [Header("Gem Materials")]
-    public Material greenMaterial;
-    public Material blueMaterial;
-    public Material purpleMaterial;
-    public Material whiteMaterial;
-
-    private Material[] gemMaterials;
-
-    private Color[] passwordColors = new Color[]
-    {
-    Color.green,
-    Color.blue,
-    new Color(0.812f, 0f, 1f),
-    Color.white
-    };
-
-    private Color[] shuffledPasswordColors;
-
-    private int chosenGemIndex;
 
     private List<GameObject> passwordList;
     private List<GameObject> platformList;
     private List<GameObject> animalList;
 
     private Dictionary<GameObject, int> animalGemIndexMap;
-    private GameObject[] symbolByGem;
+    private GameObject[] childSymbolOrder;
 
     void Awake()
     {
         //Assign statue from parent
         rabbitStatue = rabbitStatueParent.transform.GetChild(0).gameObject;
         elephantStatue = elephantStatueParent.transform.GetChild(0).gameObject;
-        rhinoStatue = rhinoStatueParent.transform.GetChild(0).gameObject;
         deerStatue = deerStatueParent.transform.GetChild(0).gameObject;
-
-        chosenGemIndex = UnityEngine.Random.Range(0, 4);
-
-        gemMaterials = new Material[] { greenMaterial, blueMaterial, purpleMaterial, whiteMaterial };
 
         //Reset Solution Map
         if (Data.FourthSolutionMap != null) Data.FourthSolutionMap.Clear();
 
         animalGemIndexMap = new Dictionary<GameObject, int>();
-        symbolByGem = new GameObject[] { rectSymbol, tearSymbol, hexSymbol, circSymbol };
+        childSymbolOrder = new GameObject[] { rectSymbol, hexSymbol, circSymbol };
 
         //Disable all gems
         foreach (Transform childTransform in rabbitStatue.transform)
@@ -102,51 +69,33 @@ public class FourthPuzzleManager : MonoBehaviour
             GameObject child = childTransform.gameObject;
             child.SetActive(false);
         }
-        foreach (Transform childTransform in rhinoStatue.transform)
-        {
-            GameObject child = childTransform.gameObject;
-            child.SetActive(false);
-        }
         foreach (Transform childTransform in deerStatue.transform)
         {
             GameObject child = childTransform.gameObject;
             child.SetActive(false);
         }
 
-        //Set Symbol Displayed
-        GameObject selectedSymbol = GetSymbolForGem(chosenGemIndex);
+        //Set Random Symbol Order
+        GameObject[] symbols = new GameObject[] { circSymbol, rectSymbol, hexSymbol };
+        System.Random randomSymbol = new System.Random();
+        var shuffledSymbols = symbols.OrderBy(x => randomSymbol.Next()).ToArray();
 
-        // Create 4 copies of symbol
-        passwordList = new List<GameObject>();
-        for (int i = 0; i < 4; i++)
-        {
-            GameObject newSymbol = Instantiate(selectedSymbol, selectedSymbol.transform.parent);
-            newSymbol.name = selectedSymbol.name + i;
-            newSymbol.SetActive(true);
-            passwordList.Add(newSymbol);
-        }
-
-        passwordList = passwordList.OrderBy(x => UnityEngine.Random.value).ToList();
-
-
-        //Assign Password Colors
-        shuffledPasswordColors = passwordColors.OrderBy(x => UnityEngine.Random.value).ToArray();
-
-        AssignSymbolColors();
+        passwordList = shuffledSymbols.ToList();
+        string symbolsContents = string.Join(", ", passwordList);
+        Debug.Log(symbolsContents);
 
         //Set Symbol Positions
         float[] symbolYPositions = new float[]
         {
             firstSymbolPosY,
             secondSymbolPosY,
-            thirdSymbolPosY,
             lastSymbolPosY
         };
 
         SetSymbolPositions(symbolYPositions);
 
         //Set Random Platform Order
-        GameObject[] platforms = new GameObject[] { rabbitPlatform, elephantPlatform, rhinoPlatform, deerPlatform };
+        GameObject[] platforms = new GameObject[] { rabbitPlatform, elephantPlatform, deerPlatform };
         System.Random randomPlatform = new System.Random();
         var shuffledPlatforms = platforms.OrderBy(x => randomPlatform.Next()).ToArray();
 
@@ -159,14 +108,13 @@ public class FourthPuzzleManager : MonoBehaviour
         {
             firstPlatformPosZ,
             secondPlatformPosZ,
-            thirdPlatformPosZ,
             lastPlatformPosZ
         };
 
         SetPlatformPositions(platformZPositions);
 
         //Set Random Animal Statue Gem Order
-        GameObject[] animals = new GameObject[] { rabbitStatue, elephantStatue, rhinoStatue, deerStatue };
+        GameObject[] animals = new GameObject[] { rabbitStatue, elephantStatue, deerStatue };
         System.Random randomAnimal = new System.Random();
         var shuffledAnimals = animals.OrderBy(x => randomAnimal.Next()).ToArray();
 
@@ -179,13 +127,12 @@ public class FourthPuzzleManager : MonoBehaviour
         {
             firstStatueParentRotY,
             secondStatueParentRotY,
-            thirdStatueParentRotY,
             lastStatueParentRotY
         };
 
         SetStatueParentRotations(statueParentsYRotations);
 
-        SetGemsOnAnimals();
+        SetGemOnAnimal();
 
         GenerateSolutionMap();
     }
@@ -198,69 +145,37 @@ public class FourthPuzzleManager : MonoBehaviour
         foreach (KeyValuePair<GameObject, int> entry in animalGemIndexMap)
         {
             GameObject statueObject = entry.Key;
-            int gemMaterialIndex = entry.Value;
+            int activeGemIndex = entry.Value;
 
-            Color targetColor = passwordColors[gemMaterialIndex];
+            GameObject targetSymbolObject = childSymbolOrder[activeGemIndex];
 
-            int passwordOrder = -1;
+            int passwordSymbolOrder = passwordList.IndexOf(targetSymbolObject);
 
-            for (int i = 0; i < passwordList.Count; i++)
-            {
-                SpriteRenderer sr = passwordList[i].GetComponent<SpriteRenderer>();
-                if (sr != null && sr.color == targetColor)
-                {
-                    passwordOrder = i;
-                    break;
-                }
-            }
+            GameObject animalPlatform = GetPlatformForStatue(statueObject);
 
-            GameObject platform = GetPlatformForStatue(statueObject);
-            Data.FourthSolutionMap.Add(platform, passwordOrder);
+            Data.FourthSolutionMap.Add(animalPlatform, passwordSymbolOrder);
         }
-    }
-
-    private GameObject GetSymbolForGem(int gemIndex)
-    {
-        return symbolByGem[gemIndex];
     }
 
     private GameObject GetPlatformForStatue(GameObject statue)
     {
         if (statue == rabbitStatue) return rabbitPlatform;
         if (statue == elephantStatue) return elephantPlatform;
-        if (statue == rhinoStatue) return rhinoPlatform;
         if (statue == deerStatue) return deerPlatform;
         return null;
     }
 
-    private void AssignSymbolColors()
+    private void SetGemOnAnimal()
     {
-        for (int i = 0; i < passwordList.Count; i++)
-        {
-            SpriteRenderer sr = passwordList[i].GetComponent<SpriteRenderer>();
-            if (sr != null)
-                sr.color = shuffledPasswordColors[i];
-        }
-    }
-
-    private void SetGemsOnAnimals()
-    {
-
-        Material[] shuffledGemMaterials = gemMaterials.OrderBy(x => UnityEngine.Random.value).ToArray();
-
         for (int i = 0; i < animalList.Count; i++)
         {
-            GameObject animal = animalList[i];
+            GameObject animalObject = animalList[i];
+            int activeGemIndex = i;
 
-            Transform gem = animal.transform.GetChild(chosenGemIndex);
-            gem.gameObject.SetActive(true);
+            Transform selectedGem = animalObject.transform.GetChild(i);
+            selectedGem.gameObject.SetActive(true);
 
-            Material mat = shuffledGemMaterials[i];
-            gem.GetComponent<Renderer>().material = mat;
-
-            int materialIndex = Array.IndexOf(gemMaterials, mat);
-
-            animalGemIndexMap.Add(animal, materialIndex);
+            animalGemIndexMap.Add(animalObject, activeGemIndex);
         }
     }
 
