@@ -6,6 +6,9 @@ public class NPCHairDecay : MonoBehaviour
     public NPCHairController hairController;
     public float decayInterval = 30f;     // 평소엔 30초마다 단계+1
     public float acidRainMultiplier = 0.3f; // 산성비면 x0.3 = 더 빨리 빠짐
+    public int currentHairLevel;
+
+
 
     float timer = 0f;
 
