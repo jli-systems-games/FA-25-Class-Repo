@@ -954,10 +954,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -4088,7 +4088,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 255
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -15897,12 +15897,14 @@ MonoBehaviour:
   EIconImage: {fileID: 798639642}
   hintCamera: {fileID: 1371250525}
   hiddenHintCamera: {fileID: 556493068}
+  hintSymbolCamera: {fileID: 1327552822}
   hintVisionVolume: {fileID: 462118769}
   hintCameraVolume: {fileID: 1172919230}
   hintSymbolCameraVolume: {fileID: 1047776554}
   hintVisionDuration: 5
   fadeDuration: 1
   coolDownTime: 3
+  isOnCooldown: 0
 --- !u!4 &881361460
 Transform:
   m_ObjectHideFlags: 0
@@ -22030,8 +22032,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1371250522}
-  - {fileID: 1327552819}
   - {fileID: 556493065}
+  - {fileID: 1327552819}
   m_Father: {fileID: 1932130531}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!81 &1209164274
