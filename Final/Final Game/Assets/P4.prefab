@@ -1519,8 +1519,9 @@ GameObject:
   - component: {fileID: -291394850981915880}
   - component: {fileID: 4250108815817870919}
   - component: {fileID: -4576301594280343761}
+  - component: {fileID: -1690431370299860561}
   m_Layer: 10
-  m_Name: P2
+  m_Name: P4
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1685,7 +1686,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharacterDimension: 0
   CharacterType: 0
-  PlayerID: Player2
+  PlayerID: Player4
   CharacterAnimator: {fileID: 6431749588643920911}
   UseDefaultMecanim: 1
   RunAnimatorSanityChecks: 0
@@ -1717,7 +1718,7 @@ MonoBehaviour:
   BlockingMovementStates: 
   BlockingConditionStates: 
   BlockingWeaponStates: 
-  RotationMode: 3
+  RotationMode: 1
   CharacterRotationAuthorized: 1
   ShouldRotateToFaceMovementDirection: 1
   MovementRotationSpeed: 0
@@ -1968,7 +1969,7 @@ MonoBehaviour:
   BlockingMovementStates: 
   BlockingConditionStates: 
   BlockingWeaponStates: 
-  PlayerID: Player1
+  PlayerID: Player4
   MainInventoryName: SuitMainInventory
   WeaponInventoryName: SuitWeaponInventory
   HotbarInventoryName: 
@@ -2214,7 +2215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _character: {fileID: 1924621446957796844}
   _handleWeapon: {fileID: 0}
-  InteractKey: 13
+  InteractKey: 330
 --- !u!114 &3392153567070214524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2396,7 +2397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0521a5ae8fe732442b1223862d70ef07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThrowKey: 260
+  ThrowKey: 331
   HandTransform: {fileID: 1308256598490157121}
   BigRockSpeed: 12
   SmallRockSpeed: 24
@@ -2420,6 +2421,34 @@ MonoBehaviour:
   ShowBounceIndicators: 1
   BounceIndicatorSize: 0.3
   EnableDebugLogs: 0
+--- !u!114 &-1690431370299860561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797963581942753231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 281595ba54132634bbe48b336e62e2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InputDetectionActive: 1
+  ResetButtonStatesOnFocusLoss: 1
+  PlayerID: Player4
+  AutoMobileDetection: 0
+  InputForcedMode: 0
+  ForceWeaponMode: 0
+  WeaponForcedMode: 0
+  HideMobileControlsInEditor: 1
+  MovementControl: 0
+  ForceDesktopIfPrimaryAxisActive: 0
+  DelayedButtonPresses: 0
+  AutoRevertToMobileIfPrimaryAxisInactive: 0
+  AutoRevertToMobileIfPrimaryAxisInactiveDuration: 10
+  SmoothMovement: 1
+  Threshold: {x: 0.1, y: 0.4}
+  RotateInputBasedOnCameraDirection: 0
 --- !u!1 &2450024455167729298
 GameObject:
   m_ObjectHideFlags: 0
@@ -8675,7 +8704,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f09ef7e9383cb52498138d4f288ef89e, type: 2}
+  - {fileID: 2100000, guid: a2daa816e33283f4da09f96c7246a672, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24150,7 +24179,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f09ef7e9383cb52498138d4f288ef89e, type: 2}
+  - {fileID: 2100000, guid: a2daa816e33283f4da09f96c7246a672, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
