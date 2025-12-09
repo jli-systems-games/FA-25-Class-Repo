@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NPCHairController : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class NPCHairController : MonoBehaviour
     public Sprite[] npcSprites;  
     [Range(0, 5)]
     public int currentStage = 0;
+
+
+    public string failSceneName = "fail";
+    bool _hasTriggeredFail = false;
 
     void Start()
     {
@@ -31,8 +36,12 @@ public class NPCHairController : MonoBehaviour
         // 🚨 게임 오버 조건 체크 (max stage에 도달)
         if (currentStage == npcSprites.Length - 1)
         {
-            Debug.Log($"{gameObject.name} (NPC) is completely bald! Game Over!");
-            // (TODO: GameManager.EndGame() 호출 등)
+            _hasTriggeredFail = true;
+
+            if (!string.IsNullOrEmpty(failSceneName))
+            {
+                SceneManager.LoadScene(failSceneName);
+            }
         }
     }
 
