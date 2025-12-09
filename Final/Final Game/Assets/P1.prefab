@@ -6309,7 +6309,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2166957829413228681}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80a52f88e226e0c459085cd4e4a38a7b, type: 3}
   m_Name: 
@@ -6911,19 +6911,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThrowKey: 101
   HandTransform: {fileID: 6243480106284884059}
-  MinForce: 5
-  MaxForce: 20
+  BigRockSpeed: 12
+  SmallRockSpeed: 24
   MaxChargeTime: 1.5
-  ThrowUpwardForce: 2
+  MaxRange: 36.9
+  SmallRockMassThreshold: 1
+  MaxBounces: 3
   ChargeSpeedMultiplier: 0.924
   PulseInterval: 0.4
   RingDuration: 0.8
   ChargeRingPrefab: {fileID: 0}
-  CustomCamera: {fileID: 0}
-  ShakeIntensity: 0.82
-  ShakeDuration: 0.8
-  LineWidth: 0.2
-  LinePoints: 30
+  VCam: {fileID: 0}
+  ShakeIntensity: 1
+  ShakeDuration: 1.04
+  ShakeFrequency: 4
+  LineWidth: 0.6
+  SegmentsPerBounce: 15
+  LineColorStart: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
+  LineColorBounce1: {r: 1, g: 0.8, b: 0.2, a: 0.7}
+  LineColorBounce2: {r: 1, g: 0.5, b: 0.2, a: 0.6}
+  LineColorEnd: {r: 1, g: 0.2, b: 0.2, a: 0.5}
+  ShowBounceIndicators: 1
+  BounceIndicatorSize: 0.3
+  EnableDebugLogs: 1
 --- !u!1 &2524165818428397978
 GameObject:
   m_ObjectHideFlags: 0

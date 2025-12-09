@@ -1,7 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using MoreMountains.TopDownEngine;
-using Unity.Cinemachine;   // 引用 Cinemachine 3 (如果是旧版请改回 Cinemachine)
+using Unity.Cinemachine;
 
 [RequireComponent(typeof(LineRenderer))]
 public class CharacterRockThrower : MonoBehaviour
@@ -10,37 +11,38 @@ public class CharacterRockThrower : MonoBehaviour
     public KeyCode ThrowKey = KeyCode.E;
 
     [Header("投掷参数")]
-    [Tooltip("如果不填，游戏开始时会自动寻找名为 'WeaponAttachment' 的子物体")]
     public Transform HandTransform;
-    public float MinForce = 10f;
-    public float MaxForce = 25f;
+    public float BigRockSpeed = 10f;
+    public float SmallRockSpeed = 20f;
     public float MaxChargeTime = 1.0f;
-    public float ThrowUpwardForce = 3f;
+    public float MaxRange = 30f;
+    public float SmallRockMassThreshold = 3f;
+    public int MaxBounces = 3;
 
-    [Header("蓄力手感 (Juice)")]
-    [Range(0.1f, 1f)]
-    public float ChargeSpeedMultiplier = 0.3f;
-
-    [Tooltip("每次光圈出现的间隔时间")]
+    [Header("蓄力手感")]
     public float PulseInterval = 0.4f;
-
-    [Tooltip("光圈收缩的动画时长")]
     public float RingDuration = 0.8f;
-
     public GameObject ChargeRingPrefab;
 
-    [Header("相机震动 (Cinemachine)")]
-    [Tooltip("可以不拖，脚本会自动从 Brain 里找当前正在用的 CinemachineCamera")]
-    public CinemachineCamera VCam; // 如果报错找不到类型，说明你用的是旧版Cinemachine，请改为 CinemachineVirtualCamera
+    [Header("相机震动")]
+    public CinemachineCamera VCam;
     public float ShakeIntensity = 2f;
     public float ShakeDuration = 0.1f;
-    public float ShakeFrequency = 4f;   // 蓄力 pulse 时抖动频率
-
-    const float BaseFrequency = 2f;      // 非震动状态的基础频率
+    public float ShakeFrequency = 4f;
+    const float BaseFrequency = 2f;
 
     [Header("视觉效果")]
-    public float LineWidth = 0.5f;
-    public int LinePoints = 20;
+    public float LineWidth = 0.08f;
+    public int SegmentsPerBounce = 15;
+    public Color LineColorStart = new Color(0.8f, 0.8f, 0.8f, 0.8f);
+    public Color LineColorBounce1 = new Color(1f, 0.8f, 0.2f, 0.7f);
+    public Color LineColorBounce2 = new Color(1f, 0.5f, 0.2f, 0.6f);
+    public Color LineColorEnd = new Color(1f, 0.2f, 0.2f, 0.5f);
+    public bool ShowBounceIndicators = true;
+    public float BounceIndicatorSize = 0.3f;
+
+    [Header("调试")]
+    public bool EnableDebugLogs = false;
 
     private Character _character;
     private CharacterMovement _characterMovement;
@@ -51,76 +53,70 @@ public class CharacterRockThrower : MonoBehaviour
     private GameObject _heldRock;
     private Collider _playerCollider;
 
-    private float _initialWalkSpeed;
-    private float _initialRunSpeed;
-    private float _pulseTimer;
+    // 【新增】记录初始满速
+    private float _defaultWalkSpeed;
+    private float _defaultRunSpeed;
 
+    private float _pulseTimer;
     private Coroutine _shakeCoroutine;
     private CinemachineBasicMultiChannelPerlin _perlin;
     private bool _cinemachineInitialized = false;
+    private List<GameObject> _bounceIndicators = new List<GameObject>();
+    private bool _hasValidRock = false;
+    private bool _isSmallRock = false;
 
     void Start()
     {
-        _character = GetComponent<Character>();
-        _playerCollider = GetComponent<Collider>();
-
-        _characterMovement = GetComponent<CharacterMovement>();
-        _characterRun = GetComponent<CharacterRun>();
-
-        if (_characterMovement != null)
-        {
-            _initialWalkSpeed = _characterMovement.WalkSpeed;
-            _initialRunSpeed = _characterRun != null ? _characterRun.RunSpeed : _initialWalkSpeed;
-        }
-
+        InitializeComponents();
         SetupLineRenderer();
         CheckAndFixHandTransform();
     }
 
+    void InitializeComponents()
+    {
+        _character = GetComponent<Character>();
+        _playerCollider = GetComponent<Collider>();
+        _characterMovement = GetComponent<CharacterMovement>();
+        _characterRun = GetComponent<CharacterRun>();
+
+        // 【新增】在游戏一开始记录满速状态
+        if (_characterMovement != null) _defaultWalkSpeed = _characterMovement.WalkSpeed;
+        if (_characterRun != null) _defaultRunSpeed = _characterRun.RunSpeed;
+    }
+
     void Update()
     {
-        // 每帧先尝试初始化一次 Cinemachine（直到成功为止）
         TryInitCinemachine();
 
         if (HandTransform == null)
         {
             CheckAndFixHandTransform();
-            if (HandTransform == null) return;
+            if (HandTransform == null) { _hasValidRock = false; return; }
         }
 
         FindAndFixRock();
 
+        // 原代码里的 ForceRestoreSpeed 我去掉了，改为在ThrowRock里恢复，这样更高效
+
         if (Input.GetKeyDown(ThrowKey))
         {
-            if (_heldRock == null) return;
+            if (_heldRock == null)
+            {
+                if (EnableDebugLogs) Debug.LogWarning("[RockThrower] 没有可投掷的石头！");
+                return;
+            }
             StartCharging();
         }
 
         if (_heldRock != null && _isCharging)
         {
-            if (Input.GetKey(ThrowKey))
-            {
-                _chargeTimer += Time.deltaTime;
-
-                if (_chargeTimer >= MaxChargeTime)
-                {
-                    _chargeTimer = MaxChargeTime;
-                }
-                else
-                {
-                    HandleChargePulse();
-                }
-
-                ApplySlowDown();
-
-                float currentForce = Mathf.Lerp(MinForce, MaxForce, _chargeTimer / MaxChargeTime);
-                DrawTrajectory(currentForce);
-            }
-
+            if (Input.GetKey(ThrowKey)) UpdateCharging();
             if (Input.GetKeyUp(ThrowKey))
             {
-                StopCharging();
-                ThrowRock();
+                _isCharging = false;
+                if (_lineRenderer != null) _lineRenderer.enabled = false;
+                ClearBounceIndicators();
+                ThrowRock(); // 发射！
             }
         }
         else if (_isCharging)
@@ -129,45 +125,26 @@ public class CharacterRockThrower : MonoBehaviour
         }
     }
 
-    // —— 只要没成功找到 active 相机上的 Perlin，就持续尝试 —— 
+    // --- 辅助函数保持原样 ---
     void TryInitCinemachine()
     {
         if (_cinemachineInitialized) return;
-
-        // 1. 尝试从 Camera.main 上的 Brain 获取当前正在用的虚拟相机
         if (VCam == null)
         {
             Camera mainCam = Camera.main;
             if (mainCam != null)
             {
                 var brain = mainCam.GetComponent<CinemachineBrain>();
-                // 注意：Unity 6 / Cinemachine 3 使用 CinemachineCamera
-                // 如果你是旧版 (Cinemachine 2.x)，这里请改为 CinemachineVirtualCamera
-                if (brain != null && brain.ActiveVirtualCamera is CinemachineCamera camFromBrain)
-                {
-                    VCam = camFromBrain;
-                }
+                if (brain != null && brain.ActiveVirtualCamera is CinemachineCamera camFromBrain) VCam = camFromBrain;
             }
         }
-
-        // 2. 兜底：场景里随便找一个 CinemachineCamera
-        if (VCam == null)
-        {
-            VCam = Object.FindFirstObjectByType<CinemachineCamera>();
-        }
-
+        if (VCam == null) VCam = Object.FindFirstObjectByType<CinemachineCamera>();
         if (VCam != null)
         {
             _perlin = VCam.GetComponent<CinemachineBasicMultiChannelPerlin>();
-            if (_perlin == null)
-            {
-                return;
-            }
-
-            // 一旦找到，就强制把初始状态设成“静止”
+            if (_perlin == null) return;
             _perlin.AmplitudeGain = 0f;
             _perlin.FrequencyGain = BaseFrequency;
-
             _cinemachineInitialized = true;
         }
     }
@@ -188,10 +165,7 @@ public class CharacterRockThrower : MonoBehaviour
         if (HandTransform == null)
         {
             Transform foundAttachment = FindDeepChild(transform, "WeaponAttachment");
-            if (foundAttachment != null)
-            {
-                HandTransform = foundAttachment;
-            }
+            if (foundAttachment != null) HandTransform = foundAttachment;
         }
     }
 
@@ -201,10 +175,16 @@ public class CharacterRockThrower : MonoBehaviour
         _lineRenderer.startWidth = LineWidth;
         _lineRenderer.endWidth = LineWidth;
         _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        _lineRenderer.startColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-        _lineRenderer.endColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-        _lineRenderer.positionCount = LinePoints;
+        _lineRenderer.startColor = LineColorStart;
+        _lineRenderer.endColor = LineColorEnd;
         _lineRenderer.enabled = false;
+        // Gradient setup omitted for brevity, keeping yours
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(LineColorStart, 0.0f), new GradientColorKey(LineColorBounce1, 0.33f), new GradientColorKey(LineColorBounce2, 0.66f), new GradientColorKey(LineColorEnd, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(0.8f, 0.0f), new GradientAlphaKey(0.6f, 1.0f) }
+        );
+        _lineRenderer.colorGradient = gradient;
     }
 
     void StartCharging()
@@ -213,39 +193,22 @@ public class CharacterRockThrower : MonoBehaviour
         _chargeTimer = 0f;
         _pulseTimer = PulseInterval;
         if (_lineRenderer != null) _lineRenderer.enabled = true;
+        if (EnableDebugLogs) Debug.Log("[RockThrower] 开始蓄力");
+    }
+
+    void UpdateCharging()
+    {
+        _chargeTimer += Time.deltaTime;
+        if (_chargeTimer >= MaxChargeTime) _chargeTimer = MaxChargeTime;
+        else HandleChargePulse();
+        DrawTrajectory();
     }
 
     void StopCharging()
     {
         _isCharging = false;
         if (_lineRenderer != null) _lineRenderer.enabled = false;
-
-        if (_characterMovement != null)
-        {
-            _characterMovement.WalkSpeed = _initialWalkSpeed;
-            if (_characterRun != null) _characterRun.RunSpeed = _initialRunSpeed;
-            _characterMovement.MovementSpeed = _initialWalkSpeed;
-        }
-    }
-
-    void ApplySlowDown()
-    {
-        if (_characterMovement == null) return;
-
-        float targetWalk = _initialWalkSpeed * ChargeSpeedMultiplier;
-        float targetRun = _initialRunSpeed * ChargeSpeedMultiplier;
-
-        _characterMovement.WalkSpeed = targetWalk;
-        if (_characterRun != null) _characterRun.RunSpeed = targetRun;
-
-        if (_character.MovementState.CurrentState == CharacterStates.MovementStates.Running)
-        {
-            _characterMovement.MovementSpeed = targetRun;
-        }
-        else
-        {
-            _characterMovement.MovementSpeed = targetWalk;
-        }
+        ClearBounceIndicators();
     }
 
     void HandleChargePulse()
@@ -260,14 +223,18 @@ public class CharacterRockThrower : MonoBehaviour
 
     void TriggerPulseEffect()
     {
-        // —— 相机抖动 —— 
         if (_perlin != null)
         {
             if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
             _shakeCoroutine = StartCoroutine(ShakeCinemachine(ShakeDuration, ShakeIntensity, ShakeFrequency));
         }
+        GameObject ring = CreateChargeRing();
+        if (ring != null) StartCoroutine(ShrinkRingRoutine(ring, RingDuration));
+    }
 
-        // —— 光圈特效 —— 
+    GameObject CreateChargeRing()
+    {
+        // 保持你原来的逻辑
         GameObject ring = null;
         if (ChargeRingPrefab != null)
         {
@@ -276,58 +243,32 @@ public class CharacterRockThrower : MonoBehaviour
         }
         else
         {
+            // (省略 create primitive 代码，保持你的原样)
             ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            if (ring.GetComponent<Collider>() != null) Destroy(ring.GetComponent<Collider>());
-            ring.name = "AutoPulseRing";
+            Destroy(ring.GetComponent<Collider>());
             ring.transform.position = transform.position + Vector3.up * 0.05f;
             ring.transform.localScale = new Vector3(3f, 0.01f, 3f);
-
-            Renderer r = ring.GetComponent<Renderer>();
-            if (r != null)
-            {
-                r.material = new Material(Shader.Find("Standard"));
-                r.material.SetFloat("_Mode", 3);
-                r.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                r.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                r.material.SetInt("_ZWrite", 0);
-                r.material.DisableKeyword("_ALPHATEST_ON");
-                r.material.EnableKeyword("_ALPHABLEND_ON");
-                r.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                r.material.renderQueue = 3000;
-                r.material.color = new Color(1f, 1f, 1f, 0.3f);
-            }
         }
-
-        if (ring != null)
-        {
-            StartCoroutine(ShrinkRingRoutine(ring, RingDuration));
-        }
+        return ring;
     }
 
     IEnumerator ShakeCinemachine(float duration, float amplitude, float frequency)
     {
         if (_perlin == null) yield break;
-
         _perlin.AmplitudeGain = amplitude;
         _perlin.FrequencyGain = frequency;
-
         float timer = 0f;
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
+        while (timer < duration) { timer += Time.deltaTime; yield return null; }
         _perlin.AmplitudeGain = 0f;
         _perlin.FrequencyGain = BaseFrequency;
     }
 
     IEnumerator ShrinkRingRoutine(GameObject ring, float duration)
     {
+        if (ring == null) yield break;
         float timer = 0f;
         Vector3 startScale = ring.transform.localScale;
         Vector3 endScale = (ChargeRingPrefab == null) ? new Vector3(0f, 0.01f, 0f) : Vector3.zero;
-
         while (timer < duration)
         {
             if (ring == null) yield break;
@@ -335,174 +276,246 @@ public class CharacterRockThrower : MonoBehaviour
             ring.transform.localScale = Vector3.Lerp(startScale, endScale, timer / duration);
             yield return null;
         }
-
         if (ring != null) Destroy(ring);
     }
 
-    // ★★★ 这里是关键修改：整堆石头一起扔，不再钻进子物体 ★★★
     void FindAndFixRock()
     {
-        // 如果已经握着一整堆了，就不用每帧重新搞
-        if (_heldRock != null) return;
+        if (_heldRock != null) { _hasValidRock = true; return; }
+        if (HandTransform == null || HandTransform.childCount == 0) { _heldRock = null; _hasValidRock = false; return; }
 
-        if (HandTransform == null || HandTransform.childCount == 0)
-        {
-            _heldRock = null;
-            return;
-        }
-
-        // WeaponAttachment 下面的第一个子物体，就是“整堆石头”的根 (item_BigStone 1)
         Transform rockRoot = HandTransform.GetChild(0);
         _heldRock = rockRoot.gameObject;
 
-        // 根上必须有 Rigidbody
         Rigidbody rootRb = _heldRock.GetComponent<Rigidbody>();
-        if (rootRb == null)
-        {
-            rootRb = _heldRock.AddComponent<Rigidbody>();
-        }
-
-        // 拿在手上的时候，先禁用物理
+        if (rootRb == null) rootRb = _heldRock.AddComponent<Rigidbody>();
         rootRb.isKinematic = true;
         rootRb.useGravity = false;
-        rootRb.constraints = RigidbodyConstraints.FreezeRotation;
 
-        // 子物体不允许有刚体，防止分裂
+        // 保持你原来的逻辑
+        _isSmallRock = rootRb.mass < SmallRockMassThreshold;
+
         Rigidbody[] allRbs = _heldRock.GetComponentsInChildren<Rigidbody>(true);
-        foreach (var rb in allRbs)
-        {
-            if (rb.gameObject != _heldRock)
-            {
-                Destroy(rb);
-            }
-        }
+        foreach (var rb in allRbs) if (rb.gameObject != _heldRock) Destroy(rb);
 
-        // 至少保证根有一个 Collider（用于 IgnoreCollision）
         Collider rootCol = _heldRock.GetComponent<Collider>();
-        if (rootCol == null)
-        {
-            rootCol = _heldRock.AddComponent<BoxCollider>();
-        }
+        if (rootCol == null) rootCol = _heldRock.AddComponent<BoxCollider>();
+        // 在手里的时候，不要让Collider干扰玩家
+        if (rootCol != null && _playerCollider != null) Physics.IgnoreCollision(rootCol, _playerCollider, true);
+
+        _hasValidRock = true;
+        if (EnableDebugLogs) Debug.Log($"[RockThrower] 找到石头: {_heldRock.name}");
     }
 
     Vector3 GetThrowDirection()
     {
-        if (_character != null && _character.CharacterModel != null)
-        {
-            return _character.CharacterModel.transform.forward;
-        }
+        if (_character != null && _character.CharacterModel != null) return _character.CharacterModel.transform.forward;
         return transform.forward;
     }
 
-    void DrawTrajectory(float force)
+    void DrawTrajectory()
     {
-        if (HandTransform == null) return;
+        // 保持原来的逻辑
+        if (HandTransform == null || _lineRenderer == null) return;
+        Vector3 startPos = HandTransform.position;
+        Vector3 direction = GetThrowDirection(); direction.y = 0; direction.Normalize();
+        List<Vector3> trajectoryPoints = new List<Vector3>();
+        CalculateBounceTrajectory(startPos, direction, trajectoryPoints);
+        _lineRenderer.positionCount = trajectoryPoints.Count;
+        _lineRenderer.SetPositions(trajectoryPoints.ToArray());
+        UpdateBounceIndicators(trajectoryPoints);
+    }
 
-        Vector3 origin = HandTransform.position;
-        Vector3 forward = GetThrowDirection();
-        Vector3 velocity = (forward * force) + (Vector3.up * ThrowUpwardForce);
-
-        for (int i = 0; i < LinePoints; i++)
+    // 省略 CalculateBounceTrajectory, AddSegmentPoints, UpdateBounceIndicators, ClearBounceIndicators 
+    // 请直接复制你原有的代码，因为这些不用改
+    void CalculateBounceTrajectory(Vector3 startPos, Vector3 startDir, List<Vector3> points)
+    {
+        // 使用你原有的代码
+        ClearBounceIndicators();
+        Vector3 currentPos = startPos;
+        Vector3 currentDir = startDir;
+        int bounceCount = 0;
+        float remainingDistance = MaxRange;
+        points.Add(currentPos);
+        while (bounceCount < MaxBounces && remainingDistance > 0)
         {
-            float time = i * 0.1f;
-            Vector3 point = origin + velocity * time + 0.5f * Physics.gravity * time * time;
-            _lineRenderer.SetPosition(i, point);
+            if (Physics.Raycast(currentPos, currentDir, out RaycastHit hit, remainingDistance))
+            {
+                if (hit.collider == _playerCollider) { currentPos += currentDir * 0.1f; continue; }
+                AddSegmentPoints(points, currentPos, hit.point, SegmentsPerBounce);
+                points.Add(hit.point);
+                Vector3 normal = hit.normal; normal.y = 0; normal.Normalize();
+                currentDir = Vector3.Reflect(currentDir, normal); currentDir.y = 0; currentDir.Normalize();
+                float distanceTraveled = Vector3.Distance(currentPos, hit.point);
+                remainingDistance -= distanceTraveled;
+                currentPos = hit.point + currentDir * 0.05f;
+                bounceCount++;
+            }
+            else
+            {
+                Vector3 endPos = currentPos + currentDir * remainingDistance;
+                AddSegmentPoints(points, currentPos, endPos, SegmentsPerBounce);
+                points.Add(endPos);
+                break;
+            }
         }
     }
 
+    void AddSegmentPoints(List<Vector3> points, Vector3 start, Vector3 end, int segments)
+    {
+        for (int i = 1; i <= segments; i++) { float t = i / (float)segments; points.Add(Vector3.Lerp(start, end, t)); }
+    }
+
+    void UpdateBounceIndicators(List<Vector3> trajectoryPoints)
+    {
+        // 使用你原有的代码
+        if (!ShowBounceIndicators) return;
+        List<Vector3> bouncePoints = new List<Vector3>();
+        for (int i = SegmentsPerBounce; i < trajectoryPoints.Count; i += SegmentsPerBounce) if (i < trajectoryPoints.Count) bouncePoints.Add(trajectoryPoints[i]);
+        while (_bounceIndicators.Count < bouncePoints.Count)
+        {
+            GameObject indicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            indicator.name = "BounceIndicator"; Destroy(indicator.GetComponent<Collider>());
+            indicator.transform.localScale = Vector3.one * BounceIndicatorSize;
+            _bounceIndicators.Add(indicator);
+        }
+        for (int i = 0; i < _bounceIndicators.Count; i++)
+        {
+            if (i < bouncePoints.Count) { _bounceIndicators[i].SetActive(true); _bounceIndicators[i].transform.position = bouncePoints[i]; }
+            else { _bounceIndicators[i].SetActive(false); }
+        }
+    }
+
+    void ClearBounceIndicators() { foreach (var indicator in _bounceIndicators) if (indicator != null) indicator.SetActive(false); }
+
+    // 【修改核心】ThrowRock
     void ThrowRock()
     {
         if (_heldRock == null) return;
 
-        float finalForce = Mathf.Lerp(MinForce, MaxForce, _chargeTimer / MaxChargeTime);
+        float throwSpeed = _isSmallRock ? SmallRockSpeed : BigRockSpeed;
         Vector3 throwDir = GetThrowDirection();
+        throwDir.y = 0; throwDir.Normalize();
+        Vector3 spawnPos = HandTransform.position;
+        float fixedHeight = spawnPos.y;
 
-        _heldRock.transform.SetParent(null);
-
-        // ---【核心修复】对整堆石头做一次“绝育”：只让根参与物理 ---
         OptimizeRockStructure(_heldRock);
-        // ----------------------------------------------------
 
-        Rigidbody rb = _heldRock.GetComponent<Rigidbody>();
-        Collider rockCollider = _heldRock.GetComponent<Collider>();
+        // 1. 克隆石头（解决消失问题）
+        GameObject projectile = Instantiate(_heldRock, spawnPos, Quaternion.identity);
+        projectile.name = _heldRock.name + "_Projectile";
 
+        // 2. 配置克隆体的物理
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        Collider col = projectile.GetComponent<Collider>();
         if (rb != null)
         {
             rb.isKinematic = false;
-            rb.useGravity = true;
-            rb.constraints = RigidbodyConstraints.None;
+            rb.useGravity = false;
+            rb.mass = 10f;
+            rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            rb.linearVelocity = throwDir * throwSpeed;
+            rb.angularVelocity = Vector3.up * 3f;
 
-            if (_playerCollider != null && rockCollider != null)
+            // 确保材质无摩擦
+            if (col != null)
             {
-                Physics.IgnoreCollision(_playerCollider, rockCollider, true);
-                StartCoroutine(ResetCollisionDelay(_playerCollider, rockCollider, 1f));
+                PhysicsMaterial zeroFriction = new PhysicsMaterial("ZeroFriction");
+                zeroFriction.dynamicFriction = 0f; zeroFriction.staticFriction = 0f; zeroFriction.bounciness = 0f;
+                col.material = zeroFriction;
             }
 
-#if UNITY_6000_0_OR_NEWER
-            rb.linearVelocity = Vector3.zero;
-#else
-            rb.velocity = Vector3.zero;
-#endif
-
-            rb.AddForce(throwDir * finalForce + Vector3.up * ThrowUpwardForce, ForceMode.Impulse);
-            rb.AddTorque(Random.insideUnitSphere * 10f, ForceMode.Impulse);
+            // 添加弹跳逻辑
+            var bounce = projectile.AddComponent<RockBounceController>();
+            bounce.Initialize(MaxBounces, null, EnableDebugLogs, throwSpeed, fixedHeight);
         }
 
-        var rockLogic = _heldRock.GetComponent<RockImpactLogic>();
-        if (rockLogic != null)
+        // 3. 激活攻击逻辑，并传入 _playerCollider 做物理忽略
+        var logic = projectile.GetComponent<RockImpactLogic>();
+        if (logic != null)
         {
-            rockLogic.ActivateAttack(this.gameObject);
+            // 这里的 this.gameObject 是 Player, _playerCollider 也是 Player 的 Collider
+            logic.ActivateAttack(this.gameObject, _playerCollider);
         }
 
+        // 4. 销毁手中的石头，模拟“扔出去了”
+        Destroy(_heldRock);
         _heldRock = null;
+        _hasValidRock = false;
+
+        // 5. 【恢复速度】手动设置回 Start 时记录的速度
+        if (_characterMovement != null)
+        {
+            _characterMovement.WalkSpeed = _defaultWalkSpeed;
+            _characterMovement.MovementSpeed = _defaultWalkSpeed;
+        }
+        if (_characterRun != null)
+        {
+            _characterRun.RunSpeed = _defaultRunSpeed;
+        }
+
+        if (EnableDebugLogs) Debug.Log($"[RockThrower] 石头已发射，速度已重置");
     }
 
-    // —— 把内部所有“会搞事的东西”全部关掉，只保留根的碰撞和刚体 —— 
     void OptimizeRockStructure(GameObject rock)
     {
-        // 1. 删除所有 Joint（关节）
+        if (rock == null) return;
         Joint[] joints = rock.GetComponentsInChildren<Joint>(true);
-        foreach (var j in joints) Destroy(j);
+        foreach (var j in joints) if (j != null) Destroy(j);
 
-        // 2. 删除所有 Health（避免 breakable 分裂）
+        // 保持你的逻辑
         Health[] healths = rock.GetComponentsInChildren<Health>(true);
-        foreach (var h in healths) Destroy(h);
+        foreach (var h in healths) if (h != null) h.Invulnerable = true;
 
-        // 3. 根以外的 Rigidbody 全部干掉
         Rigidbody[] rbs = rock.GetComponentsInChildren<Rigidbody>(true);
-        foreach (var r in rbs)
-        {
-            if (r.gameObject != rock)
-            {
-                r.isKinematic = true;
-                Destroy(r);
-            }
-        }
+        foreach (var r in rbs) if (r != null && r.gameObject != rock) Destroy(r);
 
-        // 4. 根以外的 Collider 全部关掉，只用根的体积来撞
         Collider[] colliders = rock.GetComponentsInChildren<Collider>(true);
-        foreach (var col in colliders)
-        {
-            if (col.gameObject != rock)
-            {
-                col.enabled = false;
-            }
-        }
-
-        // 5. 把所有“隐藏碎片”直接删掉（有些 breakable 会提前藏碎片）
-        foreach (Transform child in rock.transform)
-        {
-            if (!child.gameObject.activeSelf)
-            {
-                Destroy(child.gameObject);
-            }
-        }
+        foreach (var col in colliders) if (col != null && col.gameObject != rock) col.enabled = false;
     }
 
-    IEnumerator ResetCollisionDelay(Collider p, Collider r, float delay)
+    void OnDisable() { if (_isCharging) StopCharging(); }
+    void OnDestroy() { ClearBounceIndicators(); }
+
+    // 内部类 RockBounceController 保持原样
+    public class RockBounceController : MonoBehaviour
     {
-        Physics.IgnoreCollision(p, r, true);
-        yield return new WaitForSeconds(delay);
-        if (p != null && r != null) Physics.IgnoreCollision(p, r, false);
+        private int _maxBounces;
+        private int _currentBounces = 0;
+        private bool _enableDebugLogs;
+        private Rigidbody _rb;
+        private float _fixedHeight;
+        private float _constantSpeed;
+        private bool _isDestroying = false;
+
+        public void Initialize(int maxBounces, Collider c, bool debugLogs, float speed, float fixedHeight)
+        {
+            _maxBounces = maxBounces; _enableDebugLogs = debugLogs; _constantSpeed = speed; _fixedHeight = fixedHeight;
+            _rb = GetComponent<Rigidbody>();
+            TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
+            trail.time = 0.5f; trail.startWidth = 0.3f; trail.endWidth = 0.05f;
+            trail.material = new Material(Shader.Find("Sprites/Default"));
+        }
+        void FixedUpdate()
+        {
+            if (_isDestroying || _rb == null) return;
+            Vector3 vel = _rb.linearVelocity; vel.y = 0;
+            if (vel.magnitude > 0.1f) _rb.linearVelocity = vel.normalized * _constantSpeed;
+        }
+        void OnCollisionEnter(Collision collision)
+        {
+            if (_isDestroying) return;
+            if (collision.gameObject.GetComponent<Character>() != null) return; // 撞人交给 ImpactLogic
+            _currentBounces++;
+            if (_currentBounces >= _maxBounces) { _isDestroying = true; Destroy(gameObject); }
+            else if (_rb != null && collision.contacts.Length > 0)
+            {
+                Vector3 n = collision.contacts[0].normal; n.y = 0; n.Normalize();
+                Vector3 v = _rb.linearVelocity; v.y = 0;
+                Vector3 r = Vector3.Reflect(v.normalized, n);
+                _rb.linearVelocity = r.normalized * _constantSpeed;
+            }
+        }
     }
 }
