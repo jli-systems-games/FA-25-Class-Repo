@@ -10,6 +10,9 @@ public class WorldItemPickup : MonoBehaviour
 
     public TMP_Text toolHintText;
 
+    public AudioClip pickUpSound;
+    public AudioSource audioSource;
+
     public string hintMessage = "A  tool  is  required  to  pick  up  this  item";
 
     public void Pickup()
@@ -36,6 +39,8 @@ public class WorldItemPickup : MonoBehaviour
                 StartCoroutine(ShowHintTemporarily(hintMessage));
             }
         }
+
+        PlayPickUpSound();
     }
 
     IEnumerator ShowHintTemporarily(string message)
@@ -52,5 +57,15 @@ public class WorldItemPickup : MonoBehaviour
 
         toolHintText.gameObject.SetActive(false);
 
+    }
+
+    void PlayPickUpSound()
+    {
+        if (pickUpSound == null) return;
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(pickUpSound);
+        else
+            AudioSource.PlayClipAtPoint(pickUpSound, transform.position);
     }
 }

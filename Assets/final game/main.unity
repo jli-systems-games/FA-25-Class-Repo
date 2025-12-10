@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hairController: {fileID: 35185417}
-  decayInterval: 90
+  decayInterval: 60
   acidRainMultiplier: 0
   currentHairLevel: 0
 --- !u!114 &35185417
@@ -638,6 +638,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &85246679
 SpriteRenderer:
@@ -816,6 +818,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &92609823
 SpriteRenderer:
@@ -1063,9 +1067,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 568933531}
     m_Modifications:
     - target: {fileID: 359517381995258276, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 359517381995258276, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
       propertyPath: toolHintText
       value: 
-      objectReference: {fileID: 1727818654}
+      objectReference: {fileID: 1759205878}
     - target: {fileID: 2422770988131088580, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.055031512
@@ -1203,6 +1211,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &148818979
 SpriteRenderer:
@@ -1322,6 +1332,10 @@ PrefabInstance:
     - target: {fileID: 4893704287019524653, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6069,6 +6083,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &174704033
 SpriteRenderer:
@@ -6395,6 +6411,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &213806094
 SpriteRenderer:
@@ -6621,6 +6639,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &223076492
 SpriteRenderer:
@@ -7180,6 +7200,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &237428343
 SpriteRenderer:
@@ -7319,6 +7341,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &246230491
 SpriteRenderer:
@@ -7458,6 +7482,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &248554262
 SpriteRenderer:
@@ -7526,6 +7552,135 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a2291337cbd45a0a5c62cdfa423b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &252172710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 252172712}
+  - component: {fileID: 252172711}
+  m_Layer: 0
+  m_Name: Click Audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &252172711
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252172710}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &252172712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252172710}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1920, y: 583, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &265472034
 GameObject:
   m_ObjectHideFlags: 0
@@ -7910,6 +8065,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: pickUpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8461,6 +8624,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &338159779
 SpriteRenderer:
@@ -8732,6 +8897,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &347884606
 SpriteRenderer:
@@ -9152,6 +9319,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: pickUpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9833,6 +10008,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &415564100
 SpriteRenderer:
@@ -20577,6 +20754,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &533599655
 SpriteRenderer:
@@ -20795,6 +20974,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &551496230
 SpriteRenderer:
@@ -20915,6 +21096,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: pickUpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20996,6 +21185,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &563005563
 SpriteRenderer:
@@ -21398,6 +21589,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &617963892
 SpriteRenderer:
@@ -21673,6 +21866,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &630767947
 SpriteRenderer:
@@ -22362,6 +22557,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &694426512
 SpriteRenderer:
@@ -22637,6 +22834,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &719547053
 SpriteRenderer:
@@ -24187,6 +24386,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24646,6 +24849,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &841454061
 SpriteRenderer:
@@ -25113,6 +25318,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &882065614
 SpriteRenderer:
@@ -25439,6 +25646,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &908117430
 SpriteRenderer:
@@ -26954,6 +27163,10 @@ PrefabInstance:
     - target: {fileID: 4893704287019524653, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -31701,6 +31914,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1031915876
 SpriteRenderer:
@@ -31954,6 +32169,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: c26208fddc1ac48e5bd4add5299848b4, type: 2}
   requiredToolName: cat paw pad
   toolHintText: {fileID: 1759205878}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A  tool  is  required  to  pick  up  this  item
 --- !u!114 &1036618861
 MonoBehaviour:
@@ -32093,6 +32310,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1039575498
 SpriteRenderer:
@@ -32232,6 +32451,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1045619271
 SpriteRenderer:
@@ -32749,6 +32970,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1075783197
 SpriteRenderer:
@@ -33291,6 +33514,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1121057618
 SpriteRenderer:
@@ -33653,6 +33878,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1137968349
 SpriteRenderer:
@@ -33792,6 +34019,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1144781945
 SpriteRenderer:
@@ -34354,6 +34583,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1184050196
 SpriteRenderer:
@@ -34642,6 +34873,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: c26208fddc1ac48e5bd4add5299848b4, type: 2}
   requiredToolName: cat paw pad
   toolHintText: {fileID: 1759205878}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A  tool  is  required  to  pick  up  this  item
 --- !u!114 &1188874737
 MonoBehaviour:
@@ -35213,9 +35446,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 568933531}
     m_Modifications:
     - target: {fileID: 359517381995258276, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 359517381995258276, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
       propertyPath: toolHintText
       value: 
-      objectReference: {fileID: 1727818654}
+      objectReference: {fileID: 1759205878}
     - target: {fileID: 2422770988131088580, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.07643327
@@ -35353,6 +35590,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1225918521
 SpriteRenderer:
@@ -36360,6 +36599,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1375532693
 SpriteRenderer:
@@ -37299,7 +37540,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -592.1, y: 0}
+  m_AnchoredPosition: {x: -181, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1443388423
@@ -37349,8 +37590,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 200
-  m_fontSizeBase: 200
+  m_fontSize: 120
+  m_fontSizeBase: 120
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -38554,6 +38795,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1556309613
 SpriteRenderer:
@@ -39812,6 +40055,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1664222007
 SpriteRenderer:
@@ -39951,6 +40196,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: c26208fddc1ac48e5bd4add5299848b4, type: 2}
   requiredToolName: cat paw pad
   toolHintText: {fileID: 1759205878}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A  tool  is  required  to  pick  up  this  item
 --- !u!114 &1665085490
 MonoBehaviour:
@@ -40275,6 +40522,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1708124294
 SpriteRenderer:
@@ -40644,6 +40893,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1743052914
 SpriteRenderer:
@@ -40929,6 +41180,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1750979807
 SpriteRenderer:
@@ -41468,6 +41721,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1769531051
 SpriteRenderer:
@@ -42416,6 +42671,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1870302026
 SpriteRenderer:
@@ -42760,6 +43017,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1897338331
 SpriteRenderer:
@@ -43290,6 +43549,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1942605740
 SpriteRenderer:
@@ -43429,6 +43690,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1949291304
 SpriteRenderer:
@@ -43568,6 +43831,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &1952349375
 SpriteRenderer:
@@ -44563,6 +44828,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: c26208fddc1ac48e5bd4add5299848b4, type: 2}
   requiredToolName: cat paw pad
   toolHintText: {fileID: 1759205878}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A  tool  is  required  to  pick  up  this  item
 --- !u!114 &1995824749
 MonoBehaviour:
@@ -45127,6 +45394,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: pickUpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -45220,6 +45495,10 @@ PrefabInstance:
     - target: {fileID: 4893704287019524653, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668288677458620024, guid: d0b926eb6a37940dab7f0158b6dc4600, type: 3}
+      propertyPath: audioSource
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -45387,6 +45666,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 005cce926da504e3bac6377cf86ae975, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!114 &2044636545
 MonoBehaviour:
@@ -45616,6 +45897,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &2059586170
 SpriteRenderer:
@@ -46090,6 +46373,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &2089667927
 SpriteRenderer:
@@ -46406,6 +46691,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &2104467685
 SpriteRenderer:
@@ -46659,6 +46946,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!212 &2113850074
 SpriteRenderer:
@@ -52443,6 +52732,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: c26208fddc1ac48e5bd4add5299848b4, type: 2}
   requiredToolName: cat paw pad
   toolHintText: {fileID: 1759205878}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A  tool  is  required  to  pick  up  this  item
 --- !u!1 &1076482999480880134
 GameObject:
@@ -63338,6 +63629,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 88a47794b56f14b19b72a3771913792e, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!1 &2382573821868389331
 GameObject:
@@ -69637,9 +69930,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 568933531}
     m_Modifications:
     - target: {fileID: 359517381995258276, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 359517381995258276, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
       propertyPath: toolHintText
       value: 
-      objectReference: {fileID: 1727818654}
+      objectReference: {fileID: 1759205878}
     - target: {fileID: 2422770988131088580, guid: 6dce30494f33f4d8e95d89f652ee2306, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6399994
@@ -78228,6 +78525,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 005cce926da504e3bac6377cf86ae975, type: 2}
   requiredToolName: 
   toolHintText: {fileID: 0}
+  pickUpSound: {fileID: 8300000, guid: ed73c1173becb417b8e0f80cf3e51777, type: 3}
+  audioSource: {fileID: 0}
   hintMessage: A tool is required to pick up this item
 --- !u!33 &4589575340942004507
 MeshFilter:
@@ -174232,3 +174531,4 @@ SceneRoots:
   - {fileID: 649400449}
   - {fileID: 2010199940}
   - {fileID: 1397903302}
+  - {fileID: 252172712}

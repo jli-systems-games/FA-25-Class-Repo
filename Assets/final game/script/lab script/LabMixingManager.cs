@@ -60,6 +60,9 @@ public class LabMixingManager : MonoBehaviour
     List<GameObject> _spawnedWorldItems = new List<GameObject>();
     ItemData _lastResultItem;
 
+
+    bool _melonBreadUsed = false; //
+
     void Start()
     {
         if (resultText != null)
@@ -222,9 +225,18 @@ public class LabMixingManager : MonoBehaviour
 
             if (resultItem != null && resultItem == hairRecoverItem)
             {
-                HealAllNPCsOneStep();
+                if (!_melonBreadUsed)
+                {
+                    _melonBreadUsed = true;
+
+                    HealAllNPCsOneStep();
                     StartCoroutine(ShowToast("+ Baldness condition has improved"));
+                }
+                else
+                {
+                }
             }
+
 
             ShowResult(success, resultItem);
             ClearSpawnedItems();
