@@ -9,6 +9,8 @@ public class PlantData : ScriptableObject
 {
     [Header("基础信息")]
     public string plantName = "植物";
+    [Tooltip("植物类型标签（可多选，用于动物检测）")]
+    public PlantType plantType = PlantType.None;
     [Tooltip("植物预制体（必须包含Plant组件和碰撞箱）")]
     public GameObject plantPrefab;
     [Tooltip("卡牌UI贴图（包含图标、名字、消耗等所有信息）")]
@@ -79,6 +81,21 @@ public enum PlantMatureEffect
     SunflowerFertilitySpread,      // 向日葵肥力扩散（死亡时返还2倍并扩散）
     FruitProduction,               // 结果植物（持续产出）
     VineAttachment                 // 爬藤植物（依附木本）
+}
+
+/// <summary>
+/// 植物类型标签（可多选）
+/// </summary>
+[System.Flags]
+public enum PlantType
+{
+    None = 0,
+    Flowering = 1 << 0,      // 显花植物（吸引蝴蝶）
+    Fruiting = 1 << 1,       // 结果植物（吸引松鼠、鸟类）
+    Woody = 1 << 2,          // 木本植物（树）
+    Herbaceous = 1 << 3,     // 草本植物（兔子食物）
+    Fungus = 1 << 4,         // 真菌（蘑菇）
+    Aquatic = 1 << 5         // 水生植物（未来扩展）
 }
 
 /// <summary>

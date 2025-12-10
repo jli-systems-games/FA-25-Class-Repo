@@ -10,10 +10,38 @@ public class Plant : MonoBehaviour
     [Header("植物配置")]
     [SerializeField] public PlantData plantData;  // 改为public，允许外部访问
 
+    [Header("预设状态（场景编辑器用）")]
+    [Tooltip("勾选后，游戏开始时使用预设状态而不是从幼苗开始")]
+    [SerializeField] private bool usePresetState = false;
+
+    [Tooltip("预设年龄（秒）- 0=幼苗, maturityTime=成熟, deathTime=即将死亡")]
+    [SerializeField] private float presetAge = 0f;
+
+    [Tooltip("预设为成熟状态")]
+    [SerializeField] private bool startMature = false;
+
+    [Tooltip("预设枯萎伤害（秒）- 0=健康, witherTime=濒死")]
+    [SerializeField] private float presetWitherDamage = 0f;
+
+    [Header("贴图引用")]
+    [SerializeField] private SpriteRenderer spriteRenderer;  // 植物贴图渲染器（可以在子物体）
+
+    [Header("授粉点")]
+    [SerializeField] private Transform pollinationPoint;  // 授粉点位置（蝴蝶会飞向这里）
+
+    [Header("粒子特效")]
+    [SerializeField] private ParticleSystem matureParticle;  // 成熟时播放的粒子
+    [SerializeField] private ParticleSystem deathParticle;   // 死亡时播放的粒子
+
     [Header("碰撞箱引用")]
     [SerializeField] private BoxCollider2D lightSensor;      // 光照检测箱
-    [SerializeField] private BoxCollider2D shadowCollider;   // 阴影碰撞箱（整体）
+    [SerializeField] private BoxCollider2D shadowCollider;   // 阴影碰撞箱（幼年）
+    [SerializeField] private BoxCollider2D matureShadowCollider;  // 成熟阴影碰撞箱（可选）
+    private BoxCollider2D currentShadowCollider;             // 当前使用的阴影碰撞箱
     private SpriteRenderer lightSensorRenderer;              // 检测器的视觉反馈
+
+    [Header("成长进度指示器")]
+    [SerializeField] private UnityEngine.UI.Image growthIndicator;  // UI Image组件（Filled类型）
 
     [Header("检测器颜色")]
     [SerializeField] private Color sensorGoodColor = Color.green;    // 光照达标颜色
@@ -33,6 +61,21 @@ public class Plant : MonoBehaviour
     public bool IsWithering => isWithering;
     public float CurrentLight => currentLight;
 
+    /// <summary>
+    /// 获取授粉点位置（蝴蝶等动物飞向的目标点）
+    /// </summary>
+    public Vector3 GetPollinationPoint()
+    {
+        // 如果有指定授粉点，使用授粉点位置
+        if (pollinationPoint != null)
+        {
+            return pollinationPoint.position;
+        }
+
+        // 否则使用植物根部位置（默认）
+        return transform.position;
+    }
+
     [Header("枯萎状态")]
     private bool isWithering = false;     // 是否正在枯萎
     private float witherTimer = 0f;       // 枯萎计时器
@@ -48,19 +91,108 @@ public class Plant : MonoBehaviour
     [Header("肥力状态")]
     private bool hasEnoughFertility = true;
 
-    [Header("视觉")]
-    private SpriteRenderer spriteRenderer;
-    private Color normalColor = Color.white;
-
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
         if (plantData != null)
         {
-            spriteRenderer.sprite = plantData.youngSprite;  // 初始使用幼年贴图
-            maturityTime = plantData.lifespanMin;  // 成熟时间
-            deathTime = plantData.lifespanMax;      // 死亡时间
+            // 设置生命周期时间
+            maturityTime = plantData.lifespanMin;
+            deathTime = plantData.lifespanMax;
+
+            // 应用预设状态（如果启用）
+            if (usePresetState)
+            {
+                ApplyPresetState();
+            }
+            else
+            {
+                // 默认：从幼苗开始
+                if (spriteRenderer != null && plantData.youngSprite != null)
+                {
+                    spriteRenderer.sprite = plantData.youngSprite;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 应用预设状态（场景编辑器用）
+    /// </summary>
+    private void ApplyPresetState()
+    {
+        // 设置年龄
+        currentAge = Mathf.Clamp(presetAge, 0f, deathTime);
+
+        // 设置成熟状态
+        if (startMature || currentAge >= maturityTime)
+        {
+            isMature = true;
+
+            // 切换到成熟贴图
+            if (spriteRenderer != null && plantData.matureSprite != null)
+            {
+                spriteRenderer.sprite = plantData.matureSprite;
+            }
+
+            // 切换到成熟阴影碰撞箱
+            if (matureShadowCollider != null)
+            {
+                shadowCollider.enabled = false;
+                shadowCollider.gameObject.SetActive(false);
+
+                matureShadowCollider.enabled = true;
+                matureShadowCollider.gameObject.SetActive(true);
+
+                currentShadowCollider = matureShadowCollider;
+                Debug.Log($"[Plant] {plantData.plantName} 预设状态：切换到成熟阴影碰撞箱");
+            }
+
+            // 注意：成熟效果在Start中触发，因为需要EcosystemManager已初始化
+        }
+        else
+        {
+            // 幼年状态
+            if (spriteRenderer != null && plantData.youngSprite != null)
+            {
+                spriteRenderer.sprite = plantData.youngSprite;
+            }
+        }
+
+        // 设置枯萎伤害
+        witherTimer = Mathf.Clamp(presetWitherDamage, 0f, plantData.witherTime);
+        if (witherTimer > 0f)
+        {
+            isWithering = true;
+            if (spriteRenderer != null && plantData.witherSprite != null)
+            {
+                spriteRenderer.sprite = plantData.witherSprite;
+            }
+        }
+
+        Debug.Log($"[Plant] {plantData.plantName} 使用预设状态：年龄={currentAge:F1}秒, 成熟={isMature}, 枯萎伤害={witherTimer:F1}秒");
+    }
+
+    /// <summary>
+    /// 触发成熟效果（从OnMatured提取出来，供预设状态调用）
+    /// </summary>
+    private void TriggerMatureEffects()
+    {
+        // 触发特定成熟效果
+        switch (plantData.matureEffect)
+        {
+            case PlantMatureEffect.OakLeafFall:
+                // 橡树落叶效果：通知生态系统增加恢复速率
+                EcosystemManager.Instance.OnOakMatured();
+                Debug.Log($"[Plant] {plantData.plantName} 预设成熟：橡树效果已激活");
+                break;
+
+            case PlantMatureEffect.SunflowerFertilitySpread:
+                // 向日葵在死亡时触发，这里不处理
+                break;
+
+            case PlantMatureEffect.FruitProduction:
+                // 结果植物：可以添加持续产出逻辑
+                break;
         }
     }
 
@@ -68,6 +200,18 @@ public class Plant : MonoBehaviour
     {
         // 注册到生态系统
         EcosystemManager.Instance.RegisterPlant(this);
+
+        // 如果使用预设状态且已成熟，触发成熟效果
+        if (usePresetState && isMature)
+        {
+            TriggerMatureEffects();
+        }
+
+        // 验证必要组件
+        if (spriteRenderer == null)
+        {
+            Debug.LogError($"[Plant] {plantData.plantName} 缺少SpriteRenderer引用！请在Inspector中拖入贴图物体的SpriteRenderer");
+        }
 
         // 验证碰撞箱是否已挂载
         if (lightSensor == null || shadowCollider == null)
@@ -85,6 +229,39 @@ public class Plant : MonoBehaviour
             }
         }
 
+        // 初始化阴影碰撞箱
+        if (matureShadowCollider != null)
+        {
+            // 如果已经是成熟状态（预设或其他原因），不要重置阴影箱
+            if (isMature && currentShadowCollider == matureShadowCollider)
+            {
+                // 保持成熟阴影箱启用状态
+                shadowCollider.enabled = false;
+                shadowCollider.gameObject.SetActive(false);
+                Debug.Log($"[Plant] {plantData.plantName} 保持成熟阴影碰撞箱状态（预设成熟）");
+            }
+            else
+            {
+                // 幼年状态，禁用成熟阴影箱
+                currentShadowCollider = shadowCollider;
+                matureShadowCollider.enabled = false;
+                matureShadowCollider.gameObject.SetActive(false);
+                Debug.Log($"[Plant] {plantData.plantName} 禁用成熟阴影碰撞箱（从幼苗开始）");
+            }
+        }
+        else
+        {
+            // 没有成熟阴影箱，直接使用幼年阴影箱
+            currentShadowCollider = shadowCollider;
+        }
+
+        // 确保幼年阴影碰撞箱启用
+        if (shadowCollider != null)
+        {
+            shadowCollider.enabled = true;
+            shadowCollider.gameObject.SetActive(true);
+        }
+
         Debug.Log($"[Plant] {plantData.plantName} 种植成功，成熟时间: {maturityTime:F1}秒，死亡时间: {deathTime:F1}秒");
     }
 
@@ -92,26 +269,37 @@ public class Plant : MonoBehaviour
     {
         if (isDead) return;
 
-        // 更新年龄
-        currentAge += Time.deltaTime;
-
-        // 检查是否成熟
-        if (!isMature && currentAge >= maturityTime)
-        {
-            OnMatured();
-        }
+        // 检查阳光需求
+        CheckLightRequirement();
 
         // 幼年期持续消耗肥力
         if (!isMature)
         {
             CheckFertilityRequirement();
         }
-
-        // 检查阳光需求
-        CheckLightRequirement();
+        else
+        {
+            // 成熟后不消耗肥力，但要重置hasEnoughFertility为true
+            hasEnoughFertility = true;
+        }
 
         // 检查枯萎状态
         CheckWitherState();
+
+        // 只有非枯萎状态才增长年龄（枯萎=停止生长）
+        if (!isWithering)
+        {
+            currentAge += Time.deltaTime;
+
+            // 检查是否成熟
+            if (!isMature && currentAge >= maturityTime)
+            {
+                OnMatured();
+            }
+        }
+
+        // 更新成长进度指示器
+        UpdateGrowthIndicator();
 
         // 成熟后处理繁殖
         if (isMature && !isWithering)
@@ -123,6 +311,41 @@ public class Plant : MonoBehaviour
         if (currentAge >= deathTime)
         {
             Die(true); // 自然死亡
+        }
+    }
+
+    /// <summary>
+    /// 更新成长进度指示器
+    /// </summary>
+    private void UpdateGrowthIndicator()
+    {
+        if (growthIndicator == null) return;
+
+        if (!isMature)
+        {
+            // 幼年期：显示成长进度
+            float progress = Mathf.Clamp01(currentAge / maturityTime);
+            growthIndicator.fillAmount = progress;
+
+            // 根据光照和肥力状态改变颜色
+            if (isWithering)
+            {
+                growthIndicator.color = Color.red;  // 枯萎：红色
+            }
+            else if (hasEnoughLight && hasEnoughFertility)
+            {
+                growthIndicator.color = Color.green;  // 正常生长：绿色
+            }
+            else
+            {
+                growthIndicator.color = Color.yellow;  // 条件不足：黄色
+            }
+        }
+        else
+        {
+            // 成熟后：显示满圈，半透明
+            growthIndicator.fillAmount = 1f;
+            growthIndicator.color = new Color(1f, 1f, 1f, 0.3f);  // 半透明白色
         }
     }
 
@@ -149,12 +372,14 @@ public class Plant : MonoBehaviour
             {
                 // 开始枯萎
                 isWithering = true;
-                witherTimer = 0f;
-                spriteRenderer.sprite = plantData.witherSprite;
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.sprite = plantData.witherSprite;
+                }
                 Debug.Log($"[Plant] {plantData.plantName} 开始枯萎（光照:{hasEnoughLight}, 肥力:{hasEnoughFertility}）");
             }
 
-            // 累积枯萎时间
+            // 累积枯萎时间（不可逆！）
             witherTimer += Time.deltaTime;
 
             // 超过枯萎耐受时间，死亡
@@ -167,12 +392,16 @@ public class Plant : MonoBehaviour
         {
             if (isWithering)
             {
-                // 恢复正常
+                // 恢复生长，但枯萎伤害不会消退
                 isWithering = false;
-                witherTimer = 0f;
+                // 不重置witherTimer！枯萎伤害是永久的
+
                 // 恢复对应状态的贴图
-                spriteRenderer.sprite = isMature ? plantData.matureSprite : plantData.youngSprite;
-                Debug.Log($"[Plant] {plantData.plantName} 恢复正常");
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.sprite = isMature ? plantData.matureSprite : plantData.youngSprite;
+                }
+                Debug.Log($"[Plant] {plantData.plantName} 恢复生长，但枯萎伤害累积: {witherTimer:F1}/{plantData.witherTime:F1}秒");
             }
         }
     }
@@ -233,12 +462,31 @@ public class Plant : MonoBehaviour
             return;
         }
 
+        // 检查植物总数上限
+        int currentPlantCount = EcosystemManager.Instance.CurrentPlantCount;
+        int maxPlantCount = EcosystemManager.Instance.MaxPlantCount;
+
+        if (currentPlantCount >= maxPlantCount)
+        {
+            Debug.LogWarning($"[Plant] 植物数量已达上限 ({currentPlantCount}/{maxPlantCount})，停止繁殖");
+            return;
+        }
+
         // 检查是否有指定的生成区域（蘑菇菌丝用）
         BoxCollider2D spawnArea = GetComponentInChildren<BoxCollider2D>();
         bool hasSpawnArea = spawnArea != null && spawnArea.gameObject.name.Contains("SpawnArea");
 
+        int spawnedCount = 0;
+
         for (int i = 0; i < plantData.spreadCount; i++)
         {
+            // 再次检查是否超过上限（每次循环都检查）
+            if (EcosystemManager.Instance.CurrentPlantCount >= maxPlantCount)
+            {
+                Debug.Log($"[Plant] 繁殖中止：已生成 {spawnedCount}/{plantData.spreadCount}，达到植物上限");
+                break;
+            }
+
             Vector3 spawnPosition;
 
             if (hasSpawnArea)
@@ -265,7 +513,13 @@ public class Plant : MonoBehaviour
                 transform.parent
             );
 
+            spawnedCount++;
             Debug.Log($"[Plant] {plantData.plantName} 繁殖生成幼苗 at {spawnPosition}");
+        }
+
+        if (spawnedCount > 0)
+        {
+            Debug.Log($"[Plant] {plantData.plantName} 繁殖完成，生成 {spawnedCount} 株幼苗，当前总数: {EcosystemManager.Instance.CurrentPlantCount}");
         }
     }
 
@@ -296,9 +550,33 @@ public class Plant : MonoBehaviour
         isMature = true;
 
         // 切换到成熟贴图
-        if (plantData.matureSprite != null)
+        if (plantData.matureSprite != null && spriteRenderer != null)
         {
             spriteRenderer.sprite = plantData.matureSprite;
+        }
+
+        // 播放成熟粒子特效
+        if (matureParticle != null)
+        {
+            matureParticle.Play();
+            Debug.Log($"[Plant] {plantData.plantName} 播放成熟粒子特效");
+        }
+
+        // 切换到成熟阴影碰撞箱（如果有）
+        if (matureShadowCollider != null)
+        {
+            // 禁用幼年阴影
+            shadowCollider.enabled = false;
+            shadowCollider.gameObject.SetActive(false);
+
+            // 启用成熟阴影
+            matureShadowCollider.enabled = true;
+            matureShadowCollider.gameObject.SetActive(true);
+
+            // 更新当前使用的阴影碰撞箱
+            currentShadowCollider = matureShadowCollider;
+
+            Debug.Log($"[Plant] {plantData.plantName} 切换到成熟阴影碰撞箱");
         }
 
         Debug.Log($"[Plant] {plantData.plantName} 已成熟！");
@@ -330,6 +608,13 @@ public class Plant : MonoBehaviour
 
         isDead = true;
 
+        // 播放死亡粒子特效
+        if (deathParticle != null)
+        {
+            deathParticle.Play();
+            Debug.Log($"[Plant] {plantData.plantName} 播放死亡粒子特效");
+        }
+
         // 计算返还肥力
         float returnFertility = isMature ?
             plantData.fertilityReturnOnMatureDeath :
@@ -357,8 +642,18 @@ public class Plant : MonoBehaviour
 
         Debug.Log($"[Plant] {plantData.plantName} 死亡，返还肥力: {returnFertility:F1}");
 
-        // 销毁游戏对象
-        Destroy(gameObject);
+        // 延迟销毁，让粒子播放完
+        if (deathParticle != null)
+        {
+            // 获取粒子持续时间
+            float particleDuration = deathParticle.main.duration + deathParticle.main.startLifetime.constantMax;
+            Destroy(gameObject, particleDuration);
+        }
+        else
+        {
+            // 立即销毁
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>
@@ -397,28 +692,8 @@ public class Plant : MonoBehaviour
 
         Debug.Log($"[Plant] 手动收割: {plantData.plantName}");
 
-        // 计算返还肥力
-        float returnFertility = isMature ?
-            plantData.fertilityReturnOnMatureDeath :
-            plantData.fertilityReturnOnMatureDeath * plantData.immatureDeathReturnMultiplier;
-
-        // 返还肥力
-        EcosystemManager.Instance.AddFertility(returnFertility);
-
-        // 橡树死亡时减少恢复速率
-        if (plantData.matureEffect == PlantMatureEffect.OakLeafFall && isMature)
-        {
-            EcosystemManager.Instance.OnOakDied();
-        }
-
-        // 从生态系统注销
-        EcosystemManager.Instance.UnregisterPlant(this);
-
-        Debug.Log($"[Plant] {plantData.plantName} 收割完成，返还肥力: {returnFertility:F1}");
-
-        // 销毁游戏对象
-        isDead = true;
-        Destroy(gameObject);
+        // 调用死亡方法（会播放粒子特效和返还肥力）
+        Die(false); // false表示非自然死亡（收割）
     }
 
     // 调试信息

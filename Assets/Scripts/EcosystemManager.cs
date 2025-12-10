@@ -23,6 +23,7 @@ public class EcosystemManager : MonoBehaviour
     [Header("植物管理")]
     private List<Plant> allPlants = new List<Plant>();
     private int matureOakCount = 0; // 成熟橡树数量（影响恢复速率）
+    [SerializeField] private int maxTotalPlants = 50;  // 最大植物总数
 
     [Header("UI引用")]
     public TextMeshProUGUI fertilityText;
@@ -33,6 +34,8 @@ public class EcosystemManager : MonoBehaviour
     public float CurrentFertility => currentFertility;
     public float MaxFertility => maxFertility;
     public float CurrentRecoveryRate => currentFertilityRecoveryRate;
+    public int CurrentPlantCount => allPlants.Count;
+    public int MaxPlantCount => maxTotalPlants;
 
     private void Awake()
     {

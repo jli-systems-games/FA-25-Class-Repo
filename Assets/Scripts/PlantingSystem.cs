@@ -2,24 +2,27 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// 种植系统管理器
+/// 种植系统管理器 - 为Hesperia教程定制
 /// 处理植物的拖拽放置逻辑
 /// </summary>
 public class PlantingSystem : MonoBehaviour
 {
     [Header("拖拽设置")]
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private Transform plantContainer; // 植物的父容器
+    [SerializeField] private Transform plantContainer;
 
     [Header("种植区域限制")]
     [SerializeField] private float minX = -10f;
     [SerializeField] private float maxX = 10f;
-    [SerializeField] private float groundY = 0f; // 地面Y坐标（植物扎根位置）
+    [SerializeField] private float groundY = 0f;
+
+    [Header("🟢 教程系统")]
+    [SerializeField] private TutorialEventManager tutorialManager;
 
     [Header("当前拖拽状态")]
     private PlantData currentDraggedPlantData;
-    private PlantCard currentDraggedCard;      // 当前拖拽的卡牌
-    private GameObject dragPreview; // 拖拽预览对象
+    private PlantCard currentDraggedCard;
+    private GameObject dragPreview;
     private SpriteRenderer dragPreviewRenderer;
     private bool isDragging = false;
 
@@ -46,7 +49,6 @@ public class PlantingSystem : MonoBehaviour
         {
             UpdateDragPreview();
 
-            // 检测鼠标释放
             if (Input.GetMouseButtonUp(0))
             {
                 TryPlacePlant();
@@ -54,7 +56,6 @@ public class PlantingSystem : MonoBehaviour
         }
         else
         {
-            // 不在拖拽时，检测点击植物
             if (Input.GetMouseButtonDown(0))
             {
                 TrySelectPlant();
@@ -63,20 +64,16 @@ public class PlantingSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 尝试选中植物（射线检测所有碰撞，选最近的）
+    /// 尝试选中植物
     /// </summary>
     private void TrySelectPlant()
     {
-        // 从鼠标位置发射射线
         Vector3 mousePos = GetMouseWorldPosition();
-
-        // 检测所有碰撞的物体
         Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
 
         Plant closestPlant = null;
         float closestDistance = float.MaxValue;
 
-        // 遍历所有碰撞物，找最近的植物
         foreach (Collider2D hit in hits)
         {
             Plant plant = hit.GetComponentInParent<Plant>();
@@ -91,7 +88,6 @@ public class PlantingSystem : MonoBehaviour
             }
         }
 
-        // 如果找到植物，显示信息面板
         if (closestPlant != null)
         {
             if (PlantInfoPanel.Instance != null)
@@ -104,7 +100,7 @@ public class PlantingSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 开始拖拽植物（从UI卡牌调用）
+    /// 开始拖拽植物（从PlantCard调用）
     /// </summary>
     public void StartDragging(PlantData plantData, PlantCard plantCard)
     {
@@ -118,24 +114,22 @@ public class PlantingSystem : MonoBehaviour
         currentDraggedCard = plantCard;
         isDragging = true;
 
-        // 创建拖拽预览
         CreateDragPreview();
 
         Debug.Log($"[PlantingSystem] 开始拖拽: {plantData.plantName}");
     }
 
     /// <summary>
-    /// 创建拖拽预览对象
+    /// 创建拖拽预览
     /// </summary>
     private void CreateDragPreview()
     {
         dragPreview = new GameObject("DragPreview");
         dragPreviewRenderer = dragPreview.AddComponent<SpriteRenderer>();
-        dragPreviewRenderer.sprite = currentDraggedPlantData.youngSprite;  // 拖拽预览使用幼年贴图
+        dragPreviewRenderer.sprite = currentDraggedPlantData.youngSprite;
         dragPreviewRenderer.color = validPlacementColor;
-        dragPreviewRenderer.sortingOrder = 100; // 确保在最上层
+        dragPreviewRenderer.sortingOrder = 100;
 
-        // 设置sprite的pivot在底部（已在sprite设置中完成，这里只是确认）
         dragPreview.transform.position = GetMouseWorldPosition();
     }
 
@@ -148,7 +142,6 @@ public class PlantingSystem : MonoBehaviour
 
         Vector3 mousePos = GetMouseWorldPosition();
 
-        // 只移动X轴，Y轴锁定在地面
         Vector3 targetPos = new Vector3(
             Mathf.Clamp(mousePos.x, minX, maxX),
             groundY,
@@ -157,7 +150,6 @@ public class PlantingSystem : MonoBehaviour
 
         dragPreview.transform.position = targetPos;
 
-        // 检查是否可以放置（检查肥力和位置）
         bool canPlace = CanPlaceAtPosition(targetPos);
         dragPreviewRenderer.color = canPlace ? validPlacementColor : invalidPlacementColor;
     }
@@ -175,10 +167,8 @@ public class PlantingSystem : MonoBehaviour
 
         Vector3 placePosition = dragPreview.transform.position;
 
-        // 检查是否可以放置
         if (CanPlaceAtPosition(placePosition))
         {
-            // 实例化预制体
             if (currentDraggedPlantData.plantPrefab != null)
             {
                 GameObject plantObj = Instantiate(
@@ -188,28 +178,30 @@ public class PlantingSystem : MonoBehaviour
                     plantContainer
                 );
 
-                // 获取Plant组件并设置PlantData
                 Plant plant = plantObj.GetComponent<Plant>();
                 if (plant != null)
                 {
-                    // 通过反射设置PlantData（因为是私有字段）
+                    // 设置PlantData（使用反射访问私有字段）
                     var field = typeof(Plant).GetField("plantData",
-                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Public |
                         System.Reflection.BindingFlags.Instance);
                     field?.SetValue(plant, currentDraggedPlantData);
 
-                    // 种植成功，消耗库存
+                    // 消耗库存
                     if (currentDraggedCard != null)
                     {
                         currentDraggedCard.ConsumeStock();
                     }
+
+                    Debug.Log($"[PlantingSystem] 成功种植: {currentDraggedPlantData.plantName} at {placePosition}");
+
+                    // 🟢 教程检测：种植成功
+                    CheckTutorialPlantSuccess(currentDraggedPlantData, plant);
                 }
                 else
                 {
                     Debug.LogError($"[PlantingSystem] 预制体缺少Plant组件！");
                 }
-
-                Debug.Log($"[PlantingSystem] 成功种植: {currentDraggedPlantData.plantName} at {placePosition}");
             }
             else
             {
@@ -249,12 +241,9 @@ public class PlantingSystem : MonoBehaviour
         if (position.x < minX || position.x > maxX)
             return false;
 
-        // 检查肥力是否足够（种植时不消耗肥力，但需要检查是否能承受消耗）
-        // 这里暂时简化，只要肥力>0就可以种植
+        // 检查肥力是否足够
         if (EcosystemManager.Instance.CurrentFertility <= 0)
             return false;
-
-        // TODO: 可以添加更多检查，如与其他植物的距离
 
         return true;
     }
@@ -270,10 +259,122 @@ public class PlantingSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 检测是否点击在UI上（避免误触）
+    /// 检测是否点击在UI上
     /// </summary>
     private bool IsPointerOverUI()
     {
         return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+    }
+
+    // ============================================================
+    // 🟢 教程检测系统
+    // ============================================================
+
+    /// <summary>
+    /// 检测教程：种植成功事件
+    /// </summary>
+    private void CheckTutorialPlantSuccess(PlantData plantData, Plant plant)
+    {
+        if (tutorialManager == null || !tutorialManager.IsWaitingForCompletion())
+            return;
+
+        string waitingEvent = tutorialManager.GetCurrentWaitingEvent();
+
+        // 教程第一步：检测拖拽任意植物
+        // Ink: "Just drag it up. # wait_event drag"
+        if (waitingEvent == "drag")
+        {
+            tutorialManager.CompleteEvent("drag");
+            Debug.Log("✓ 教程完成: 玩家种植了第一株植物");
+        }
+
+        // 教程第二步：检测种植蘑菇
+        // Ink: "Try placing this mycelium under the tree. # wait_event plant_mushroom"
+        else if (waitingEvent == "plant_mushroom")
+        {
+            // 检查是否是蘑菇类植物
+            if (IsMushroom(plantData))
+            {
+                tutorialManager.CompleteEvent("plant_mushroom");
+                Debug.Log("✓ 教程完成: 玩家种植了蘑菇");
+
+                // 🟢 额外：监听这株蘑菇的死亡事件
+                if (plant != null)
+                {
+                    StartCoroutine(MonitorPlantDeath(plant, "mushroom_death"));
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 判断是否是蘑菇类植物
+    /// </summary>
+    private bool IsMushroom(PlantData plantData)
+    {
+        // 方法1: 通过名字判断
+        if (plantData.plantName.ToLower().Contains("mushroom") ||
+            plantData.plantName.ToLower().Contains("mycelium") ||
+            plantData.plantName.Contains("蘑菇") ||
+            plantData.plantName.Contains("菌"))
+        {
+            return true;
+        }
+
+        // 方法2: 通过植物类型判断（如果你的PlantData有类型标签）
+        if ((plantData.plantType & PlantType.Fungus) != 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 监听植物死亡事件（用于教程）
+    /// </summary>
+    private System.Collections.IEnumerator MonitorPlantDeath(Plant plant, string eventToComplete)
+    {
+        if (plant == null) yield break;
+
+        // 持续监听植物状态
+        while (plant != null && !plant.IsDead)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // 植物死亡了
+        if (plant == null || plant.IsDead)
+        {
+            Debug.Log($"[PlantingSystem] 检测到植物死亡");
+
+            // 检查是否是教程需要的事件
+            if (tutorialManager != null && tutorialManager.IsWaitingForCompletion())
+            {
+                string waitingEvent = tutorialManager.GetCurrentWaitingEvent();
+                if (waitingEvent == eventToComplete)
+                {
+                    tutorialManager.CompleteEvent(eventToComplete);
+                    Debug.Log($"✓ 教程完成: {eventToComplete}");
+                }
+            }
+        }
+    }
+
+    // ============================================================
+    // 🟢 可选：提供公开方法让其他脚本手动触发教程完成
+    // ============================================================
+
+    /// <summary>
+    /// 手动完成当前教程事件（调试用）
+    /// </summary>
+    public void CompleteCurrentTutorialEvent()
+    {
+        if (tutorialManager != null && tutorialManager.IsWaitingForCompletion())
+        {
+            string eventName = tutorialManager.GetCurrentWaitingEvent();
+            tutorialManager.CompleteEvent(eventName);
+            Debug.Log($"[PlantingSystem] 手动完成教程: {eventName}");
+        }
     }
 }
