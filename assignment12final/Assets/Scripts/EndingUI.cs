@@ -1,15 +1,20 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class EndingUI : MonoBehaviour
 {
     public static EndingUI Instance;
 
+    [Header("UI")]
     public GameObject endingPanel;
     public TextMeshProUGUI endingTitleText;
     public TextMeshProUGUI endingBodyText;
     public Button restartButton;
+
+    [Header("Scene Names")]
+    [SerializeField] private string titleSceneName = "TitleScene";
 
     private void Awake()
     {
@@ -19,21 +24,28 @@ public class EndingUI : MonoBehaviour
 
     private void Start()
     {
-        endingPanel.SetActive(false);
-        restartButton.onClick.AddListener(RestartGame);
+        if (endingPanel != null)
+            endingPanel.SetActive(false);
+
+        if (restartButton != null)
+            restartButton.onClick.AddListener(RestartToTitle);
     }
 
     public void ShowEnding(string title, string body)
     {
-        endingTitleText.text = title;
-        endingBodyText.text = body;
-        endingPanel.SetActive(true);
+        if (endingTitleText != null)
+            endingTitleText.text = title;
+
+        if (endingBodyText != null)
+            endingBodyText.text = body;
+
+        if (endingPanel != null)
+            endingPanel.SetActive(true);
     }
 
-    void RestartGame()
+    void RestartToTitle()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
-        );
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(titleSceneName);
     }
 }

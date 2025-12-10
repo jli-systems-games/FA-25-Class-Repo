@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class TopDownPlayerController : MonoBehaviour
@@ -14,6 +14,12 @@ public class TopDownPlayerController : MonoBehaviour
 
     void Update()
     {
+        if (DialogueUI.IsDialogueOpen)
+        {
+            input = Vector2.zero;
+            return;
+        }
+
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
         input = input.normalized;

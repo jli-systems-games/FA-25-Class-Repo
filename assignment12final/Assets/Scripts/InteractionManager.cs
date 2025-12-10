@@ -14,34 +14,34 @@ public class InteractionManager : MonoBehaviour
     {
         switch (id)
         {
-            // ======================
-            // 1. Market 小店老板（Shop_A）
-            // 任务：TalkToShopOwner
-            // ======================
             case "Shop_A":
                 DialogueUI.Instance.ShowChoices(
-                    "Shop owner: \"Business is dying. Rent is up. Your people still want the same money.\"",
-                    "Tell him to stop whining.",
+                    "The market shop owner is closing up, counting what’s left.\n" +
+                    "\"I heard they’re talking redevelopment at city hall tomorrow,\" he mutters.\n" +
+                    "\"On those new blueprints my stall probably doesn’t even exist.\n" +
+                    "But your family still wants the same money.\"",
+                    "Cut him off and tell him to stop whining.",
                     () =>
                     {
-                        // Fear +3
                         ReputationManager.Instance.AddReputation(3, 0);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"Whining never paid anyone's rent. Figure it out or close.\" He shuts up, eyes full of quiet anger.",
+                            "You: \"Whining won’t pay your rent. If you can’t hold the spot, someone else will.\n" +
+                            "Street doesn’t care who stands here, only who pays on time.\"\n" +
+                            "He bites back whatever he was about to say, eyes hard and quiet.",
                             null
                         );
 
-                        // 支线：和店主交谈
                         if (SideQuestManager.Instance != null)
                             SideQuestManager.Instance.CompleteQuest("TalkToShopOwner");
                     },
-                    "Listen for a moment and give a short, sharp advice.",
+                    "Let him talk, then give him some cold, sharp advice.",
                     () =>
                     {
-                        // Respect +4
                         ReputationManager.Instance.AddReputation(0, 4);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"Cut what doesn't sell. Cut hours. Bleed slower, or bleed out. Your choice.\" He nods, half grateful, half annoyed.",
+                            "You: \"Cut the dead stock first. Trim hours before you bleed yourself dry.\n" +
+                            "If the city tears this place up tomorrow, you’ll need cash more than pride.\"\n" +
+                            "He nods slowly. Still complains, but you can see he’s already rearranging shelves in his head.",
                             null
                         );
 
@@ -51,33 +51,35 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 2. 卖烟小摊（Shop_B）
-            // 任务：TalkToCigSeller
-            // ======================
             case "Shop_B":
                 DialogueUI.Instance.ShowChoices(
-                    "Cigarette seller: \"You Lin guys smoke my stock, pay when you feel like it.\"",
-                    "Remind her why she still has a stall.",
+                    "The cigarette stall owner, a woman in a worn bomber jacket, is half-packing up her crates.\n" +
+                    "\"So they’re really going to city hall tomorrow for that big redevelopment meeting, huh?\" she says.\n" +
+                    "\"Once they redraw this harbor, what does a tiny stall like mine count as? A mistake on the map?\"\n" +
+                    "She flicks ash to the ground and looks at you.\n" +
+                    "\"Meanwhile, your Lin people smoke my stock and call it ‘put it on the tab’.\"",
+                    "Remind her why she still has a stall on this street.",
                     () =>
                     {
-                        // Fear +4
                         ReputationManager.Instance.AddReputation(4, 0);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"You still have a stall because we 'feel like it'. Remember that.\" She laughs nervously and hands you a pack for free.",
+                            "You: \"You’re still on this corner because we allow it.\n" +
+                            "When the maps change, the only question is whether we bother to move you onto the new one.\"\n" +
+                            "She gives a tight, crooked smile, tears open a pack, and presses it into your hand without another word.",
                             null
                         );
 
                         if (SideQuestManager.Instance != null)
                             SideQuestManager.Instance.CompleteQuest("TalkToCigSeller");
                     },
-                    "Drop a few bills on the counter with a sharp comment.",
+                    "Drop some bills and answer her with a barbed kind of fairness.",
                     () =>
                     {
-                        // Respect +3
                         ReputationManager.Instance.AddReputation(0, 3);
                         DialogueUI.Instance.ShowLine(
-                            "You toss some notes down. \"Count it. Complain after it’s not enough.\" She counts, then quietly thanks you.",
+                            "You slap a few notes down on the crate.\n" +
+                            "You: \"Call it tonight’s bill. Tomorrow, if the street survives the meeting, we’ll see who’s still selling what.\"\n" +
+                            "She counts the money, her voice softer: \"Then come back and smoke on the house—if the house is still here.\"",
                             null
                         );
 
@@ -87,30 +89,30 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 3. 撞到你的街头小孩（Street_Kid_1）
-            // 任务：HelpStreetKid （只有帮他的选项算完成）
-            // ======================
             case "Street_Kid_1":
                 DialogueUI.Instance.ShowChoices(
-                    "A kid runs into you and drops a plastic bag. Inside: cheap groceries.",
-                    "Scare him so he won't run blind again.",
+                    "A kid slams into you at full speed. A plastic bag explodes across the pavement—cheap vegetables everywhere.",
+
+                    "Scare him so he won’t run blind again.",
                     () =>
                     {
-                        // Fear +3
                         ReputationManager.Instance.AddReputation(3, 0);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"Next time you run like that, it won't be me you hit. It'll be a truck.\" The kid nods, terrified, and runs off clutching the bag.",
+                            "You: \"Next time you run like that, it won’t be me you hit. It’ll be a car.\n" +
+                            "Cars don’t say sorry. They just don’t stop.\"\n" +
+                            "He nods frantically, grabs what he can and runs, still looking back over his shoulder.",
                             null
                         );
                     },
+
                     "Mock him, then help pick up the groceries.",
                     () =>
                     {
-                        // Respect +4
                         ReputationManager.Instance.AddReputation(0, 4);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"If you're going to sprint, try growing eyes first.\" You toss the groceries back into his arms. He mumbles a thanks and bows.",
+                            "You: \"You sprint like that without eyes, you’ll end up on a poster, not a podium.\"\n" +
+                            "You still crouch down, shove vegetables back into the torn bag and push it into his arms.\n" +
+                            "He mumbles a thank you and bows before bolting off into the dark.",
                             null
                         );
 
@@ -120,13 +122,14 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 4. 长椅上的老头（Street_OldMan_1）
-            // 任务：ListenOldMan
-            // ======================
             case "Street_OldMan_1":
                 DialogueUI.Instance.ShowLine(
-                    "Old man on a bench: \"Used to be kids played here. Now it's drunks and debt collectors.\" You don't correct him.",
+                    "An old man sits on a bench at the corner, staring at the street like it’s a TV he can’t switch off.\n" +
+                    "\"They say tomorrow they’re going to rename this whole block at city hall,\" he sighs.\n" +
+                    "\"New district, new brand, new everything.\"\n" +
+                    "He shakes his head.\n" +
+                    "\"Used to be kids everywhere here. Now it’s drunks and debt collectors.\"\n" +
+                    "You don’t correct him. You just listen, then keep walking.",
                     () =>
                     {
                         if (SideQuestManager.Instance != null)
@@ -135,13 +138,10 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 5. 巷子涂鸦（Alley_Graffiti_1）
-            // 任务：CheckGraffiti
-            // ======================
             case "Alley_Graffiti_1":
                 DialogueUI.Instance.ShowLine(
-                    "Old graffiti, half-faded names and dates. You remember none of them stayed around.",
+                    "The graffiti on the alley wall is half-gone—names and dates fading into damp concrete.\n" +
+                    "You recognize a few. None of them lasted long enough to worry about redevelopment meetings.",
                     () =>
                     {
                         if (SideQuestManager.Instance != null)
@@ -150,28 +150,28 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 6. 巷子里的流浪猫（Alley_StrayCat_1）
-            // 任务：FeedCat（只有喂的时候完成）
-            // ======================
             case "Alley_StrayCat_1":
                 DialogueUI.Instance.ShowChoices(
-                    "A stray cat watches you from a trash can, eyes glowing in the dark.",
-                    "Hiss back at it and walk on.",
+                    "A scrawny alley cat watches you from the lip of a trash can, eyes glowing in the dark.\n" +
+                    "Somewhere farther down the street, you can hear someone tearing down old flyers about tomorrow’s hearing.",
+
+                    "Hiss back and walk on.",
                     () =>
                     {
                         DialogueUI.Instance.ShowLine(
-                            "You: \"Stare all you want. I bite harder.\" The cat flicks its tail and vanishes into the shadows.",
+                            "You: \"Stare all you want. If this place goes under, you’ll be digging in construction dust instead.\"\n" +
+                            "The cat flicks its tail once and melts into the shadows.",
                             null
                         );
                     },
+
                     "Toss it a scrap from your pocket.",
                     () =>
                     {
-                        // Respect +2
                         ReputationManager.Instance.AddReputation(0, 2);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"Fine. You eat, I pretend I didn't see you.\" The cat snatches the food and keeps staring.",
+                            "You: \"Fine. Eat while the street is still here to feed you.\"\n" +
+                            "The cat snatches the food and stays where it is, still staring like it knows more than it should.",
                             null
                         );
 
@@ -181,33 +181,34 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 7. 仓库门口小弟（Warehouse_Guard_1）
-            // 任务：TalkToGuard（两个选项都算完成）
-            // ======================
             case "Warehouse_Guard_1":
                 DialogueUI.Instance.ShowChoices(
-                    "A younger guard is nodding off at the warehouse gate.",
-                    "Wake him up with a hard shove and a threat.",
+                    "A younger guard is half asleep at the warehouse gate, chin nearly hitting his chest.\n" +
+                    "\"Of all nights to pull gate duty, it had to be the one before the redevelopment hearing,\" he mutters.",
+
+                    "Shove him awake and remind him what happens if he screws this up.",
                     () =>
                     {
-                        // Fear +4
                         ReputationManager.Instance.AddReputation(4, 0);
                         DialogueUI.Instance.ShowLine(
-                            "You shove his shoulder. \"Sleep when you're dead. Or when we are.\" He jolts awake, pale.",
+                            "You shove his shoulder hard.\n" +
+                            "You: \"If something walks in tonight because you were napping, it won’t be the city that tears this place down. It’ll be us.\"\n" +
+                            "He snaps fully awake, color draining from his face.",
                             null
                         );
 
                         if (SideQuestManager.Instance != null)
                             SideQuestManager.Instance.CompleteQuest("TalkToGuard");
                     },
-                    "Wake him with a jab and bitter humor.",
+
+                    "Tap his head and wake him with bitter humor.",
                     () =>
                     {
-                        // Respect +3
                         ReputationManager.Instance.AddReputation(0, 3);
                         DialogueUI.Instance.ShowLine(
-                            "You tap his head. \"If you get us robbed, you'll wish you never learned how to sleep.\" He laughs nervously and straightens up.",
+                            "You rap your knuckles lightly against his skull.\n" +
+                            "You: \"If the only thing guarding this place before tomorrow’s meeting is your snoring, we’re already done.\"\n" +
+                            "He laughs nervously and forces himself to stand straighter.",
                             null
                         );
 
@@ -217,29 +218,33 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 8. Bar 里的骰子小游戏（Bar_DiceGame_1）
-            // 任务：PlayDice
-            // ======================
             case "Bar_DiceGame_1":
                 DialogueUI.Instance.ShowChoices(
-                    "A couple of guys invite you to a quick dice game.",
-                    "Play and win.",
+                    "In the corner of the bar, a few guys wave you over.\n" +
+                    "\"One quick round of dice?\" one of them grins.\n" +
+                    "\"Tomorrow they talk about tearing this place down anyway. Might as well lose our money to you while it still exists.\"",
+
+                    "Play to win and take their money.",
                     () =>
                     {
                         DialogueUI.Instance.ShowLine(
-                            "You roll, and the table groans. \"Beginner's luck,\" someone mutters. You smirk.",
+                            "You shake the cup, let the dice fall, and the table groans in unison.\n" +
+                            "\"Of course,\" someone mutters. \"Last night on this street and he’s still taking our cash.\"\n" +
+                            "You just smirk. If the street disappears tomorrow, the money won’t matter anyway.",
                             null
                         );
 
                         if (SideQuestManager.Instance != null)
                             SideQuestManager.Instance.CompleteQuest("PlayDice");
                     },
-                    "Play and lose on purpose.",
+
+                    "Lose on purpose and treat it like a farewell gift.",
                     () =>
                     {
                         DialogueUI.Instance.ShowLine(
-                            "You roll just badly enough to lose. \"See? I'm generous,\" you say. They laugh, not sure if you're joking.",
+                            "You judge the numbers and hold back just enough to lose.\n" +
+                            "You: \"Enjoy it. Spend it before the city paints over this place.\"\n" +
+                            "They laugh too loud, half at the money, half at the fact that you showed up at all tonight.",
                             null
                         );
 
@@ -249,33 +254,33 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 9. 重建计划海报（Crossroad_DevPoster_1）
-            // 任务：ReadDevPoster（看 / 撕都算）
-            // ======================
             case "Crossroad_DevPoster_1":
                 DialogueUI.Instance.ShowChoices(
-                    "A bright poster reads: \"Urban Renewal Project – A New Future for the Harbor District.\"",
+                    "A bright poster is pasted to the wall:\n" +
+                    "\"Urban Renewal Project – A New Future for the Harbor District.\"\n" +
+                    "Tiny print at the bottom reads: \"Public hearing date: tomorrow morning.\"",
+
                     "Rip it down without a word.",
                     () =>
                     {
-                        // Fear +3
                         ReputationManager.Instance.AddReputation(3, 0);
                         DialogueUI.Instance.ShowLine(
-                            "You tear it off. The wall looks older, and somehow more honest.",
+                            "You tear the poster off in one motion. The paper shreds in your hand.\n" +
+                            "The wall looks older, more honest—cracked, stained, and still here. For now.",
                             null
                         );
 
                         if (SideQuestManager.Instance != null)
                             SideQuestManager.Instance.CompleteQuest("ReadDevPoster");
                     },
-                    "Smirk and leave it there.",
+
+                    "Leave it there and walk away with a smirk.",
                     () =>
                     {
-                        // Respect +2（或者理解为现实感）
                         ReputationManager.Instance.AddReputation(0, 2);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"New future, same old lies.\" You walk on, leaving the poster to fade in the rain.",
+                            "You: \"New future, same old lies.\"\n" +
+                            "You walk on, letting the poster stay, waiting for rain and time to do their work.",
                             null
                         );
 
@@ -285,33 +290,34 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 10. 警局附近盯着你看的人（Police_CornerWitness_1）
-            // 任务：ConfrontWatcher
-            // ======================
             case "Police_CornerWitness_1":
                 DialogueUI.Instance.ShowChoices(
-                    "Near the station, a man stares at you too long, then looks away.",
-                    "Stare him down until he panics.",
+                    "Near the station, a man lingers at the corner, watching you too long.\n" +
+                    "On the notice board behind him, the flyer about tomorrow’s redevelopment hearing flaps in the wind.\n" +
+                    "When your eyes meet, he suddenly pretends to be interested in anything else.",
+
+                    "Stare him down until he breaks.",
                     () =>
                     {
-                        // Fear +4
                         ReputationManager.Instance.AddReputation(4, 0);
                         DialogueUI.Instance.ShowLine(
-                            "You don't blink. He folds first, vanishing into a side street like a roach.",
+                            "You stop walking and don’t blink.\n" +
+                            "He lasts a few seconds before folding, slipping into the side street like a roach avoiding the light.",
                             null
                         );
 
                         if (SideQuestManager.Instance != null)
                             SideQuestManager.Instance.CompleteQuest("ConfrontWatcher");
                     },
-                    "Walk past with a cutting remark.",
+
+                    "Walk past and cut him with one line.",
                     () =>
                     {
-                        // Respect +3（不用动手，只用气场和嘴）
                         ReputationManager.Instance.AddReputation(0, 3);
                         DialogueUI.Instance.ShowLine(
-                            "You: \"If you're going to stare, at least charge a ticket.\" He flinches, then pretends to check his phone.",
+                            "You pass close enough for him to smell your smoke.\n" +
+                            "You: \"If you’re going to stare this hard the night before a hearing, at least charge for tickets.\"\n" +
+                            "He flinches and fumbles for his phone, pretending he was never looking at you at all.",
                             null
                         );
 
@@ -321,10 +327,6 @@ public class InteractionManager : MonoBehaviour
                 );
                 break;
 
-            // ======================
-            // 这里可以继续加你自己的主线交互 case
-            // 比如 "Main_MarketDebt", "Main_Traitorguy" 之类
-            // ======================
 
             default:
                 Debug.Log("No interaction handler for id: " + id);

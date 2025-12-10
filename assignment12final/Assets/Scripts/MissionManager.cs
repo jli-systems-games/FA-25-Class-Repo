@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
 
 public class MissionManager : MonoBehaviour
@@ -18,7 +18,7 @@ public class MissionManager : MonoBehaviour
 
     private void Start()
     {
-        SetObjective("Go to the Family Bar.");
+        SetObjective("Head to the family bar to start your last night on the street.");
     }
 
     public void SetObjective(string text)
@@ -86,16 +86,19 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    #region ¾ßÌåÊÂ¼þ
+    #region Main story beats
 
     void StartIntroAtBar()
     {
         currentState = MissionState.GoCollectDebt;
+
         DialogueUI.Instance.ShowLine(
-            "Boss: You¡¯re new, kid. Let¡¯s see what you can do. Go collect the money from that diner on Market Street.",
+            "Boss: \"Tomorrow morning, the city talks about erasing this harbor off the map.\"\n" +
+            "He looks you over like heâ€™s weighing something.\n" +
+            "Boss: \"Tonight, you walk it for me. Start simple: that diner on Market Street still owes us. Go see if they remember.\"",
             () =>
             {
-                SetObjective("Go to Market Street and talk to the diner owner.");
+                SetObjective("Go to Market Street and talk to the diner owner about the debt.");
             }
         );
     }
@@ -103,30 +106,40 @@ public class MissionManager : MonoBehaviour
     void StartDebtChoiceAtMarket()
     {
         DialogueUI.Instance.ShowChoices(
-            "The owner looks nervous. He says business is bad and he needs more time.",
-            "Threaten him and break something.",
+            "The diner owner is wiping down empty tables. You can smell broth and anxiety.\n" +
+            "He rubs his hands on his apron.\n" +
+            "\"Business is dead,\" he says. \"With that redevelopment hearing tomorrowâ€¦ I just need more time.\"",
+
+            "Make it very clear that the city might change, but his debt doesnâ€™t.",
             () =>
             {
+
                 ReputationManager.Instance.AddReputation(10, 0);
                 DialogueUI.Instance.ShowLine(
-                    "You slam your fist on the table. He pays up with shaking hands.",
+                    "You lean on the counter.\n" +
+                    "You: \"Maps change. Names change. Numbers donâ€™t. You owe us now, not on some new brochure.\"\n" +
+                    "He fumbles open the till with shaking hands and counts out what he can.",
                     () =>
                     {
                         currentState = MissionState.ReportDebt;
-                        SetObjective("Return to the Bar and report to the Boss.");
+                        SetObjective("Return to the bar and tell the Boss how you handled the diner.");
                     }
                 );
             },
-            "Give him more time and warn him gently.",
+
+            "Give him a deadline, not a miracle, and keep your voice low.",
             () =>
             {
                 ReputationManager.Instance.AddReputation(0, 10);
                 DialogueUI.Instance.ShowLine(
-                    "You lower your voice and give him a week. He nods gratefully.",
+                    "You tap the counter with two fingers.\n" +
+                    "You: \"One more week. After the hearing, if this place is still standing, I expect this debt off your books.\"\n" +
+                    "Relief floods his face.\n" +
+                    "\"Thank you,\" he says, bowing his head. \"I wonâ€™t forget this.\"",
                     () =>
                     {
                         currentState = MissionState.ReportDebt;
-                        SetObjective("Return to the Bar and report to the Boss.");
+                        SetObjective("Return to the bar and tell the Boss how you handled the diner.");
                     }
                 );
             }
@@ -136,11 +149,15 @@ public class MissionManager : MonoBehaviour
     void ReportDebtAtBar()
     {
         currentState = MissionState.GoAlley;
+
         DialogueUI.Instance.ShowLine(
-            "Boss: Not bad. There¡¯s another problem. One of our guys has been stealing. Deal with him in the back alley.",
+            "Back at the bar, the Boss is nursing a drink he hasnâ€™t touched.\n" +
+            "Boss: \"Money is one thing. Loyalty is another.\"\n" +
+            "He sets the glass down.\n" +
+            "Boss: \"One of our own has been skimming. Heâ€™s hiding in the back alley tonight. Goâ€¦ sort his priorities out.\"",
             () =>
             {
-                SetObjective("Go to the Back Alley.");
+                SetObjective("Go to the back alley and deal with the traitor.");
             }
         );
     }
@@ -148,30 +165,39 @@ public class MissionManager : MonoBehaviour
     void StartAlleyChoice()
     {
         DialogueUI.Instance.ShowChoices(
-            "You find the traitor trembling in the dark alley. He says he only took money to pay his family¡¯s debt.",
-            "Punish him hard. Make an example.",
+            "You find him in the alley, back against the wall, eyes darting between you and the exit.\n" +
+            "\"I only took it to pay my familyâ€™s debts,\" he spits out. \"Once theyâ€™re clear, I was going to put it back.\"\n" +
+            "The street is quiet enough that your next move will echo.",
+
+            "Make an example out of him. Let the bricks remember the sound.",
             () =>
             {
                 ReputationManager.Instance.AddReputation(15, -5);
                 DialogueUI.Instance.ShowLine(
-                    "Your blows echo in the alley. No one will dare cross you for a while.",
+                    "You donâ€™t give him time to beg twice.\n" +
+                    "Your blows slam him into the wall; the alley records every impact.\n" +
+                    "By the time youâ€™re done, anyone within earshot knows what crossing you sounds like.",
                     () =>
                     {
                         currentState = MissionState.ReportAlley;
-                        SetObjective("Return to the Bar.");
+                        SetObjective("Return to the bar and report what happened in the alley.");
                     }
                 );
             },
-            "Stage a beating, but secretly let him go.",
+
+            "Stage a beating for the walls, and whisper the real verdict in his ear.",
             () =>
             {
                 ReputationManager.Instance.AddReputation(5, 10);
                 DialogueUI.Instance.ShowLine(
-                    "You make some noise for the walls to hear, then whisper: \"Run. Don¡¯t come back.\"",
+                    "You grab his collar and slam him once, hard enough for the sound to carry.\n" +
+                    "Then you lean in close.\n" +
+                    "You: \"Run. Tonight. If I ever see you again, I wonâ€™t be acting.\"\n" +
+                    "He nods, eyes wet, and disappears into the dark as you keep throwing punches at the empty air.",
                     () =>
                     {
                         currentState = MissionState.ReportAlley;
-                        SetObjective("Return to the Bar.");
+                        SetObjective("Return to the bar and report what happened in the alley.");
                     }
                 );
             }
@@ -181,11 +207,15 @@ public class MissionManager : MonoBehaviour
     void ReportAlleyAtBar()
     {
         currentState = MissionState.GoWarehouse;
+
         DialogueUI.Instance.ShowLine(
-            "Boss: Things are heating up. Tonight you watch the goods at the warehouse. Don¡¯t lose anything.",
+            "The Boss listens, face unreadable.\n" +
+            "Boss: \"The city will talk about numbers tomorrow. We still have cargo tonight.\"\n" +
+            "He slides a key across the counter.\n" +
+            "Boss: \"Warehouse down by the edge. Our goods, our name. You watch it until sunrise.\"",
             () =>
             {
-                SetObjective("Go to the Warehouse District.");
+                SetObjective("Go to the warehouse district and prepare for the night.");
             }
         );
     }
@@ -193,35 +223,64 @@ public class MissionManager : MonoBehaviour
     void StartWarehouseChoice()
     {
         DialogueUI.Instance.ShowChoices(
-            "Night falls. Another gang attacks the warehouse. Fire, shouting, chaos. Your men look to you.",
-            "Protect the goods, no matter the cost.",
+            "Night deepens. Shouting rips through the dark as another crew hits the warehouse.\n" +
+            "Shadows, firelight, and the sound of breaking glass. Your people turn toward you, waiting for a call.",
+
+            "Order them to hold the line. The crates matter more than bodies.",
             () =>
             {
                 ReputationManager.Instance.AddReputation(20, -10);
                 DialogueUI.Instance.ShowLine(
-                    "You order everyone to hold the line. The goods are safe, but some of your men don¡¯t make it out.",
+                    "You: \"No one touches those crates. Anyone who runs doesnâ€™t come back.\"\n" +
+                    "The fight is ugly and close. By the end of it, the goods are intact.\n" +
+                    "Some of your people are not.",
                     () =>
                     {
                         currentState = MissionState.FinalDecision;
-                        SetObjective("Return to the Bar for a final meeting.");
+                        SetObjective("Return to the bar for a final meeting.");
+
+                        if (BGMManager.Instance != null)
+                        {
+                            BGMManager.Instance.PlayFinalTheme();
+                        }
+
+                        if (CameraShake.Instance != null)
+                        {
+                            CameraShake.Instance.Shake(0.35f, 0.35f);
+                        }
                     }
                 );
             },
-            "Save your men, abandon the goods.",
+
+            "Call the retreat and drag everyone you can out of the fire.",
             () =>
             {
+
                 ReputationManager.Instance.AddReputation(-5, 20);
                 DialogueUI.Instance.ShowLine(
-                    "You shout for a retreat. The warehouse burns, but your people live.",
+                    "You: \"Fall back! Live to argue with me tomorrow.\" \n" +
+                    "You pull bodies out of the smoke until you canâ€™t see the crates anymore.\n" +
+                    "By the time the flames die down, the cargo is goneâ€”but your people are breathing.",
                     () =>
                     {
                         currentState = MissionState.FinalDecision;
-                        SetObjective("Return to the Bar for a final meeting.");
+                        SetObjective("Return to the bar for a final meeting.");
+
+                        if (BGMManager.Instance != null)
+                        {
+                            BGMManager.Instance.PlayFinalTheme();
+                        }
+
+                        if (CameraShake.Instance != null)
+                        {
+                            CameraShake.Instance.Shake(0.35f, 0.35f);
+                        }
                     }
                 );
             }
         );
     }
+
 
     void StartFinalDecision()
     {
@@ -230,58 +289,65 @@ public class MissionManager : MonoBehaviour
         int fear = ReputationManager.Instance.familyFear;
         int respect = ReputationManager.Instance.familyRespect;
 
+        fear = Mathf.Max(0, fear);
+        respect = Mathf.Max(0, respect);
+
         Debug.Log($"FINAL REPUTATION -> FEAR: {fear}, RESPECT: {respect}");
 
-        int diff = fear - respect; // Õý£ºFear ¶à£¬¸º£ºRespect ¶à
+        int diff = fear - respect;
 
-        // ²ÎÊýÇø£ºÒÔºó²»ÂúÒâ¿ÉÒÔ×Ô¼º¸Ä
-        int highThreshold = 35;  // "·Ç³£¸ß"
-        int midThreshold = 30;  // "¹»¸ß"
-        int minOther = 15;  // ÁíÒ»ÌõµÄ×îµÍÁ¿£¬±íÊ¾¡°²»ÊÇÁã¡±
-        int dominanceMargin = 25; // ³¬¹ýÕâ¸ö²î¾à¾ÍÊÇÃ÷ÏÔÆ«ÏòÒ»±ß
 
-        // 1) ºÃ½á¾Ö£ºFear & Respect ¶¼¸ß£¬ÇÒ²î¾à²»´ó
-        if (fear >= midThreshold && respect >= midThreshold && Mathf.Abs(diff) <= dominanceMargin)
+        int balancedThreshold = 25;  
+        int highThreshold = 30; 
+        int dominanceMargin = 8;
+
+        if (fear >= balancedThreshold &&
+            respect >= balancedThreshold &&
+            Mathf.Abs(diff) <= dominanceMargin)
         {
             EndingUI.Instance.ShowEnding(
                 "Harbor Boss",
-                "People lower their voices when they say your name.\n" +
-                "Not just out of fear, but out of habit and respect.\n\n" +
-                "You kept this broken harbor standing a little longer,\n" +
-                "and for now, that is enough."
+                "The old harbor hasnâ€™t been flattened yet, but your name is already "
+              + "etched into the cracks between its bricks.\n\n"
+              + "Some people fear you. Some respect you. Most have learned to lower "
+              + "their voice when they say your name.\n"
+              + "Before the city rewrites this place completely, youâ€™ve held it in a shape "
+              + "you can live with."
             );
         }
-        // 2) Bloody King£ºFear ·Ç³£¸ß£¬Respect Ò²ÓÐ£¬µ«Fear Ã÷ÏÔÑ¹¹ýRespect
-        else if (fear >= highThreshold && respect >= minOther && diff >= dominanceMargin)
+
+        else if (fear >= highThreshold && diff >= dominanceMargin)
         {
             EndingUI.Instance.ShowEnding(
                 "Bloody King",
-                "Everyone on the street knows your name.\n" +
-                "They lower their eyes when you pass.\n\n" +
-                "They obey you not because they trust you,\n" +
-                "but because they are terrified."
+                "Everyone on this street knows your name.\n"
+              + "They nod when they see you. They step aside. They look down.\n\n"
+              + "They follow you not because they trust you, but because theyâ€™ve "
+              + "done the math on what it costs to make you angry.\n"
+              + "The street survives for now, but nobody dares use the word \"future\" in front of you."
             );
         }
-        // 3) Gentleman Boss£ºRespect ·Ç³£¸ß£¬Fear Ò²ÓÐ£¬µ«Ã÷ÏÔÆ«Ïò¡°±»Ï²»¶¡±
-        else if (respect >= highThreshold && fear >= minOther && diff <= -dominanceMargin)
+
+        else if (respect >= highThreshold && diff <= -dominanceMargin)
         {
             EndingUI.Instance.ShowEnding(
                 "Gentleman Boss",
-                "Your enemies speak your name with caution.\n" +
-                "Your people speak it with something like affection.\n\n" +
-                "You tried to hold power without drowning in blood.\n" +
-                "In this city, that's almost a miracle."
+                "Your enemies lower their voices when they speak your name;\n"
+              + "your people say it with something like affection.\n\n"
+              + "You tried not to spill more blood than this street could stand.\n"
+              + "In this line of work, thatâ€™s already a kind of stubborn idealism."
             );
         }
-        // 4) ÆäËûÇé¿ö£ºBurned Out
+
         else
         {
             EndingUI.Instance.ShowEnding(
                 "Burned Out",
-                "You tried to balance terror and mercy without choosing a side.\n" +
-                "Or you never built enough of either.\n\n" +
-                "When the storm hit, no one knew which version of you to follow.\n" +
-                "The city moves on. Someone else will take your place."
+                "You moved, talked, made choicesâ€”just not enough in any one direction.\n\n"
+              + "When the machines finally rolled in, nobody knew whether to fear you "
+              + "or to follow you.\n"
+              + "The harbor changed its face, and you slipped through the gap without "
+              + "leaving much of a mark."
             );
         }
     }

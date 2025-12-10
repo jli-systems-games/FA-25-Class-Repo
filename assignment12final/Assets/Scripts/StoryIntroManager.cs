@@ -36,8 +36,15 @@ public class StoryIntroManager : MonoBehaviour
     public MonoBehaviour playerController;
     public GameObject mainUICanvas;
 
+    [Header("Typewriter Settings")]
+    public float titleCharsPerSecond = 25f;
+    public float bodyCharsPerSecond = 35f;
+
     private int currentIndex = 0;
     private bool introFinished = false;
+
+    private bool isTyping = false;
+    private Coroutine typingCoroutine;
 
     void Start()
     {
@@ -99,16 +106,6 @@ public class StoryIntroManager : MonoBehaviour
         currentIndex = index;
         IntroSlide slide = slides[index];
 
-        if (titleText != null)
-        {
-            titleText.text = slide.title;
-        }
-
-        if (bodyText != null)
-        {
-            bodyText.text = slide.body;
-        }
-
         if (backgroundImage != null)
         {
             if (slide.backgroundSprite != null)
@@ -135,11 +132,101 @@ public class StoryIntroManager : MonoBehaviour
                 illustrationImage.enabled = false;
             }
         }
+
+        StartTypingSlide(slide);
+    }
+
+    void StartTypingSlide(IntroSlide slide)
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        typingCoroutine = StartCoroutine(TypeSlide(slide));
+    }
+
+    System.Collections.IEnumerator TypeSlide(IntroSlide slide)
+    {
+        isTyping = true;
+
+        string fullTitle = slide.title ?? "";
+        string fullBody = slide.body ?? "";
+
+        if (titleText != null) titleText.text = "";
+        if (bodyText != null) bodyText.text = "";
+
+        float tTitle = 0f;
+        float tBody = 0f;
+        int idxTitle = 0;
+        int idxBody = 0;
+        int lenTitle = fullTitle.Length;
+        int lenBody = fullBody.Length;
+
+        while (idxTitle < lenTitle || idxBody < lenBody)
+        {
+            tTitle += Time.deltaTime * titleCharsPerSecond;
+            tBody += Time.deltaTime * bodyCharsPerSecond;
+
+            if (idxTitle < lenTitle && titleText != null)
+            {
+                int newIdxTitle = Mathf.Clamp(Mathf.FloorToInt(tTitle), 0, lenTitle);
+                if (newIdxTitle != idxTitle)
+                {
+                    idxTitle = newIdxTitle;
+                    titleText.text = fullTitle.Substring(0, idxTitle);
+                }
+            }
+
+            if (idxBody < lenBody && bodyText != null)
+            {
+                int newIdxBody = Mathf.Clamp(Mathf.FloorToInt(tBody), 0, lenBody);
+                if (newIdxBody != idxBody)
+                {
+                    idxBody = newIdxBody;
+                    bodyText.text = fullBody.Substring(0, idxBody);
+                }
+            }
+
+            yield return null;
+        }
+
+        if (titleText != null) titleText.text = fullTitle;
+        if (bodyText != null) bodyText.text = fullBody;
+
+        isTyping = false;
+        typingCoroutine = null;
+    }
+
+    void CompleteCurrentSlideInstant()
+    {
+        if (!isTyping) return;
+        isTyping = false;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        if (currentIndex >= 0 && currentIndex < slides.Count)
+        {
+            IntroSlide slide = slides[currentIndex];
+            if (titleText != null) titleText.text = slide.title;
+            if (bodyText != null) bodyText.text = slide.body;
+        }
     }
 
     void OnClickNext()
     {
         if (introFinished) return;
+
+        if (isTyping)
+        {
+            CompleteCurrentSlideInstant();
+            return;
+        }
 
         currentIndex++;
 
@@ -156,6 +243,13 @@ public class StoryIntroManager : MonoBehaviour
     void FinishIntro()
     {
         introFinished = true;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+        isTyping = false;
 
         if (introCanvasRoot != null)
         {
