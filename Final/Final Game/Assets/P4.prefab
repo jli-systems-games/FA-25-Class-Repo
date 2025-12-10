@@ -1520,6 +1520,8 @@ GameObject:
   - component: {fileID: 4250108815817870919}
   - component: {fileID: -4576301594280343761}
   - component: {fileID: -1690431370299860561}
+  - component: {fileID: 5437428647923575228}
+  - component: {fileID: 7210858021337336936}
   m_Layer: 10
   m_Name: P4
   m_TagString: Player
@@ -1850,7 +1852,7 @@ MonoBehaviour:
   AbilityStopSfx: {fileID: 0}
   AbilityStartFeedbacks: {fileID: 0}
   AbilityStopFeedbacks: {fileID: 0}
-  AbilityPermitted: 1
+  AbilityPermitted: 0
   BlockingMovementStates: 
   BlockingConditionStates: 
   BlockingWeaponStates: 
@@ -2039,7 +2041,7 @@ MonoBehaviour:
   AbilityStopSfx: {fileID: 0}
   AbilityStartFeedbacks: {fileID: 0}
   AbilityStopFeedbacks: {fileID: 0}
-  AbilityPermitted: 1
+  AbilityPermitted: 0
   BlockingMovementStates: 
   BlockingConditionStates: 
   BlockingWeaponStates: 
@@ -2215,7 +2217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _character: {fileID: 1924621446957796844}
   _handleWeapon: {fileID: 0}
-  InteractKey: 330
+  InteractKey: 370
 --- !u!114 &3392153567070214524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2397,12 +2399,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0521a5ae8fe732442b1223862d70ef07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThrowKey: 331
+  P1ThrowKey: 101
+  P2ThrowKey: 271
+  P3ThrowKey: 351
+  P4ThrowKey: 371
   HandTransform: {fileID: 1308256598490157121}
   BigRockSpeed: 12
   SmallRockSpeed: 24
   MaxChargeTime: 1.5
-  MaxRange: 8
+  MaxRange: 51.8
   SmallRockMassThreshold: 3
   MaxBounces: 3
   PulseInterval: 0.4
@@ -2412,7 +2417,7 @@ MonoBehaviour:
   ShakeIntensity: 2
   ShakeDuration: 0.1
   ShakeFrequency: 4
-  LineWidth: 0.2
+  LineWidth: 1
   SegmentsPerBounce: 15
   LineColorStart: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   LineColorBounce1: {r: 1, g: 0.8, b: 0.2, a: 0.7}
@@ -2449,6 +2454,36 @@ MonoBehaviour:
   SmoothMovement: 1
   Threshold: {x: 0.1, y: 0.4}
   RotateInputBasedOnCameraDirection: 0
+--- !u!114 &5437428647923575228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797963581942753231}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4b37db781354c49b7b8ad7d2b28162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsGamepadPlayer: 1
+  GamepadIndex: 2
+  PlayerID: Player4
+  EnableDebugLogs: 0
+--- !u!114 &7210858021337336936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797963581942753231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299c5519fa470604fa61eff0e8863aac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 20
+  ignoreVertical: 1
 --- !u!1 &2450024455167729298
 GameObject:
   m_ObjectHideFlags: 0

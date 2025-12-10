@@ -6,6 +6,8 @@ public class CustomLevelSetup : MonoBehaviour
 {
     public Transform SpawnPointP1;
     public Transform SpawnPointP2;
+    public Transform SpawnPointP3;
+    public Transform SpawnPointP4;
 
     IEnumerator Start()
     {
@@ -21,6 +23,16 @@ public class CustomLevelSetup : MonoBehaviour
             {
                 character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
                 character.transform.position = SpawnPointP2.position;
+            }
+            else if (character.PlayerID == "Player3" && SpawnPointP3 != null)
+            {
+                character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
+                character.transform.position = SpawnPointP3.position;
+            }
+            else if (character.PlayerID == "Player4" && SpawnPointP4 != null)
+            {
+                character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
+                character.transform.position = SpawnPointP4.position;
             }
         }
     }

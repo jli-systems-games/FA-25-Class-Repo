@@ -36,10 +36,10 @@ public class InputDiagnosticsSetup : EditorWindow
     void AutoSetupPlayers()
     {
         // 查找场景中的 InputDiagnostics 对象
-        InputDiagnostics diagnostics = null;
+        InputDiagnosticsSetup diagnostics = null;
 
 #if UNITY_6000_0_OR_NEWER
-        diagnostics = Object.FindFirstObjectByType<InputDiagnostics>();
+        diagnostics = Object.FindFirstObjectByType<InputDiagnosticsSetup>();
 #elif UNITY_2023_1_OR_NEWER
         diagnostics = Object.FindFirstObjectByType<InputDiagnostics>();
 #else

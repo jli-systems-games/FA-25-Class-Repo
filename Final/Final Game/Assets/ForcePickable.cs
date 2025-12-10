@@ -45,9 +45,19 @@ public class SimpleStoneGiver : MonoBehaviour
             verifyInput = true;
         }
         // P2 按 回车
-        else if (_playerInRange.PlayerID == "Player2" && Input.GetKeyDown(KeyCode.Return))
+        else if (_playerInRange.PlayerID == "Player2" && Input.GetKeyDown(KeyCode.Keypad6))
         {
-            Debug.Log("P2 按下了回车");
+            Debug.Log("P2 按下了小键盘6");
+            verifyInput = true;
+        }
+        else if (_playerInRange.PlayerID == "Player3" && Input.GetKeyDown(KeyCode.JoystickButton0))
+        {
+            Debug.Log("P3 按下了方");
+            verifyInput = true;
+        }
+        else if (_playerInRange.PlayerID == "Player4" && Input.GetKeyDown(KeyCode.JoystickButton0))
+        {
+            Debug.Log("P4 按下了方");
             verifyInput = true;
         }
 

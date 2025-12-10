@@ -4,26 +4,27 @@ using MoreMountains.Tools;
 
 public class CombatPhaseController : MonoBehaviour
 {
-    [Header("°ó¶¨ (×Ô¶¯»ñÈ¡)")]
+    [Header("ç»‘å®š (è‡ªåŠ¨è·å–)")]
     public Character _character;
     public CharacterHandleWeapon _handleWeapon;
 
-    [Header("ÅäÖÃ")]
-    public KeyCode InteractKey; // P1ÌîF, P2ÌîReturn
+    [Header("é…ç½®")]
+    public KeyCode InteractKey; // P1 å¡« F, P2 å¡« KeypadEnterï¼ˆæ‰”çŸ³å¤´ç”¨ï¼‰
 
-    // ÄÚ²¿±äÁ¿
+    // å†…éƒ¨å˜é‡
     private Vector3 _lastMoveDirection = Vector3.forward;
+    private Rigidbody _rb;
 
     void Start()
     {
         _character = GetComponent<Character>();
         _handleWeapon = GetComponent<CharacterHandleWeapon>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
-        // [ĞŞ¸Ä] Ôö¼ÓÁË¶Ô Frozen (¶³½á) ×´Ì¬µÄ¼ì²é
-        // Èç¹ûÈËËÀÁË£¬»òÕß±»¶³×¡ÁË£¬¾Í²»Òª¶ÁÈ¡ÒÆ¶¯ÊäÈë£¬Ò²²»ÒªÈÃËü¿ªÇ¹
+        // æ­»äº¡æˆ–å†»ç»“å°±ä¸å¤„ç†
         if (_character == null
             || _character.ConditionState.CurrentState == CharacterStates.CharacterConditions.Dead
             || _character.ConditionState.CurrentState == CharacterStates.CharacterConditions.Frozen)
@@ -31,17 +32,15 @@ public class CombatPhaseController : MonoBehaviour
             return;
         }
 
-        // 1. ¶ÁÈ¡ÒÆ¶¯ÊäÈë
+        // 1. è¯»å–ç§»åŠ¨æ–¹å‘ï¼ˆåªç®—æ–¹å‘ï¼Œç”¨æ¥è½¬èº«/ç„å‡†ï¼‰
         RecordMovementDirection();
 
-        // 2. ´¦ÀíÉä»÷
+        // 2. å¤„ç†å°„å‡»
         HandleShooting();
     }
 
-    // ¡¾ºËĞÄ¡¿»Ö¸´ LateUpdate ¸²¸ÇËùÓĞÒıÇæ×Ô´øµÄĞı×ªÂß¼­
     void LateUpdate()
     {
-        // [ĞŞ¸Ä] Í¬ÑùÔö¼Ó¶³½á¼ì²é£¬¶³×¡Ê±²»ÒªÇ¿ÖÆĞı×ªÄ£ĞÍ
         if (_character == null
             || _character.ConditionState.CurrentState == CharacterStates.CharacterConditions.Dead
             || _character.ConditionState.CurrentState == CharacterStates.CharacterConditions.Frozen)
@@ -49,7 +48,7 @@ public class CombatPhaseController : MonoBehaviour
             return;
         }
 
-        // 3. Ç¿ÖÆËø¶¨£ºÈË×ªÄÄ£¬Ç¹¾Í×ªÄÄ
+        // 3. å¼ºåˆ¶ï¼šäººæœå“ªï¼Œæ­¦å™¨å°±æœå“ª
         ForceLockWeaponToBody();
     }
 
@@ -57,29 +56,48 @@ public class CombatPhaseController : MonoBehaviour
     {
         float h = 0f;
         float v = 0f;
+        bool hasKeyboardInput = false;
 
-        // Ö±½Ó¸ù¾İ PlayerID ¶ÁÈ¡°´¼ü
+        // Player1ï¼šWASD
         if (_character.PlayerID == "Player1")
         {
-            if (Input.GetKey(KeyCode.W)) v = 1f;
-            if (Input.GetKey(KeyCode.S)) v = -1f;
-            if (Input.GetKey(KeyCode.A)) h = -1f;
-            if (Input.GetKey(KeyCode.D)) h = 1f;
+            if (Input.GetKey(KeyCode.W)) { v = 1f; hasKeyboardInput = true; }
+            if (Input.GetKey(KeyCode.S)) { v = -1f; hasKeyboardInput = true; }
+            if (Input.GetKey(KeyCode.A)) { h = -1f; hasKeyboardInput = true; }
+            if (Input.GetKey(KeyCode.D)) { h = 1f; hasKeyboardInput = true; }
         }
-        else // Player2
+        // Player2ï¼šå°é”®ç›˜ 2 / 5 / 1 / 3
+        else if (_character.PlayerID == "Player2")
         {
-            if (Input.GetKey(KeyCode.UpArrow)) v = 1f;
-            if (Input.GetKey(KeyCode.DownArrow)) v = -1f;
-            if (Input.GetKey(KeyCode.LeftArrow)) h = -1f;
-            if (Input.GetKey(KeyCode.RightArrow)) h = 1f;
+            if (Input.GetKey(KeyCode.Keypad2)) { v = -1f; hasKeyboardInput = true; } // ä¸‹
+            if (Input.GetKey(KeyCode.Keypad5)) { v = 1f;  hasKeyboardInput = true; } // ä¸Š
+            if (Input.GetKey(KeyCode.Keypad1)) { h = -1f; hasKeyboardInput = true; } // å·¦
+            if (Input.GetKey(KeyCode.Keypad3)) { h = 1f;  hasKeyboardInput = true; } // å³
+        }
+        // Player3 / Player4ï¼šç”¨åˆšä½“é€Ÿåº¦æ¥å†³å®šæœå‘ï¼ˆé€‚é…æ‰‹æŸ„æ‘‡æ†ï¼‰
+        else if (_character.PlayerID == "Player3" || _character.PlayerID == "Player4")
+        {
+            if (_rb != null)
+            {
+                Vector3 vel = _rb.linearVelocity;
+                vel.y = 0f;
+                if (vel.sqrMagnitude > 0.01f)
+                {
+                    _lastMoveDirection = vel.normalized;
+                    if (_character.CharacterModel != null)
+                    {
+                        _character.CharacterModel.transform.forward = _lastMoveDirection;
+                    }
+                }
+            }
+            return; // P3 / P4 å·²ç»ç”¨åˆšä½“æ–¹å‘æ›´æ–°å®Œï¼Œåé¢ä¸ç”¨å†ç®—
         }
 
-        // Ö»ÓĞµ±ÓĞÊäÈëÊ±²Å¸üĞÂ·½Ïò
-        if (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f)
+        // P1 / P2ï¼šæœ‰é”®ç›˜è¾“å…¥å°±æ›´æ–°æ–¹å‘
+        if (hasKeyboardInput && (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f))
         {
             _lastMoveDirection = new Vector3(h, 0f, v).normalized;
 
-            // Ë³±ã°ï½ÇÉ«Ä£ĞÍÒ²×ªÒ»ÏÂ
             if (_character.CharacterModel != null)
             {
                 _character.CharacterModel.transform.forward = _lastMoveDirection;
@@ -91,7 +109,6 @@ public class CombatPhaseController : MonoBehaviour
     {
         if (_handleWeapon != null && _handleWeapon.CurrentWeapon != null)
         {
-            // ±©Á¦ÊÖ¶Î 1£º½ûÓÃ WeaponAim µÄ×Ô¶¯¼ÆËã
             var weaponAim = _handleWeapon.CurrentWeapon.GetComponent<WeaponAim>();
             if (weaponAim != null)
             {
@@ -99,10 +116,8 @@ public class CombatPhaseController : MonoBehaviour
                 weaponAim.SetCurrentAim(_lastMoveDirection);
             }
 
-            // ±©Á¦ÊÖ¶Î 2£ºÖ±½ÓĞŞ¸Ä Transform
             _handleWeapon.CurrentWeapon.transform.rotation = Quaternion.LookRotation(_lastMoveDirection);
 
-            // ±©Á¦ÊÖ¶Î 3£ºÏû³ıÉ¢²¼
             var projectileWeapon = _handleWeapon.CurrentWeapon.GetComponent<ProjectileWeapon>();
             if (projectileWeapon != null)
             {
@@ -115,6 +130,29 @@ public class CombatPhaseController : MonoBehaviour
     {
         if (_handleWeapon == null) return;
 
+        // P3ï¼šæ‰‹æŸ„ 1 çš„ Button0ï¼ˆæ–¹å—ï¼‰
+        if (_character.PlayerID == "Player3")
+        {
+            bool down = Input.GetKeyDown(KeyCode.Joystick1Button0);
+            bool up = Input.GetKeyUp(KeyCode.Joystick1Button0);
+
+            if (down) _handleWeapon.ShootStart();
+            if (up) _handleWeapon.ShootStop();
+            return;
+        }
+
+        // P4ï¼šæ‰‹æŸ„ 2 çš„ Button0ï¼ˆæ–¹å—ï¼‰
+        if (_character.PlayerID == "Player4")
+        {
+            bool down = Input.GetKeyDown(KeyCode.Joystick2Button0);
+            bool up = Input.GetKeyUp(KeyCode.Joystick2Button0);
+
+            if (down) _handleWeapon.ShootStart();
+            if (up) _handleWeapon.ShootStop();
+            return;
+        }
+
+        // P1 / P2 ä¿æŒåŸæ¥çš„é”®ç›˜å°„å‡»é”®
         if (Input.GetKeyDown(InteractKey))
         {
             _handleWeapon.ShootStart();
@@ -125,4 +163,5 @@ public class CombatPhaseController : MonoBehaviour
             _handleWeapon.ShootStop();
         }
     }
+
 }

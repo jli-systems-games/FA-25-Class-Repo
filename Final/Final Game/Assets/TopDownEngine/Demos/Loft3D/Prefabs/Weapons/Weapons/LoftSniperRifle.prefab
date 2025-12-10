@@ -925,6 +925,7 @@ GameObject:
   - component: {fileID: 95527022027317358}
   - component: {fileID: 114265067239364984}
   - component: {fileID: 114422884060653246}
+  - component: {fileID: -7270042841371263586}
   m_Layer: 0
   m_Name: LoftSniperRifle
   m_TagString: Untagged
@@ -979,8 +980,8 @@ MonoBehaviour:
   ReloadTime: 2
   AmmoConsumedPerShot: 1
   AutoDestroyWhenEmpty: 1
-  AutoDestroyWhenEmptyDelay: 1
-  PreventReloadIfAmmoEmpty: 0
+  AutoDestroyWhenEmptyDelay: 0.1
+  PreventReloadIfAmmoEmpty: 1
   CurrentAmmoLoaded: 0
   WeaponAttachmentOffset: {x: 0, y: 0.1, z: -0.1}
   FlipWeaponOnCharacterFlip: 1
@@ -1070,14 +1071,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0514d297deadac74fb15a7b7326ff0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AimControl: 3
+  AimControl: 0
   AimControlActive: 1
   RotationMode: 0
   WeaponRotationSpeed: 10
   MinimumAngle: -180
   MaximumAngle: 180
   MinimumMagnitude: 0.2
-  ReticleType: 2
+  ReticleType: 0
   Reticle: {fileID: 1373789777524232, guid: 65207112181da7b41bee2bb13af8b883, type: 3}
   ReticleDistance: 0
   ReticleHeight: 0
@@ -1118,6 +1119,19 @@ MonoBehaviour:
     type: 3}
   PoolSize: 20
   PoolCanExpand: 1
+--- !u!114 &-7270042841371263586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901249488191074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f0859cbc5266b140bb6bcfb358722f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DestroyDelay: 0.2
 --- !u!1 &1919539479042992
 GameObject:
   m_ObjectHideFlags: 0
