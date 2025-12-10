@@ -35,6 +35,10 @@ public class LabMixingManager : MonoBehaviour
     public ParticleSystem successEffect;
     public AudioSource boilingAudio;
 
+    public AudioSource sfxSource;
+    public AudioClip successFoodSound;
+    public AudioClip normalFoodSound;
+
     [Header("결과 텍스트(TMP)")]
     public TMP_Text resultText;
 
@@ -221,6 +225,8 @@ public class LabMixingManager : MonoBehaviour
             {
                 SpawnResultItemWorldObject(resultItem);
                 StartCoroutine(ShowResultPickupHint());
+
+                PlayFoodSound(success);
             }
 
             if (resultItem != null && resultItem == hairRecoverItem)
@@ -450,6 +456,21 @@ public class LabMixingManager : MonoBehaviour
 
         SceneManager.LoadScene("success");
     }
+
+    void PlayFoodSound(bool success)
+    {
+        Debug.Log($"PlayFoodSound called. success={success}, sfxSource={sfxSource}, successClip={successFoodSound}, normalClip={normalFoodSound}");
+
+
+
+        if (sfxSource == null) return;
+
+        AudioClip clip = success ? successFoodSound : normalFoodSound;
+        if (clip == null) return;
+
+        sfxSource.PlayOneShot(clip);
+    }
+
 
 
 }

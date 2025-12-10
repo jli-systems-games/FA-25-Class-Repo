@@ -22104,6 +22104,9 @@ MonoBehaviour:
   failSmokeEffect: {fileID: 6138137801986527958}
   successEffect: {fileID: 5790829059494666461}
   boilingAudio: {fileID: 2010199939}
+  sfxSource: {fileID: 766758712}
+  successFoodSound: {fileID: 8300000, guid: cf591c769be9146ecb449021e01fcdd9, type: 3}
+  normalFoodSound: {fileID: 8300000, guid: cf591c769be9146ecb449021e01fcdd9, type: 3}
   resultText: {fileID: 0}
   pickupHintText: {fileID: 1727818654}
   pickupMessage: Click to pick up food
@@ -23793,12 +23796,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 766758708}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0.06631902, z: -0, w: 0.9977985}
+  m_LocalPosition: {x: -6.6099854, y: -0.5350342, z: -23.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1380804527}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &766758711
 AudioSource:
@@ -23807,7 +23810,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 766758708}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
@@ -37182,7 +37185,6 @@ Transform:
   m_Children:
   - {fileID: 1719758245}
   - {fileID: 358936530}
-  - {fileID: 766758710}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -7.605, z: 0}
 --- !u!114 &1380804528
@@ -174520,6 +174522,7 @@ SceneRoots:
   - {fileID: 1542180050}
   - {fileID: 967553774}
   - {fileID: 1380804527}
+  - {fileID: 766758710}
   - {fileID: 570643120409438670}
   - {fileID: 297449697}
   - {fileID: 7964767404383840446}
