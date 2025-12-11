@@ -12,7 +12,7 @@ public class RestartGame : MonoBehaviour
             Time.timeScale = 1f;
 
             // 2. 重新加载当前场景
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene("StartScene");
         }
     }
 }
