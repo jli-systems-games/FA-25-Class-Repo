@@ -51,8 +51,11 @@ public class SlowBullet : MonoBehaviour
             _hasHit = true;
             // Debug.Log($"🐢 [命中] 减速目标: {other.name}");
 
+            Debug.Log($"💥 子弹撞到了: {other.name} (层级: {LayerMask.LayerToName(other.gameObject.layer)})");
+
             // 施加减速
             hitSlowController.ApplySlow(Duration, SlowFactor);
+
 
             // 销毁子弹
             Despawn();
@@ -63,6 +66,7 @@ public class SlowBullet : MonoBehaviour
         {
             Despawn();
         }
+
     }
 
     void Despawn()

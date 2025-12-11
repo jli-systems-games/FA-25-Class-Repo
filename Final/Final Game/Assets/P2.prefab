@@ -1516,9 +1516,9 @@ GameObject:
   - component: {fileID: 3392153567070214524}
   - component: {fileID: 1826726023548993517}
   - component: {fileID: 8468329607575507303}
-  - component: {fileID: -291394850981915880}
   - component: {fileID: 4250108815817870919}
   - component: {fileID: -4576301594280343761}
+  - component: {fileID: 6518670561023188501}
   m_Layer: 10
   m_Name: P2
   m_TagString: Player
@@ -2264,19 +2264,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1db72df3e4742d478e62ffb617f50c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-291394850981915880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1797963581942753231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b73feadade8b137408b7c37270150f12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SlowEffectColor: {r: 0.6, g: 0.8, b: 0.2, a: 1}
 --- !u!120 &4250108815817870919
 LineRenderer:
   serializedVersion: 2
@@ -2407,6 +2394,7 @@ MonoBehaviour:
   MaxRange: 50
   SmallRockMassThreshold: 3
   MaxBounces: 3
+  ThrowCooldown: 10
   PulseInterval: 0.4
   RingDuration: 0.8
   ChargeRingPrefab: {fileID: 0}
@@ -2423,6 +2411,19 @@ MonoBehaviour:
   ShowBounceIndicators: 1
   BounceIndicatorSize: 0.3
   EnableDebugLogs: 0
+--- !u!114 &6518670561023188501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797963581942753231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b73feadade8b137408b7c37270150f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SlowEffectColor: {r: 0.6, g: 0.8, b: 0.2, a: 1}
 --- !u!1 &2450024455167729298
 GameObject:
   m_ObjectHideFlags: 0
