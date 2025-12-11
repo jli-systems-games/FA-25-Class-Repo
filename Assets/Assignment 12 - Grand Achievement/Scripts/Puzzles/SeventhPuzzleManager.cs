@@ -335,12 +335,12 @@ public class SeventhPuzzleManager : MonoBehaviour
         {
             GameObject[] group = animalGroups[animalIndex];
 
-            int coloredStatueLocalIndex = UnityEngine.Random.Range(0, 3);
+            int coloredStatueLocalIndex = UnityEngine.Random.Range(0, 4);
 
             int colorMaterialIndex = shuffledColorIndices[animalIndex];
             Material coloredMaterial = gemMaterials[colorMaterialIndex];
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 GameObject statue = group[i];
 

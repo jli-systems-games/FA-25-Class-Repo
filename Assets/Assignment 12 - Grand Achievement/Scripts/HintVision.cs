@@ -27,21 +27,26 @@ public class HintVision : MonoBehaviour
     public float coolDownTime = 5f;
 
     public bool isOnCooldown = false;
-    public Coroutine currentCoroutine;
 
     private bool wasInDisableZone = false;
     private Color OGEmissionColor = new Color(0.0f, 0.749f, 0.749f, 0f);
 
+    private bool hintAvailable = true;
+
+    //Coroutines
+    public Coroutine currentCR;
+    private Coroutine fadeAtOnceCR;
+    private Coroutine hintVisionCR;
+    private Coroutine hintFadeCR;
+    private Coroutine shaderGlowCR;
+    private Coroutine emissionGlowCR;
+    private Coroutine spriteFadeCR;
+    private Coroutine iconCR;
+    private Coroutine cooldownCR;
+
     void Start()
     {
-        //Reset
-        hintCamera.enabled = false;
-        hiddenHintCamera.enabled = false;
-        hintSymbolCamera.enabled = false;
-        hintVisionVolume.weight = 0;
-        hintCameraVolume.weight = 0;
-        hintSymbolCameraVolume.weight = 0;
-
+        ResetAll();
 
         foreach (Material mat in shaderEmissionChangeMaterials)
         {
@@ -63,23 +68,20 @@ public class HintVision : MonoBehaviour
 
     void Update()
     {
+        UpdateHintIcon();
+
         if (Data.inDisableZone && !wasInDisableZone)
         {
             wasInDisableZone = true;
 
-            if (currentCoroutine != null)
-                StopCoroutine(currentCoroutine);
+            if (currentCR != null)
+                StopCoroutine(currentCR);
+
             StopAllHintCoroutines();
 
-            hintCamera.enabled = false;
-            hiddenHintCamera.enabled = false;
-            hintSymbolCamera.enabled = false;
-            hintVisionVolume.weight = 0;
-            hintCameraVolume.weight = 0;
-            hintSymbolCameraVolume.weight = 0;
+            ResetAll();
 
-            StartCoroutine(FadeAtOnce(0f, Color.black, 0f, Color.red, 0.5f, 0));
-
+            hintAvailable = false;
             isOnCooldown = false;
 
             return;
@@ -89,19 +91,17 @@ public class HintVision : MonoBehaviour
         {
             wasInDisableZone = false;
 
-            StartCoroutine(VisionIconAppearance(Color.white, 0.1f));
-
-            StartCoroutine(LeaveZoneCooldown());
+            cooldownCR = StartCoroutine(LeaveZoneCooldown());
 
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && !isOnCooldown && Data.hintVisionEnabled)
+        if (Input.GetKeyDown(KeyCode.E) && !isOnCooldown && Data.hintVisionEnabled && !Data.inDisableZone && hintAvailable)
         {
-            if (currentCoroutine != null)
-                StopCoroutine(currentCoroutine);
+            if (currentCR != null)
+                StopCoroutine(currentCR);
 
-            currentCoroutine = StartCoroutine(HintVisionSequence());
+            currentCR = StartCoroutine(HintVisionSequence());
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -112,22 +112,37 @@ public class HintVision : MonoBehaviour
 
     private void StopAllHintCoroutines()
     {
-        StopCoroutine(HintVisionSequence());
-        StopCoroutine(FadeAtOnce(1f, OGEmissionColor, 1f, Color.yellow, 1f, 1));
-        StopCoroutine(HintVisionFade(0f, 1));
-        StopCoroutine(HintGlowEmissionColorFade(shaderEmissionChangeMaterials, "_GlowEmission", Color.black, 1));
-        StopCoroutine(HintGlowEmissionColorFade(emissionChangeMaterials, "_EmissionColor", Color.black, 1));
-        StopCoroutine(SpriteHintFade(0f, 1));
-        StopCoroutine(VisionIconAppearance(Color.white, 1f));
+        if (currentCR != null) StopCoroutine(currentCR);
+        if (hintVisionCR != null) StopCoroutine(hintVisionCR);
+        if (fadeAtOnceCR != null) StopCoroutine(fadeAtOnceCR);
+        if (hintFadeCR != null) StopCoroutine(hintFadeCR);
+        if (shaderGlowCR != null) StopCoroutine(shaderGlowCR);
+        if (emissionGlowCR != null) StopCoroutine(emissionGlowCR);
+        if (spriteFadeCR != null) StopCoroutine(spriteFadeCR);
+        if (iconCR != null) StopCoroutine(iconCR);
+        if (cooldownCR != null) StopCoroutine(cooldownCR);
+    }
+
+    private void ResetAll()
+    {
+        hintCamera.enabled = false;
+        hiddenHintCamera.enabled = false;
+        hintSymbolCamera.enabled = false;
+        hintVisionVolume.weight = 0;
+        hintCameraVolume.weight = 0;
+        hintSymbolCameraVolume.weight = 0;
     }
 
     private IEnumerator LeaveZoneCooldown()
     {
+        hintAvailable = false;
         isOnCooldown = true;
+
         yield return new WaitForSeconds(coolDownTime);
         isOnCooldown = false;
+        hintAvailable = true;
 
-        StartCoroutine(VisionIconAppearance(Color.white, 1f));
+        iconCR = StartCoroutine(VisionIconAppearance(Color.white, 1f));
     }
 
     private IEnumerator HintVisionSequence()
@@ -136,32 +151,32 @@ public class HintVision : MonoBehaviour
         hiddenHintCamera.enabled = true;
         hintSymbolCamera.enabled = true;
 
-        yield return StartCoroutine(FadeAtOnce(1f, OGEmissionColor, 1f, Color.yellow, 1f, 1));
+        yield return fadeAtOnceCR = StartCoroutine(FadeAtOnce(1f, OGEmissionColor, 1f, Color.yellow, 1f, 1));
 
         yield return new WaitForSeconds(hintVisionDuration);
 
-        yield return StartCoroutine(FadeAtOnce(0f, Color.black, 0f, Color.white, 0.1f, 1));
+        yield return fadeAtOnceCR = StartCoroutine(FadeAtOnce(0f, Color.black, 0f, Color.white, 0.1f, 1));
 
         hintCamera.enabled = false;
         hiddenHintCamera.enabled = false;
         hintSymbolCamera.enabled = false;
 
-        StartCoroutine(LeaveZoneCooldown());
+        cooldownCR = StartCoroutine(LeaveZoneCooldown());
     }
 
     public IEnumerator FadeAtOnce(float weightTarget, Color emissionTarget, float alphaTarget, Color targetColor, float opacityTarget, int isFadeInt)
     {
-        Coroutine c = StartCoroutine(HintVisionFade(weightTarget, isFadeInt));
-        Coroutine c1 = StartCoroutine(HintGlowEmissionColorFade(shaderEmissionChangeMaterials, "_GlowEmission", emissionTarget, isFadeInt));
-        Coroutine c2 = StartCoroutine(HintGlowEmissionColorFade(emissionChangeMaterials, "_EmissionColor", emissionTarget * 30, isFadeInt));
-        Coroutine c3 = StartCoroutine(SpriteHintFade(alphaTarget, isFadeInt));
-        Coroutine c4 = StartCoroutine(VisionIconAppearance(targetColor, opacityTarget));
+        hintVisionCR = StartCoroutine(HintVisionFade(weightTarget, isFadeInt));
+        shaderGlowCR = StartCoroutine(HintGlowEmissionColorFade(shaderEmissionChangeMaterials, "_GlowEmission", emissionTarget, isFadeInt));
+        emissionGlowCR = StartCoroutine(HintGlowEmissionColorFade(emissionChangeMaterials, "_EmissionColor", emissionTarget * 30, isFadeInt));
+        hintFadeCR = StartCoroutine(SpriteHintFade(alphaTarget, isFadeInt));
+        iconCR = StartCoroutine(VisionIconAppearance(targetColor, opacityTarget));
 
-        yield return c;
-        yield return c1;
-        yield return c2;
-        yield return c3;
-        yield return c4;
+        yield return hintVisionCR;
+        yield return shaderGlowCR;
+        yield return emissionGlowCR;
+        yield return hintFadeCR;
+        yield return iconCR;
     }
 
     public IEnumerator VisionIconAppearance(Color targetColor, float opacityTarget)
@@ -271,6 +286,28 @@ public class HintVision : MonoBehaviour
 
             startColor.a = alphaTarget;
             mat.color = startColor;
+        }
+    }
+
+    private void UpdateHintIcon()
+    {
+        if (Data.inDisableZone)
+        {
+            circleImage.color = new Color(1f, 0f, 0f, 0.5f);
+            eyeImage.color = new Color(1f, 0f, 0f, 0.5f);
+            EIconImage.color = new Color(1f, 0f, 0f, 0.5f);
+        }
+        else if (isOnCooldown || !hintAvailable)
+        {
+            circleImage.color = new Color(1f, 1f, 1f, 0.1f);
+            eyeImage.color = new Color(1f, 1f, 1f, 0.1f);
+            EIconImage.color = new Color(1f, 1f, 1f, 0.1f);
+        }
+        else
+        {
+            circleImage.color = new Color(1f, 1f, 1f, 1f);
+            eyeImage.color = new Color(1f, 1f, 1f, 1f);
+            EIconImage.color = new Color(1f, 1f, 1f, 1f);
         }
     }
 }

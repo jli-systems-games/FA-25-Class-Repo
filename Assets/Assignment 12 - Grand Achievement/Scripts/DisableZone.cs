@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class DisableZone : MonoBehaviour
 {
+    private static int disableZoneCounter = 0;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Disable Zone"))
         {
-            Data.inDisableZone = true;
-            Debug.Log("Entered disable zone");
+            disableZoneCounter++;
+
+            Data.inDisableZone = disableZoneCounter > 0;
+            Debug.Log("Entered disable zone. Count: " + disableZoneCounter);
         }
     }
 
@@ -16,8 +20,10 @@ public class DisableZone : MonoBehaviour
     {
         if (other.CompareTag("Disable Zone"))
         {
-            Data.inDisableZone = false;
-            Debug.Log("Exited disable zone");
+            disableZoneCounter = Mathf.Max(0, disableZoneCounter - 1);
+
+            Data.inDisableZone = disableZoneCounter > 0;
+            Debug.Log("Exited disable zone. Count: " + disableZoneCounter);
         }
     }
 }
