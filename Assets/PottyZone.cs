@@ -22,8 +22,26 @@ public class PottyZone : MonoBehaviour
             {
                 int reward = gameManager.correctReward;
 
+                var pm = PowerupManager.Instance;
+
+                if (pm != null && pm.heartDropActive)
+                {
+                    if (pm.IsLipstickEquipped())
+                    {
+                        reward += 100;
+                    }
+                    else
+                    {
+                        reward *= 2;
+                    }
+                }
+                gameManager.AddScore(reward);
+
+
                 if (gameManager.tripleScoreActive)
                     reward *= 3;
+                if (gameManager.doubleScoreActive)
+                    reward *= 2;
 
                 gameManager.AddScore(reward);
 

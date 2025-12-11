@@ -3,36 +3,51 @@ using UnityEngine.UI;
 
 public class FireButtonController : MonoBehaviour
 {
-    public Button fireBtn;
+    public Button button;
     public WaterShooter shooter;
     public GameManager gameManager;
 
-    private const int fireCost = 1000;
+    public AudioSource audioSource;
+    public AudioClip clickSound;
+    public float volume = 1f;
+
+    public PowerupManager powerupManager;
+
+    public int cost = 5000;
 
     void Start()
     {
-        if (fireBtn == null)
-            fireBtn = GetComponent<Button>();
+        button.onClick.AddListener(PlaySound);
+
+        if (button == null)
+            button = GetComponent<Button>();
+    }
+    void PlaySound()
+    {
+        if (clickSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clickSound, volume);
+        }
     }
 
     void Update()
     {
-        if (gameManager.CurrentScore < fireCost)
+        if (gameManager.CurrentScore < cost)
         {
-            fireBtn.interactable = false;
+            button.interactable = false;
         }
         else
         {
-            fireBtn.interactable = true;
+            button.interactable = true;
         }
     }
 
     public void OnFireButtonPressed()
     {
-        if (gameManager.CurrentScore >= fireCost)
+        if (gameManager.CurrentScore >= cost)
         {
-            gameManager.SpendScoreInstant(fireCost);
-            shooter.ActivateFireDrop();
+            gameManager.SpendScoreInstant(cost);
+            powerupManager.EquipFireDrop();
         }
     }
 }

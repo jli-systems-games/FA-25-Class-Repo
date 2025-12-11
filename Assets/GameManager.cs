@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text scoreText;
 
     private int score = 0;
-    private int displayScore = 0;
+    [HideInInspector] public int displayScore = 0;
     private Coroutine animRoutine;
 
     public bool canShoot = false;
@@ -17,13 +17,63 @@ public class GameManager : MonoBehaviour
 
     public int CurrentScore => score;
     [HideInInspector] public bool tripleScoreActive = false;
+    [HideInInspector] public bool doubleScoreActive = false;
 
+
+    public AudioSource audioSource;
+    public AudioClip dripSFX;
+    public Vector2 intervalRange = new Vector2(0.3f, 0.7f);
+
+    private bool isHolding = false;
+    private float timer = 0f;
+    private float nextInterval = 0.5f;
+
+    [HideInInspector] public bool accuracyBonusActive = false;
 
     private void Start()
     {
         score = 0;
         displayScore = 0;
         UpdateScoreText();
+
+        nextInterval = Random.Range(intervalRange.x, intervalRange.y);
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            isHolding = true;
+            timer = 0f;
+            nextInterval = Random.Range(intervalRange.x, intervalRange.y);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isHolding = false;
+        }
+
+        if (!isHolding)
+            return;
+
+        timer += Time.deltaTime;
+
+        if (timer >= nextInterval)
+        {
+            PlayDrip();
+            timer = 0f;
+            nextInterval = Random.Range(intervalRange.x, intervalRange.y);
+        }
+    }
+
+    public float GetAccuracyMultiplier()
+    {
+        return accuracyBonusActive ? 0.2f : 0.8f;
+    }
+    void PlayDrip()
+    {
+        if (audioSource != null && dripSFX != null)
+            audioSource.PlayOneShot(dripSFX);
     }
 
     public void AddScore(int amount = 1, bool fromAchievement = false)
@@ -52,7 +102,6 @@ public class GameManager : MonoBehaviour
             animRoutine = null;
         }
     }
-
 
     IEnumerator ScoreAnim(bool fast)
     {

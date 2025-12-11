@@ -41,10 +41,16 @@ public class PottyFlowController : MonoBehaviour
     private float tripleMoveSpeed;
     private float tripleMoveAmplitude = 3f;
 
+    public int idleCooldownSteps = 2;
+    private int idleCooldown = 0;
+
     [HideInInspector] public bool firstShotThisLevel = true;
     [HideInInspector] public int chaosHitCount = 0;
     [HideInInspector] public float levelStartTime = 0f;
     [HideInInspector] public bool tripleSolved = false;
+
+    [HideInInspector] public float thresholdScale = 1f;
+    [HideInInspector] public int extraScorePerPhase = 0;
 
 
     private void Awake()
@@ -79,7 +85,7 @@ public class PottyFlowController : MonoBehaviour
                 pottyZones[i].transform.localScale = new Vector3(2.49f, 2.49f, 1f);
         }
 
-        int currentScore = gameManager.CurrentScore;
+        int currentScore = gameManager.displayScore;
         if (currentScore > maxScoreSeen)
         {
             maxScoreSeen = currentScore;
@@ -96,25 +102,71 @@ public class PottyFlowController : MonoBehaviour
     void AdvancePhase()
     {
         currentPhase++;
-        nextThreshold += 50;
+
+        int scoreForStep = (gameManager != null) ? gameManager.displayScore : maxScoreSeen;
+        int step = GetThresholdStep(scoreForStep);
+
+        float scale = (PowerupManager.Instance != null) ? PowerupManager.Instance.flowController.thresholdScale : 1f;
+        nextThreshold += Mathf.RoundToInt(step * scale);
 
         int newLevel = ChooseLevelForPhase(currentPhase);
+        if (newLevel == 1)
+        {
+            idleCooldown = idleCooldownSteps;
+        }
+        else
+        {
+            if (idleCooldown > 0)
+                idleCooldown--;
+        }
 
         if (newLevel != currentLevel)
         {
             currentLevel = newLevel;
             InitLevel(currentLevel);
+
+            if (PowerupManager.Instance != null && PowerupManager.Instance.flowController.extraScorePerPhase > 0)
+            {
+                gameManager.AddScore(PowerupManager.Instance.flowController.extraScorePerPhase, true);
+            }
         }
     }
 
+    int GetThresholdStep(int score)
+    {
+        if (score < 1000) return 50;
+        if (score < 3000) return 100;
+        if (score < 8000) return 200;
+        if (score < 20000) return 400;
+        if (score < 50000) return 800; 
+        return 1200;
+    }
+
+
     int ChooseLevelForPhase(int phase)
     {
-        if (phase <= 0) return 1;
-        if (phase == 1) return RandomChoice(2, 3, 4);
-        if (phase == 2) return 1;
-        if (phase == 3) return RandomChoice(2, 3, 4, 5);
+        bool canUseIdle = (idleCooldown <= 0);
 
-        return RandomChoice(1, 2, 3, 4, 5);
+        if (phase <= 0)
+            return 1;
+
+        if (phase == 1)
+            return RandomChoice(2, 3, 4);
+
+        if (phase == 2)
+            return 1;
+
+        if (phase == 3)
+            return RandomChoice(2, 3, 4, 5);
+
+        if (canUseIdle)
+        {
+            return RandomChoice(1, 2, 3, 4, 5);
+        }
+        else
+        {
+            return RandomChoice(2, 3, 4, 5);
+        }
     }
 
     int RandomChoice(params int[] options)
@@ -175,6 +227,7 @@ public class PottyFlowController : MonoBehaviour
                 StartChaosLevel();
                 break;
         }
+        Debug.Log("InitLevel: " + level);
     }
 
     void RunLevelBehaviour()

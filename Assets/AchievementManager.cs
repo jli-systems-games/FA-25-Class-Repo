@@ -14,6 +14,11 @@ public class AchievementManager : MonoBehaviour
     public float verticalSpacing = 40f;
     private readonly List<AchievementUI> activeUIs = new List<AchievementUI>();
 
+    public AudioClip achievementSFX;
+    public float sfxVolume = 1f;
+
+    private AudioSource sfxSource;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -22,12 +27,17 @@ public class AchievementManager : MonoBehaviour
             return;
         }
         Instance = this;
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.playOnAwake = false;
     }
 
     public void Unlock(string title)
     {
         Achievement ach = achievements.Find(a => a.title == title);
         if (ach == null) return;
+
+        sfxSource.PlayOneShot(achievementSFX, sfxVolume);
+
 
         if (gameManager != null && ach.scoreReward != 0)
         {
