@@ -33,6 +33,8 @@ public class CharacterRockThrower : MonoBehaviour
     public float SmallRockMassThreshold = 3f;
     [Tooltip("最大反弹次数")]
     public int MaxBounces = 3;
+    [Tooltip("投掷冷却时间（秒）")]
+    public float ThrowCooldown = 10f;
 
     [Header("蓄力手感")]
     public float PulseInterval = 0.4f;
@@ -80,6 +82,9 @@ public class CharacterRockThrower : MonoBehaviour
 
     private List<GameObject> _bounceIndicators = new List<GameObject>();
     private bool _isSmallRock = false;
+
+    // 冷却系统
+    private float _lastThrowTime = -999f;
 
     void Start()
     {
@@ -185,6 +190,17 @@ public class CharacterRockThrower : MonoBehaviour
                 if (EnableDebugLogs) Debug.LogWarning("[RockThrower] 没有可投掷的石头！");
                 return;
             }
+
+            // 检查冷却时间
+            float timeSinceLastThrow = Time.time - _lastThrowTime;
+            if (timeSinceLastThrow < ThrowCooldown)
+            {
+                float remainingCooldown = ThrowCooldown - timeSinceLastThrow;
+                if (EnableDebugLogs)
+                    Debug.LogWarning($"[RockThrower] 冷却中！还需等待 {remainingCooldown:F1} 秒");
+                return;
+            }
+
             StartCharging();
         }
 
@@ -585,6 +601,9 @@ public class CharacterRockThrower : MonoBehaviour
             return;
         }
 
+        // 记录投掷时间（开始冷却）
+        _lastThrowTime = Time.time;
+
         float throwSpeed = _isSmallRock ? SmallRockSpeed : BigRockSpeed;
         Vector3 throwDir = GetThrowDirection();
         throwDir.y = 0;
@@ -592,7 +611,7 @@ public class CharacterRockThrower : MonoBehaviour
         Vector3 spawnPos = HandTransform.position;
         float fixedHeight = spawnPos.y;
 
-        if (EnableDebugLogs) Debug.Log($"[RockThrower] 发射石头 - 速度: {throwSpeed:F1}, 小石头: {_isSmallRock}");
+        if (EnableDebugLogs) Debug.Log($"[RockThrower] 发射石头 - 速度: {throwSpeed:F1}, 小石头: {_isSmallRock}, 冷却: {ThrowCooldown}秒");
 
         OptimizeRockStructure(_heldRock);
         Collider rockCollider = _heldRock.GetComponent<Collider>();

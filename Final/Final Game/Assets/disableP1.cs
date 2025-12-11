@@ -1,77 +1,102 @@
 ﻿using UnityEngine;
 using MoreMountains.TopDownEngine;
 
-[RequireComponent(typeof(CharacterController))]
-public class P1KeyboardOnlyController : MonoBehaviour
+public class P1KeyboardMovement : CharacterMovement
 {
-    [Header("移动参数")]
-    public float MoveSpeed = 6f;
-    public float RunMultiplier = 1.5f;
+    [Header("拖拽石头武器")]
+    public Weapon BigStoneWeapon;      // 拖“大石头 Weapon”进来
+    public Weapon SmallStoneWeapon;    // 拖“小石头 Weapon”进来
 
-    [Tooltip("是否用 LeftShift 作为跑步键")]
-    public bool UseRunKey = true;
+    [Header("速度倍率")]
+    [Range(0f, 1f)] public float BigRockFactor = 0.3f;
+    [Range(0f, 1f)] public float SmallRockFactor = 0.6f;
 
-    [Header("按键设置")]
-    public KeyCode KeyUp = KeyCode.W;
-    public KeyCode KeyDown = KeyCode.S;
-    public KeyCode KeyLeft = KeyCode.A;
-    public KeyCode KeyRight = KeyCode.D;
-    public KeyCode KeyRun = KeyCode.LeftShift;
+    private CharacterHandleWeapon _handle;
+    private string _bigStoneID;
+    private string _smallStoneID;
 
-    private CharacterController _cc;
-    private Character _character;
-    private CharacterMovement _characterMovement;
-    private TopDownController3D _topdownController;
-
-    void Awake()
+    protected override void Initialization()
     {
-        _cc = GetComponent<CharacterController>();
-        _character = GetComponent<Character>();
-        _characterMovement = GetComponent<CharacterMovement>();
-        _topdownController = GetComponent<TopDownController3D>();
-
-        // 1. 禁用 TDE 自带的移动逻辑（不再读 InputManager 的摇杆/键盘）
-        if (_characterMovement != null) _characterMovement.enabled = false;
-        if (_topdownController != null) _topdownController.enabled = false;
-
-        // 2. ❌ 不再修改 PlayerID，让 BuildZone / SmartScalingWall 还能找到 Player1
-        // if (_character != null) _character.PlayerID = "";
+        base.Initialization();
+        _handle = GetComponent<CharacterHandleWeapon>();
+        CacheWeaponIDs();
     }
 
-    void Update()
+    void OnValidate()
     {
-        Vector3 input = ReadKeyboardDirection();
+        CacheWeaponIDs();
+    }
 
+    void CacheWeaponIDs()
+    {
+        _bigStoneID = (BigStoneWeapon != null) ? BigStoneWeapon.WeaponID : string.Empty;
+        _smallStoneID = (SmallStoneWeapon != null) ? SmallStoneWeapon.WeaponID : string.Empty;
+    }
+
+    public override void ProcessAbility()
+    {
+        base.ProcessAbility();
+        ApplyRockSlowdown();
+    }
+
+    void ApplyRockSlowdown()
+    {
+        if (_character == null || _handle == null)
+            return;
+
+        // 只管 P1
+        if (_character.PlayerID != "Player1")
+            return;
+
+        float factor = 1f;
+        Weapon current = _handle.CurrentWeapon;
+
+        if (current != null)
+        {
+            if (!string.IsNullOrEmpty(_bigStoneID) && current.WeaponID == _bigStoneID)
+            {
+                factor = BigRockFactor;      // 大石头
+            }
+            else if (!string.IsNullOrEmpty(_smallStoneID) && current.WeaponID == _smallStoneID)
+            {
+                factor = SmallRockFactor;    // 小石头
+            }
+        }
+
+        // 用 MovementSpeedMultiplier，不会破坏 WalkSpeed 本身
+        MovementSpeedMultiplier = factor;
+    }
+
+    // ====== 只读键盘输入 ======
+    protected override void HandleInput()
+    {
+        if (ScriptDrivenInput)
+        {
+            return;
+        }
+
+        if (!InputAuthorized)
+        {
+            _horizontalMovement = 0f;
+            _verticalMovement = 0f;
+            return;
+        }
+
+        float h = 0f;
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) h -= 1f;
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) h += 1f;
+
+        float v = 0f;
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) v -= 1f;
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) v += 1f;
+
+        Vector2 input = new Vector2(h, v);
         if (input.sqrMagnitude > 1f)
         {
-            input.Normalize();
+            input = input.normalized;
         }
 
-        float speed = MoveSpeed;
-        if (UseRunKey && Input.GetKey(KeyRun))
-        {
-            speed *= RunMultiplier;
-        }
-
-        Vector3 motion = input * speed * Time.deltaTime;
-        _cc.Move(motion);
-
-        if (input.sqrMagnitude > 0.0001f)
-        {
-            transform.forward = input;
-        }
-    }
-
-    Vector3 ReadKeyboardDirection()
-    {
-        float h = 0f;
-        float v = 0f;
-
-        if (Input.GetKey(KeyLeft)) h -= 1f;
-        if (Input.GetKey(KeyRight)) h += 1f;
-        if (Input.GetKey(KeyDown)) v -= 1f;
-        if (Input.GetKey(KeyUp)) v += 1f;
-
-        return new Vector3(h, 0f, v);
+        _horizontalMovement = input.x;
+        _verticalMovement = input.y;
     }
 }

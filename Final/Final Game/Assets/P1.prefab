@@ -6048,6 +6048,8 @@ GameObject:
   - component: {fileID: -679998040135788813}
   - component: {fileID: -6355236875595433688}
   - component: {fileID: 4213288551827075067}
+  - component: {fileID: 136831952119148357}
+  - component: {fileID: 2121363829634033978}
   m_Layer: 10
   m_Name: P1
   m_TagString: Player
@@ -6272,7 +6274,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2166957829413228681}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69614a4a3cfd06d4e8388acafdb774bd, type: 3}
   m_Name: 
@@ -6920,6 +6922,7 @@ MonoBehaviour:
   MaxRange: 50
   SmallRockMassThreshold: 1
   MaxBounces: 2
+  ThrowCooldown: 10
   PulseInterval: 0.4
   RingDuration: 0.8
   ChargeRingPrefab: {fileID: 0}
@@ -6936,6 +6939,66 @@ MonoBehaviour:
   ShowBounceIndicators: 1
   BounceIndicatorSize: 0.3
   EnableDebugLogs: 0
+--- !u!114 &136831952119148357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2166957829413228681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e6bb484f1b3b14c9bd4492bd605845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AbilityStartSfx: {fileID: 0}
+  AbilityInProgressSfx: {fileID: 0}
+  AbilityStopSfx: {fileID: 0}
+  AbilityStartFeedbacks: {fileID: 0}
+  AbilityStopFeedbacks: {fileID: 0}
+  AbilityPermitted: 1
+  BlockingMovementStates: 
+  BlockingConditionStates: 
+  BlockingWeaponStates: 
+  Movement: 0
+  InputAuthorized: 1
+  AnalogInput: 0
+  ScriptDrivenInput: 0
+  WalkSpeed: 8
+  ShouldSetMovement: 1
+  IdleThreshold: 0.05
+  Acceleration: 10
+  Deceleration: 10
+  InterpolateMovementSpeed: 0
+  WalkParticles: []
+  TouchTheGroundParticles: []
+  TouchTheGroundSfx: []
+  BigStoneWeapon: {fileID: 2485430841220920035, guid: d7581daccd425f940a40d944fe03fb3c,
+    type: 3}
+  SmallStoneWeapon: {fileID: 1014014003958925056, guid: 5a71f5d157b782c4492642995e52211f,
+    type: 3}
+  BigRockFactor: 0.3
+  SmallRockFactor: 0.6
+--- !u!114 &2121363829634033978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2166957829413228681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa7973dd4eef6a4988b95649e35d4a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Movement: {fileID: 0}
+  SmallStoneWeaponTemplate: {fileID: 1014014003958925056, guid: 5a71f5d157b782c4492642995e52211f,
+    type: 3}
+  BigStoneWeaponTemplate: {fileID: 2485430841220920035, guid: d7581daccd425f940a40d944fe03fb3c,
+    type: 3}
+  SmallStoneMultiplier: 0.6
+  BigStoneMultiplier: 0.3
+  DefaultMultiplier: 1
 --- !u!1 &2524165818428397978
 GameObject:
   m_ObjectHideFlags: 0
