@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using UnityEditor;
 
 /// <summary>
@@ -178,4 +178,4 @@ public class InputDiagnosticsSetup : EditorWindow
                 "确定");
         }
     }
-}
+}*/
