@@ -7,16 +7,13 @@ public class P1KeyboardMovement : CharacterMovement
     public Weapon BigStoneWeapon;      // 拖“大石头 Weapon”进来
     public Weapon SmallStoneWeapon;    // 拖“小石头 Weapon”进来
 
-    [Header("石头额外速度倍率（在别的减速之上再乘一次）")]
-    [Range(0f, 1f)] public float BigRockFactor = 0.3f;   // 拿大石头：额外乘 0.3
-    [Range(0f, 1f)] public float SmallRockFactor = 0.6f; // 拿小石头：额外乘 0.6
+    [Header("速度倍率")]
+    [Range(0f, 1f)] public float BigRockFactor = 0.3f;
+    [Range(0f, 1f)] public float SmallRockFactor = 0.6f;
 
     private CharacterHandleWeapon _handle;
     private string _bigStoneID;
     private string _smallStoneID;
-
-    // 当前“石头减速倍率”，默认 1（没减速）
-    private float _rockFactor = 1f;
 
     protected override void Initialization()
     {
@@ -38,30 +35,18 @@ public class P1KeyboardMovement : CharacterMovement
 
     public override void ProcessAbility()
     {
-        // 先走 TDE 原本的移动流程（状态机、加速减速等等）
         base.ProcessAbility();
-
-        // 然后只更新 _rockFactor，不直接改 MovementSpeedMultiplier
-        UpdateRockFactor();
+        ApplyRockSlowdown();
     }
 
-    /// <summary>
-    /// 根据当前武器，更新石头减速倍率（只算一个系数，不立即作用）
-    /// </summary>
-    void UpdateRockFactor()
+    void ApplyRockSlowdown()
     {
         if (_character == null || _handle == null)
-        {
-            _rockFactor = 1f;
             return;
-        }
 
         // 只管 P1
         if (_character.PlayerID != "Player1")
-        {
-            _rockFactor = 1f;
             return;
-        }
 
         float factor = 1f;
         Weapon current = _handle.CurrentWeapon;
@@ -78,31 +63,13 @@ public class P1KeyboardMovement : CharacterMovement
             }
         }
 
-        _rockFactor = factor;
-    }
-
-    /// <summary>
-    /// 这里是关键：把石头减速“叠加”到 MovementSpeedMultiplier 上，而不是覆盖
-    /// </summary>
-    protected override void SetMovement()
-    {
-        // 先记住别人设好的 MovementSpeedMultiplier（墙体减速、技能减速等全在这里）
-        float originalMultiplier = MovementSpeedMultiplier;
-
-        // 在原来的基础上，再乘一个石头的倍率
-        MovementSpeedMultiplier = originalMultiplier * _rockFactor;
-
-        // 调用原版 CharacterMovement 的 SetMovement()，里面会用 MovementSpeed * MovementSpeedMultiplier * ContextSpeedMultiplier
-        base.SetMovement();
-
-        // 用完之后把 MovementSpeedMultiplier 还原，避免影响下一帧别的逻辑
-        MovementSpeedMultiplier = originalMultiplier;
+        // 用 MovementSpeedMultiplier，不会破坏 WalkSpeed 本身
+        MovementSpeedMultiplier = factor;
     }
 
     // ====== 只读键盘输入 ======
     protected override void HandleInput()
     {
-        // 保留原本的输入开关逻辑
         if (ScriptDrivenInput)
         {
             return;

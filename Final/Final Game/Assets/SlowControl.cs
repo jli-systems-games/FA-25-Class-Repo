@@ -1,92 +1,191 @@
 ﻿using UnityEngine;
 using MoreMountains.TopDownEngine;
+using System.Collections;
+using System.Collections.Generic; // [新增] 需要这个来使用 Dictionary
 
-/// <summary>
-/// 被子弹调用的减速控制器：
-/// 子弹只会做 hitSlowController.ApplySlow(duration, factor)
-/// 这个脚本会自动去找「当前角色真正的 CharacterMovement」
-/// （包括你的 P1KeyboardMovement 这种子类），
-/// 然后通过 MovementSpeedMultiplier 来减速。
-/// </summary>
 public class PlayerSlowController : MonoBehaviour
 {
-    [Header("要减速的移动组件 (可以留空, 会自动找)")]
-    public CharacterMovement TargetMovement;   // CharacterMovement 或 P1KeyboardMovement
-    public CharacterRun TargetRun;
+    [Header("视觉效果")]
+    public Color SlowEffectColor = new Color(0.6f, 0.8f, 0.2f, 1.0f); // [新增] 默认: 史莱姆绿
 
-    [Header("减速叠加规则")]
-    [Tooltip("true = 多个减速相乘, false = 取最慢的那个(最小 factor)")]
-    public bool StackSlows = false;
+    private Character _character;
+    private CharacterMovement _characterMovement;
+    private CharacterRun _characterRun;
+    private Coroutine _slowCoroutine;
 
-    private float _baseRunSpeed;
-    private float _currentSlowFactor = 1f;
-    private float _slowEndTime = 0f;
+    // 用来记录原始速度
+    private float _initialWalkSpeed;
+    private float _initialRunSpeed;
+
+    // [新增] 记录颜色的字典
+    private Dictionary<Renderer, Color> _originalColors = new Dictionary<Renderer, Color>();
+    private bool _hasInitializedColors = false;
 
     void Awake()
     {
-        // 自动找当前物体上的移动脚本
-        if (TargetMovement == null)
-            TargetMovement = GetComponent<CharacterMovement>();   // 这里会拿到 P1KeyboardMovement
+        _character = GetComponent<Character>();
+        _characterMovement = GetComponent<CharacterMovement>();
+        _characterRun = GetComponent<CharacterRun>();
 
-        if (TargetRun == null)
-            TargetRun = GetComponent<CharacterRun>();
-
-        if (TargetRun != null)
-            _baseRunSpeed = TargetRun.RunSpeed;
-    }
-
-    void Update()
-    {
-        if (TargetMovement == null)
+        if (_characterMovement != null)
         {
-            // 万一你后来换了组件，这里每帧再尝试找一次
-            TargetMovement = GetComponent<CharacterMovement>();
-            if (TargetMovement == null)
-                return;
-        }
+            _initialWalkSpeed = _characterMovement.WalkSpeed;
 
-        // 减速时间到了就恢复
-        if (Time.time > _slowEndTime)
-        {
-            _currentSlowFactor = 1f;
-        }
-
-        // 把减速倍率写回 MovementSpeedMultiplier
-        TargetMovement.MovementSpeedMultiplier = _currentSlowFactor;
-
-        // 跑步速度也跟着缩放（如果有跑步组件）
-        if (TargetRun != null)
-        {
-            TargetRun.RunSpeed = _baseRunSpeed * _currentSlowFactor;
-        }
-    }
-
-    /// <summary>
-    /// 被子弹调用：duration 秒内，速度变为原来的 factor 倍
-    /// </summary>
-    public void ApplySlow(float duration, float factor)
-    {
-        if (factor <= 0f)
-        {
-            factor = 0.01f;
-        }
-
-        if (StackSlows)
-        {
-            // 叠加：多个减速相乘
-            _currentSlowFactor *= factor;
+            // 尝试获取跑步速度
+            if (_characterRun != null)
+            {
+                _initialRunSpeed = _characterRun.RunSpeed;
+                Debug.Log($"✅ {name} 减速模块就绪 (含跑步)。Walk: {_initialWalkSpeed}, Run: {_initialRunSpeed}");
+            }
+            else
+            {
+                // 如果没有跑步组件，就让跑速等于走速，防止计算出错
+                _initialRunSpeed = _initialWalkSpeed;
+                Debug.Log($"✅ {name} 减速模块就绪 (仅走路)。Walk: {_initialWalkSpeed}");
+            }
         }
         else
         {
-            // 取最慢的(越小越慢)
-            _currentSlowFactor = Mathf.Min(_currentSlowFactor, factor);
+            Debug.LogError($"❌ {name} 身上找不到 CharacterMovement 组件！减速将无效。");
+        }
+    }
+
+    // [新增] 在 Start 中记录原始颜色，防止记录到被冻结后的蓝色
+    void Start()
+    {
+        InitializeColors();
+    }
+
+    public void ApplySlow(float duration, float slowFactor)
+    {
+        if (_characterMovement == null) return;
+
+        // 如果已经在减速中，先停止之前的协程，并立即恢复速度（这也包含恢复颜色）
+        if (_slowCoroutine != null)
+        {
+            StopCoroutine(_slowCoroutine);
+            ResetSpeed();
         }
 
-        // 结束时间取最长的那一个
-        float newEnd = Time.time + duration;
-        if (newEnd > _slowEndTime)
+        _slowCoroutine = StartCoroutine(SlowRoutine(duration, slowFactor));
+    }
+
+    IEnumerator SlowRoutine(float duration, float factor)
+    {
+        // 1. 计算目标速度
+        float newWalkSpeed = _initialWalkSpeed * factor;
+        float newRunSpeed = (_characterRun != null) ? _initialRunSpeed * factor : newWalkSpeed;
+
+        // 2. 修改配置参数 (这只影响下一次状态切换)
+        _characterMovement.WalkSpeed = newWalkSpeed;
+        if (_characterRun != null)
         {
-            _slowEndTime = newEnd;
+            _characterRun.RunSpeed = newRunSpeed;
+        }
+
+        // 3. 强制立即应用当前速度
+        ForceUpdateCurrentSpeed(newWalkSpeed, newRunSpeed);
+
+        // [新增] 变色！变成恶心的绿色
+        SetColor(SlowEffectColor);
+
+        Debug.Log($"🐢 {name} 全面减速生效! Walk: {newWalkSpeed}, Run: {newRunSpeed}");
+
+        // 4. 等待持续时间
+        yield return new WaitForSeconds(duration);
+
+        // 5. 恢复
+        ResetSpeed();
+        _slowCoroutine = null;
+        Debug.Log($"🐇 {name} 速度恢复正常!");
+    }
+
+    void ResetSpeed()
+    {
+        // 恢复参数配置
+        if (_characterMovement != null)
+        {
+            _characterMovement.WalkSpeed = _initialWalkSpeed;
+        }
+
+        if (_characterRun != null)
+        {
+            _characterRun.RunSpeed = _initialRunSpeed;
+        }
+
+        // 恢复时也强制刷新一次
+        ForceUpdateCurrentSpeed(_initialWalkSpeed, _initialRunSpeed);
+
+        // [新增] 恢复原始颜色
+        RestoreOriginalColor();
+    }
+
+    // --- 辅助方法 ---
+    void ForceUpdateCurrentSpeed(float targetWalk, float targetRun)
+    {
+        if (_character == null || _characterMovement == null) return;
+
+        // 改为判断 Character 的当前状态是否为 "Running"
+        if (_character.MovementState.CurrentState == CharacterStates.MovementStates.Running)
+        {
+            // 如果正在跑，强行更新为新的跑步速度
+            _characterMovement.MovementSpeed = targetRun;
+        }
+        else
+        {
+            // 否则 (走路、发呆等)，更新为走路速度
+            _characterMovement.MovementSpeed = targetWalk;
+        }
+    }
+
+    // --- [新增] 颜色处理逻辑 (照搬 FreezeController) ---
+    void InitializeColors()
+    {
+        if (_hasInitializedColors) return;
+
+        // 优先从 CharacterModel 找渲染器，如果没配置就从 transform 找
+        Transform target = (_character != null && _character.CharacterModel != null) ? _character.CharacterModel.transform : transform;
+        Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
+
+        foreach (var r in renderers)
+        {
+            // 兼容普通材质(_Color)和URP材质(_BaseColor)
+            if (r.material.HasProperty("_Color"))
+            {
+                _originalColors[r] = r.material.color;
+            }
+            else if (r.material.HasProperty("_BaseColor"))
+            {
+                _originalColors[r] = r.material.GetColor("_BaseColor");
+            }
+        }
+        _hasInitializedColors = true;
+    }
+
+    void SetColor(Color c)
+    {
+        // 确保颜色已经初始化
+        if (!_hasInitializedColors) InitializeColors();
+
+        foreach (var kvp in _originalColors)
+        {
+            if (kvp.Key != null)
+            {
+                if (kvp.Key.material.HasProperty("_Color")) kvp.Key.material.color = c;
+                if (kvp.Key.material.HasProperty("_BaseColor")) kvp.Key.material.SetColor("_BaseColor", c);
+            }
+        }
+    }
+
+    void RestoreOriginalColor()
+    {
+        foreach (var kvp in _originalColors)
+        {
+            if (kvp.Key != null)
+            {
+                if (kvp.Key.material.HasProperty("_Color")) kvp.Key.material.color = kvp.Value;
+                if (kvp.Key.material.HasProperty("_BaseColor")) kvp.Key.material.SetColor("_BaseColor", kvp.Value);
+            }
         }
     }
 }
