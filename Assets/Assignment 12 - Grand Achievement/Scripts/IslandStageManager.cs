@@ -11,6 +11,21 @@ public class IslandStageManager : MonoBehaviour
     public GameObject fifthIsland;
     public GameObject sixthIsland;
     public GameObject seventhIsland;
+    public GameObject eigthIsland;
+    public GameObject ninthIsland;
+
+    public GameObject restartTriggerZone;
+    public GameObject ninthWholeIsland;
+
+    public GameObject firstBlockPath;
+    public GameObject secondBlockPath;
+    public GameObject thirdBlockPath;   
+    public GameObject fourthBlockPath;
+    public GameObject fifthBlockPath;
+    public GameObject sixthBlockPath;
+    public GameObject seventhBlockPath;
+    public GameObject eigthBlockPath;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,38 +36,75 @@ public class IslandStageManager : MonoBehaviour
         fifthIsland.SetActive(false);
         sixthIsland.SetActive(false);
         seventhIsland.SetActive(false);
+        eigthIsland.SetActive(false);
+        ninthIsland.SetActive(false);
+
+        restartTriggerZone.SetActive(false);
+
+        Data.arrowDestination = secondIsland.transform.GetChild(0).gameObject.transform;
     }
 
     public void CheckPuzzleSolved()
     {
-        if (Data.firstPuzzleSolved)
+        if (Data.ninthPuzzleSolved)
         {
-            secondIsland.SetActive(true);
+            ninthWholeIsland.SetActive(false);
+            restartTriggerZone.SetActive(true);
+            return;
         }
-        
-        if (Data.secondPuzzleSolved)
+        else
         {
-            thirdIsland.SetActive(true);
-        }
-
-        if (Data.thirdPuzzleSolved)
-        {
-            fourthIsland.SetActive(true);
+            Data.arrowEnabled = true;
         }
 
-        if (Data.fourthPuzzleSolved)
+        if (Data.eigthPuzzleSolved)
         {
-            fifthIsland.SetActive(true);
+            ninthIsland.SetActive(true);
+            Data.arrowDestination = ninthIsland.transform.GetChild(0).gameObject.transform;
+            eigthBlockPath.SetActive(false);
         }
-
-        if (Data.fifthPuzzleSolved)
+        else if (Data.seventhPuzzleSolved)
         {
-            sixthIsland.SetActive(true);
+            eigthIsland.SetActive(true);
+            Data.arrowDestination = eigthIsland.transform.GetChild(0).gameObject.transform;
+            seventhBlockPath.SetActive(false);
         }
-
-        if (Data.sixthPuzzleSolved)
+        else if (Data.sixthPuzzleSolved)
         {
             seventhIsland.SetActive(true);
+            Data.arrowDestination = seventhIsland.transform.GetChild(0).gameObject.transform;
+            sixthBlockPath.SetActive(false);
+        }
+        else if (Data.fifthPuzzleSolved)
+        {
+            sixthIsland.SetActive(true);
+            Data.arrowDestination = sixthIsland.transform.GetChild(0).gameObject.transform;
+            fifthBlockPath.SetActive(false);
+        }
+        else if (Data.fourthPuzzleSolved)
+        {
+            fifthIsland.SetActive(true);
+            Data.arrowDestination = fifthIsland.transform.GetChild(0).gameObject.transform;
+            fourthBlockPath.SetActive(false);
+        }
+        else if (Data.thirdPuzzleSolved)
+        {
+            fourthIsland.SetActive(true);
+            Data.arrowDestination = fourthIsland.transform.GetChild(0).gameObject.transform;
+            thirdBlockPath.SetActive(false);
+        }
+        else if (Data.secondPuzzleSolved)
+        {
+            thirdIsland.SetActive(true);
+            Data.arrowDestination = thirdIsland.transform.GetChild(0).gameObject.transform;
+            secondBlockPath.SetActive(false);
+        }
+        else if (Data.firstPuzzleSolved)
+        {
+            secondIsland.SetActive(true);
+            Data.arrowDestination = secondIsland.transform.GetChild(0).gameObject.transform;
+
+            firstBlockPath.SetActive(false);
         }
     }
 }

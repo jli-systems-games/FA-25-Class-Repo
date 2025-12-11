@@ -9,6 +9,11 @@ public class ResetData : MonoBehaviour
         //    Data.SolutionMap.Clear();
         //}
 
+        ResetAllData();
+    }
+
+    private void ResetAllData()
+    {
         Data.firstPuzzleSolved = false;
         Data.secondPuzzleSolved = false;
         Data.thirdPuzzleSolved = false;
@@ -17,6 +22,7 @@ public class ResetData : MonoBehaviour
         Data.sixthPuzzleSolved = false;
         Data.seventhPuzzleSolved = false;
         Data.eigthPuzzleSolved = false;
+        Data.ninthPuzzleSolved = false;
 
         Data.hintVisionEnabled = false;
     }

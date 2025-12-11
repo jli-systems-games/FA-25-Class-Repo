@@ -19,7 +19,12 @@ public class Data
     public static bool sixthPuzzleSolved = false;
     public static bool seventhPuzzleSolved = false;
     public static bool eigthPuzzleSolved = false;
+    public static bool ninthPuzzleSolved = false;
 
     public static bool hintVisionEnabled = false;
     public static bool inDisableZone = false;
+
+    public static bool arrowEnabled = false;
+
+    public static Transform arrowDestination;
 }

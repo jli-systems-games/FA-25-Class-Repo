@@ -105,6 +105,17 @@ public class AnimalPlatformCheck : MonoBehaviour
             Debug.Log("Clicked eigth platform");
             PlatformOnClick(Data.EigthSolutionMap, other.gameObject, "Eigth Platform", 4, eigthPlatformClickedStatus);
         }
+
+        if (other.gameObject.CompareTag("Staircase"))
+        {
+            Debug.Log("Enter Trigger");
+            Data.arrowEnabled = false;
+        }
+
+        if (other.gameObject.CompareTag("RestartZone"))
+        {
+            SceneManager.LoadScene("Start Scene");
+        }
     }
 
     private void PlatformOnClick(Dictionary<GameObject, int> solutionMap, GameObject platformObject, string tagName, int platformCount, Dictionary<GameObject, bool> platformClickedStatus)

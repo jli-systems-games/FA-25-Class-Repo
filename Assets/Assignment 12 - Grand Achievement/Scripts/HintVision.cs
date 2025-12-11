@@ -104,7 +104,7 @@ public class HintVision : MonoBehaviour
             currentCR = StartCoroutine(HintVisionSequence());
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             SceneManager.LoadScene("Start Scene");
         }
