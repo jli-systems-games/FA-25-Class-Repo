@@ -28,28 +28,5 @@ She walks toward the door.
 Lin: Good night, intern. Don't stay up too late.
 #hide Lin
 
-Okay.
+->END
 
-So.
-
-Your first day as an ecology intern, and you just spent an hour... playing a gardening simulator?
-
-With a supervisor who talks like she's hiding something?
-
-Cool. Cool cool cool.
-
-The screen still glows in front of you. Your little ecosystem keeps running—plants growing, dying, regrowing. It doesn't need you anymore.
-
-Lin said she'll check your data tomorrow.
-
-Your DATA. From a plant game.
-
-This internship is going to be weird, isn't it.
-
-You grab your bag and head for the door.
-
-Behind you, the greenhouse hums softly in the dusk.
-
-Whatever this is... you'll figure it out tomorrow.
-
-Probably.

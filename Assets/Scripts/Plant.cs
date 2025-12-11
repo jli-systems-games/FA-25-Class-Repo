@@ -437,7 +437,7 @@ public class Plant : MonoBehaviour
                 break;
 
             case SpreadMode.RequireAnimal:
-                // 需要动物，暂不实现
+                // 需要动物，由动物行为触发
                 break;
 
             case SpreadMode.None:
@@ -631,6 +631,12 @@ public class Plant : MonoBehaviour
         // 返还肥力
         EcosystemManager.Instance.AddFertility(returnFertility);
 
+        // 🆕 死亡时繁殖（OnDeath 模式）
+        if (plantData.spreadMode == SpreadMode.OnDeath && isMature)
+        {
+            TriggerDeathSpread();
+        }
+
         // 橡树死亡时减少恢复速率
         if (plantData.matureEffect == PlantMatureEffect.OakLeafFall && isMature)
         {
@@ -653,6 +659,55 @@ public class Plant : MonoBehaviour
         {
             // 立即销毁
             Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 🆕 死亡时触发繁殖（OnDeath 模式）
+    /// </summary>
+    private void TriggerDeathSpread()
+    {
+        // 确定要生成的Prefab
+        GameObject prefabToSpawn = plantData.offspringPrefab != null ?
+            plantData.offspringPrefab : plantData.plantPrefab;
+
+        if (prefabToSpawn == null)
+        {
+            Debug.LogWarning($"[Plant] {plantData.plantName} 没有设置繁殖Prefab，无法死亡繁殖");
+            return;
+        }
+
+        int spawnedCount = 0;
+
+        for (int i = 0; i < plantData.spreadCount; i++)
+        {
+            // 检查植物总数上限
+            if (EcosystemManager.Instance.CurrentPlantCount >= EcosystemManager.Instance.MaxPlantCount)
+            {
+                Debug.Log($"[Plant] 死亡繁殖中止：已生成 {spawnedCount}/{plantData.spreadCount}，达到植物上限");
+                break;
+            }
+
+            // 在母株附近随机位置
+            Vector2 randomOffset = Random.insideUnitCircle * plantData.spreadRange;
+            Vector3 spawnPosition = transform.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
+            spawnPosition.y = transform.position.y;
+
+            // 生成幼苗
+            GameObject offspring = Instantiate(
+                prefabToSpawn,
+                spawnPosition,
+                Quaternion.identity,
+                transform.parent
+            );
+
+            spawnedCount++;
+            Debug.Log($"[Plant] {plantData.plantName} 死亡繁殖：生成幼苗 at {spawnPosition}");
+        }
+
+        if (spawnedCount > 0)
+        {
+            Debug.Log($"[Plant] {plantData.plantName} 死亡繁殖完成，生成 {spawnedCount} 株幼苗");
         }
     }
 

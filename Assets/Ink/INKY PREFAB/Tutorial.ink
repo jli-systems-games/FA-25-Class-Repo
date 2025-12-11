@@ -33,6 +33,8 @@ If conditions are right, plants thrive. # stop_highlights
 
 If not... well, you'll see.
 
-// [如果玩家失败]
+Here is a few more species for you to play around.
 
 Don't worry. Trial and error. That's how ecosystems work.
+
+I will leave the rest for you. 
