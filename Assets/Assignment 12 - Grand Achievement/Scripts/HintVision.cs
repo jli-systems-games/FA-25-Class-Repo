@@ -29,7 +29,7 @@ public class HintVision : MonoBehaviour
     public bool isOnCooldown = false;
 
     private bool wasInDisableZone = false;
-    private Color OGEmissionColor = new Color(0.0f, 0.749f, 0.749f, 0f);
+    private Color OGEmissionColor = Color.white;
 
     private bool hintAvailable = true;
 

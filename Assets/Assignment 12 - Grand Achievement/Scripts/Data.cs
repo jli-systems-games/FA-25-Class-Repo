@@ -9,6 +9,7 @@ public class Data
     public static Dictionary<GameObject, int> FifthSolutionMap;
     public static Dictionary<GameObject, int> SixthSolutionMap;
     public static Dictionary<GameObject, int> SeventhSolutionMap;
+    public static Dictionary<GameObject, int> EigthSolutionMap;
 
     public static bool firstPuzzleSolved = false;
     public static bool secondPuzzleSolved = false;
@@ -17,6 +18,7 @@ public class Data
     public static bool fifthPuzzleSolved = false;
     public static bool sixthPuzzleSolved = false;
     public static bool seventhPuzzleSolved = false;
+    public static bool eigthPuzzleSolved = false;
 
     public static bool hintVisionEnabled = false;
     public static bool inDisableZone = false;

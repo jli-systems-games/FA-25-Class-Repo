@@ -18,6 +18,7 @@ public class AnimalPlatformCheck : MonoBehaviour
     private Dictionary<GameObject, bool> fifthPlatformClickedStatus;
     private Dictionary<GameObject, bool> sixthPlatformClickedStatus;
     private Dictionary<GameObject, bool> seventhPlatformClickedStatus;
+    private Dictionary<GameObject, bool> eigthPlatformClickedStatus;
 
     private bool isFalseOrder;
 
@@ -31,6 +32,7 @@ public class AnimalPlatformCheck : MonoBehaviour
         fifthPlatformClickedStatus = new Dictionary<GameObject, bool>();
         sixthPlatformClickedStatus = new Dictionary<GameObject, bool>();
         seventhPlatformClickedStatus = new Dictionary<GameObject, bool>();
+        eigthPlatformClickedStatus = new Dictionary<GameObject, bool>();
 
         ResetVariables(Data.SecondSolutionMap, "Second Platform", secondPlatformClickedStatus);
         ResetVariables(Data.ThirdSolutionMap, "Third Platform", thirdPlatformClickedStatus);
@@ -38,6 +40,7 @@ public class AnimalPlatformCheck : MonoBehaviour
         ResetVariables(Data.FifthSolutionMap, "Fifth Platform", fifthPlatformClickedStatus);
         ResetVariables(Data.SixthSolutionMap, "Sixth Platform", sixthPlatformClickedStatus);
         ResetVariables(Data.SeventhSolutionMap, "Seventh Platform", seventhPlatformClickedStatus);
+        ResetVariables(Data.EigthSolutionMap, "Eigth Platform", eigthPlatformClickedStatus);
     }
 
     private void ResetVariables(Dictionary<GameObject, int> solutionMap, string tagName, Dictionary<GameObject, bool> platformClickedStatus)
@@ -97,6 +100,11 @@ public class AnimalPlatformCheck : MonoBehaviour
             Debug.Log("Clicked seventh platform");
             PlatformOnClick(Data.SeventhSolutionMap, other.gameObject, "Seventh Platform", 4, seventhPlatformClickedStatus);
         }
+        else if (other.gameObject.CompareTag("Eigth Platform"))
+        {
+            Debug.Log("Clicked eigth platform");
+            PlatformOnClick(Data.EigthSolutionMap, other.gameObject, "Eigth Platform", 4, eigthPlatformClickedStatus);
+        }
     }
 
     private void PlatformOnClick(Dictionary<GameObject, int> solutionMap, GameObject platformObject, string tagName, int platformCount, Dictionary<GameObject, bool> platformClickedStatus)
@@ -119,18 +127,25 @@ public class AnimalPlatformCheck : MonoBehaviour
 
         platformClickedCount++;
 
-        if (requiredStep == currentStepIndex)
+        if (requiredStep >= 0) 
         {
-            Debug.Log("Correct platform order clicked!");
-
-            currentStepIndex++;
+            if (requiredStep == currentStepIndex)
+            {
+                Debug.Log("Correct platform order clicked!");
+                currentStepIndex++;
+            }
+            else
+            {
+                Debug.Log("Incorrect platform order clicked!");
+                isFalseOrder = true;
+            }
         }
         else
         {
-            Debug.Log("Incorrect platform order clicked!");
-
+            Debug.Log("Dummy platform clicked!");
             isFalseOrder = true;
         }
+
 
         if (platformClickedCount == platformCount)
         {
@@ -148,7 +163,7 @@ public class AnimalPlatformCheck : MonoBehaviour
             }
         }
 
-        Debug.Log(currentStepIndex);
+        Debug.Log($"Step: {currentStepIndex}, ClickedCount: {platformClickedCount}");
     }
 
     private IEnumerator PuzzleCorrect(string tagName)
@@ -180,6 +195,10 @@ public class AnimalPlatformCheck : MonoBehaviour
         else if (tagName == "Seventh Platform")
         {
             Data.seventhPuzzleSolved = true;
+        }
+        else if (tagName == "Eigth Platform")
+        {
+            Data.eigthPuzzleSolved = true;
         }
 
         stageManager.CheckPuzzleSolved();
@@ -229,147 +248,4 @@ public class AnimalPlatformCheck : MonoBehaviour
         emissionColor = Color.yellow;
         platformMaterial.SetColor("_EmissionColor", emissionColor);
     }
-
-    //private void Start()
-    //{
-    //    platformClickedStatus = new Dictionary<GameObject, bool>();
-
-    //    ResetVariables();
-    //}
-
-    //private void Update()
-    //{
-    //    if (platformClickedCount == 4)
-    //    {
-    //        Debug.Log("All platform clicked!");
-    //    }
-    //}
-
-    //private void ResetVariables()
-    //{
-    //    platformClickedStatus.Clear();
-
-    //    foreach (GameObject platformKey in Data.SolutionMap.Keys)
-    //    {
-    //        platformClickedStatus.Add(platformKey, false);
-
-    //        PlatformAllAppearance("Animal Platform", Color.black);
-    //    }
-
-    //    platformClickedCount = 0;
-    //    currentStepIndex = 0;
-
-    //    isFalseOrder = false;
-    //}
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    GameObject incomingPlatform = other.gameObject;
-
-    //    if (other.gameObject.CompareTag("Animal Platform"))
-    //    {
-    //        if (Data.SolutionMap.ContainsKey(other.gameObject))
-    //        {
-    //            if (!platformClickedStatus[other.gameObject])
-    //            {
-    //                CheckOrder(other.gameObject);
-    //            }
-    //        }
-    //    }
-    //}
-
-    //private void CheckOrder(GameObject clickedPlatform)
-    //{
-    //    int requiredStep = Data.SolutionMap[clickedPlatform];
-
-    //    platformClickedStatus[clickedPlatform] = true;
-    //    PlatformClickedAppearance(clickedPlatform);
-
-    //    platformClickedCount++;
-
-    //    if (requiredStep == currentStepIndex)
-    //    {
-    //        Debug.Log("Correct platform order clicked!");
-
-    //        currentStepIndex++;
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Incorrect platform order clicked!");
-
-    //        isFalseOrder = true;
-    //    }
-
-    //    if (platformClickedCount == 4)
-    //    {
-    //        if (!isFalseOrder)
-    //        {
-    //            Debug.Log("Puzzle Solved");
-
-    //            StartCoroutine(PuzzleCorrect());
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("Puzzle incorrect");
-
-    //            StartCoroutine(PuzzleIncorrectReset());
-    //        }
-    //    }
-
-    //    Debug.Log(currentStepIndex);
-    //}
-
-    //private IEnumerator PuzzleCorrect()
-    //{
-    //    yield return new WaitForSeconds(1f);
-
-    //    PlatformAllAppearance("Animal Platform", Color.green);
-
-    //    yield return new WaitForSeconds(2f);
-
-    //    SceneManager.LoadScene("End Scene");
-    //}
-
-    //private IEnumerator PuzzleIncorrectReset()
-    //{
-    //    yield return new WaitForSeconds(1f);
-
-    //    PlatformAllAppearance("Animal Platform", Color.red);
-
-    //    yield return new WaitForSeconds(resetTime);
-
-    //    ResetVariables();
-    //}
-
-    //public IEnumerator PuzzleEnd(string tagName, Color col)
-    //{
-    //    yield return new WaitForSeconds(1f);
-
-    //    PlatformAllAppearance(tagName, col);
-
-    //    stageManager.CheckPuzzleSolved();
-    //}
-
-    //public void PlatformAllAppearance(string tagName, Color endColor)
-    //{
-    //    GameObject[] allPlatformsArray = GameObject.FindGameObjectsWithTag(tagName);
-
-    //    foreach (GameObject platform in allPlatformsArray)
-    //    {
-    //        Renderer platformRenderer = platform.GetComponent<Renderer>();
-    //        Material platformMaterial = platformRenderer.material;
-    //        emissionColor = platformMaterial.GetColor("_EmissionColor");
-    //        emissionColor = endColor;
-    //        platformMaterial.SetColor("_EmissionColor", emissionColor);
-    //    }
-    //}
-
-    //public void PlatformClickedAppearance(GameObject platform)
-    //{
-    //    Renderer platformRenderer = platform.GetComponent<Renderer>();
-    //    Material platformMaterial = platformRenderer.material;
-    //    emissionColor = platformMaterial.GetColor("_EmissionColor");
-    //    emissionColor = Color.yellow;
-    //    platformMaterial.SetColor("_EmissionColor", emissionColor);
-    //}
 }

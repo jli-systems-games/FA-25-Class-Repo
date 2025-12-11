@@ -16,6 +16,7 @@ public class ResetData : MonoBehaviour
         Data.fifthPuzzleSolved = false;
         Data.sixthPuzzleSolved = false;
         Data.seventhPuzzleSolved = false;
+        Data.eigthPuzzleSolved = false;
 
         Data.hintVisionEnabled = false;
     }
